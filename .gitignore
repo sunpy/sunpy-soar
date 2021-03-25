@@ -1,0 +1,8 @@
+*.DS_Store
+*.egg-info
+
+docs/_build
+docs/api
+docs/auto_examples
+
+__pycache__
