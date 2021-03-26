@@ -23,8 +23,8 @@ Installation
 Example usage
 -------------
 
-The code below gives an example of how to search for sunpy data using
-`sunpy.net.Fido`:
+The code below gives an example of how to search and download Solar Orbiter
+data using ``sunpy.net.Fido``:
 
 .. code-block:: python
 
@@ -47,3 +47,4 @@ The code below gives an example of how to search for sunpy data using
 
    # Download files
    files = Fido.fetch(result)
+   print(files)
