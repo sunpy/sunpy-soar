@@ -23,6 +23,9 @@ Installation
 Example usage
 -------------
 
+The code below gives an example of how to search for sunpy data using
+`sunpy.net.Fido`:
+
 .. code-block:: python
 
    # Importing sunpy_soar registers the client with sunpy
@@ -32,10 +35,15 @@ Example usage
    from sunpy.net.attrs import Instrument, Level, Time
    from sunpy_soar.attrs import Identifier
 
+   # Create search attributes
    instrument = Instrument('EUI')
-   time = Time('2020-02-01', '2021-02-02')
-   level = a.Level(1)
+   time = Time('2021-02-01', '2021-02-02')
+   level = Level(1)
    identifier = Identifier('EUI-FSI174-IMAGE')
 
-   res = Fido.search(instrument, time, level, identifier)
-   print(res)
+   # Do search
+   result = Fido.search(instrument, time, level, identifier)
+   print(result)
+
+   # Download files
+   files = Fido.fetch(result)
