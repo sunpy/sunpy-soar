@@ -4,6 +4,6 @@
 docs/_build
 docs/api
 docs/auto_examples
-*.coverage
+*.coverage*
 
 __pycache__
