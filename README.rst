@@ -48,3 +48,13 @@ data using ``sunpy.net.Fido``:
    # Download files
    files = Fido.fetch(result)
    print(files)
+
+Available search attributes
+---------------------------
+
+When constructing a search, ``sunpy.net.attrs.Time`` must be provided.
+Other search attributes can be used too; sunpy-soar recognises the following:
+
+- ``sunpy.net.attrs.Instrument``
+- ``sunpy.net.attrs.Level``
+- ``sunpy_soar.attrs.Identifier``
