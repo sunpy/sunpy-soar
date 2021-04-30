@@ -42,7 +42,7 @@ data using ``sunpy.net.Fido``:
    identifier = Identifier('EUI-FSI174-IMAGE')
 
    # Do search
-   result = Fido.search(instrument, time, level, identifier)
+   result = Fido.search(instrument & time & level & identifier)
    print(result)
 
    # Download files
