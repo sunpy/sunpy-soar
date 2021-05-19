@@ -16,6 +16,9 @@ A sunpy plugin for accessing data in the Solar Orbiter Archive (SOAR).
 Installation
 ------------
 
+sunpy-soar requires `python >= 3.7` and `sunpy >= 2.1`. Currently it can only be installed from
+PyPI using:
+
 .. code-block:: bash
 
    pip install sunpy-soar
