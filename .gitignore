@@ -7,3 +7,5 @@ docs/auto_examples
 *.coverage*
 
 __pycache__
+.eggs/*
+dist/*
