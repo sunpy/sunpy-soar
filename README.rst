@@ -22,6 +22,12 @@ PyPI using:
 .. code-block:: bash
 
    pip install sunpy-soar
+   
+or conda using
+
+.. code-block:: bash
+
+   conda install -c conda-forge sunpy-soar
 
 Example usage
 -------------
