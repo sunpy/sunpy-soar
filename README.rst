@@ -13,6 +13,9 @@ A sunpy plugin for accessing data in the Solar Orbiter Archive (SOAR).
    :target: https://codecov.io/gh/dstansby/sunpy-soar
    :alt: code coverage
 
+
+When interacting with the sunpy-soar project you are asked to follow the `SunPy Code of Conduct <https://sunpy.org/coc>`_ .
+
 Installation
 ------------
 
