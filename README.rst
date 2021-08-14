@@ -25,7 +25,7 @@ PyPI using:
 .. code-block:: bash
 
    pip install sunpy-soar
-   
+
 or conda using
 
 .. code-block:: bash
@@ -70,3 +70,12 @@ Other search attributes can be used too; sunpy-soar recognises the following:
 - ``sunpy.net.attrs.Instrument``
 - ``sunpy.net.attrs.Level``
 - ``sunpy_soar.attrs.Identifier``
+
+
+Changelog
+---------
+1.1
+~~~
+- Fixed download of data where multiple versions of the requested file are
+  available. Only the most recent version will be downloaded.
+- Added some log messages to the sunpy logger at DEBUG level
