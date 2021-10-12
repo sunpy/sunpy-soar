@@ -1,10 +1,11 @@
 import requests
 
 import astropy.table
+import numpy as np
 
 from sunpy import log
 import sunpy.net.attrs as a
-from sunpy.net.attr import and_
+from sunpy.net.attr import and_, AttrAnd, AttrOr
 from sunpy.net.base_client import BaseClient, QueryResponseTable
 from sunpy.time import parse_time
 
@@ -22,9 +23,22 @@ class SOARClient(BaseClient):
         query = and_(*query)
         queries = walker.create(query)
 
+        # Find all of the near attributes on the Time attr if they
+        # are specified
+        t_near = []
+        for q in [query] if isinstance(query, AttrAnd) else query:
+            t_near.append([aq for aq in q.attrs if isinstance(aq, a.Time)][0].near)
+
         results = []
-        for query_parameters in queries:
-            results.append(self._do_search(query_parameters))
+        for i, query_parameters in enumerate(queries):
+            _table = self._do_search(query_parameters)
+            # If near is specified for a query, only return that result
+            # which is closest to that time in start time
+            if t_near[i] is not None:
+                t_start = parse_time(_table['Start time'])
+                i_near = np.argmin(np.fabs((t_start - t_near[i]).to('s').value))
+                _table = _table[[i_near]]
+            results.append(_table)
         table = astropy.table.vstack(results)
         qrt = QueryResponseTable(table, client=self)
         filesize = qrt['Filesize'] / (1024 * 1024)
