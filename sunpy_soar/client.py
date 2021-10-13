@@ -5,7 +5,7 @@ import numpy as np
 
 from sunpy import log
 import sunpy.net.attrs as a
-from sunpy.net.attr import and_, AttrAnd, AttrOr
+from sunpy.net.attr import and_, AttrAnd
 from sunpy.net.base_client import BaseClient, QueryResponseTable
 from sunpy.time import parse_time
 
@@ -23,8 +23,7 @@ class SOARClient(BaseClient):
         query = and_(*query)
         queries = walker.create(query)
 
-        # Find all of the near attributes on the Time attr if they
-        # are specified
+        # For each query, find the Time attr and get the near time
         t_near = []
         for q in [query] if isinstance(query, AttrAnd) else query:
             t_near.append([aq for aq in q.attrs if isinstance(aq, a.Time)][0].near)
