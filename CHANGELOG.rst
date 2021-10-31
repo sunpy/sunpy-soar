@@ -7,6 +7,8 @@ Changelog
 - Registered the ``Identifier`` attribute in the ``sunpy.net.attrs.soar``
   namespace. With ``import sunpy.net.attrs as a``, the attribute can now be
   accessed using ``a.soar.Identifier``.
+- The ``"Filesize"`` column in returned results now has units of
+  ``astropy.units.Mbyte`` (previously it had no units).
 
 1.1
 ---
