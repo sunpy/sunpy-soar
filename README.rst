@@ -70,3 +70,7 @@ Other search attributes can be used too; sunpy-soar recognises the following:
 - ``sunpy.net.attrs.Instrument``
 - ``sunpy.net.attrs.Level``
 - ``sunpy_soar.attrs.Identifier``
+
+The third ``near`` argument to ``a.Time`` is not supported - you will have to
+manually filter the results if you want to find the one closest to a given
+time.
