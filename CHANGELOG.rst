@@ -4,6 +4,9 @@ Changelog
 1.2
 ---
 - Allow time-only searches to be made.
+- Registered the ``Identifier`` attribute in the ``sunpy.net.attrs.soar``
+  namespace. With ``import sunpy.net.attrs as a``, the attribute can now be
+  accessed using ``a.soar.Identifier``.
 
 1.1
 ---
