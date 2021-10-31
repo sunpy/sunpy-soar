@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.2
+---
+- Allow time-only searches to be made.
+
 1.1
 ---
 - Fixed download of data where multiple versions of the requested file are
