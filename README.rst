@@ -43,18 +43,16 @@ data using ``sunpy.net.Fido``:
    # Importing sunpy_soar registers the client with sunpy
    import sunpy_soar
    from sunpy.net import Fido
-
-   from sunpy.net.attrs import Instrument, Level, Time
-   from sunpy_soar.attrs import Identifier
+   import sunpy.net.attrs as a
 
    # Create search attributes
-   instrument = Instrument('EUI')
-   time = Time('2021-02-01', '2021-02-02')
-   level = Level(1)
-   identifier = Identifier('EUI-FSI174-IMAGE')
+   instrument = a.Instrument('EUI')
+   time = a.Time('2021-02-01', '2021-02-02')
+   level = a.Level(1)
+   product = a.soar.Product('EUI-FSI174-IMAGE')
 
    # Do search
-   result = Fido.search(instrument & time & level & identifier)
+   result = Fido.search(instrument & time & level & product)
    print(result)
 
    # Download files
@@ -63,13 +61,14 @@ data using ``sunpy.net.Fido``:
 
 Available search attributes
 ---------------------------
+The easiest way to access search attributes is using
+``import sunpy.net.attrs as a``. When constructing a search, ``a.Time`` must be
+provided. Other search attributes can be used too - sunpy-soar recognises the
+following:
 
-When constructing a search, ``sunpy.net.attrs.Time`` must be provided.
-Other search attributes can be used too; sunpy-soar recognises the following:
-
-- ``sunpy.net.attrs.Instrument``
-- ``sunpy.net.attrs.Level``
-- ``sunpy_soar.attrs.Identifier``
+- ``a.Instrument``
+- ``a.Level``
+- ``a.soar.Product``
 
 The third ``near`` argument to ``a.Time`` is not supported - you will have to
 manually filter the results if you want to find the one closest to a given
