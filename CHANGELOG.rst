@@ -9,6 +9,9 @@ Changelog
   accessed using ``a.soar.Identifier``.
 - The ``"Filesize"`` column in returned results now has units of
   ``astropy.units.Mbyte`` (previously it had no units).
+- Removed a validation check on ``a.Level``. If an level that SOAR doesn't
+  understand is passed, zero results will now be returned instead of an error
+  being raised.
 
 1.1
 ---
