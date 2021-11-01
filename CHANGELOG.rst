@@ -3,10 +3,12 @@ Changelog
 
 1.2
 ---
+- The ``Identifier`` attribute is deprecated - use ``Product`` instead, which
+  is a direct replacement (with a better name!).
 - Allow time-only searches to be made.
-- Registered the ``Identifier`` attribute in the ``sunpy.net.attrs.soar``
+- Registered the ``Product`` attribute in the ``sunpy.net.attrs.soar``
   namespace. With ``import sunpy.net.attrs as a``, the attribute can now be
-  accessed using ``a.soar.Identifier``.
+  accessed using ``a.soar.Product``.
 - The ``"Filesize"`` column in returned results now has units of
   ``astropy.units.Mbyte`` (previously it had no units).
 - Removed a validation check on ``a.Level``. If an level that SOAR doesn't
