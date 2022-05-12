@@ -113,7 +113,7 @@ class SOARClient(BaseClient):
 
         for row in query_results:
             url = base_url + row['Data item ID']
-            filepath = str(path).format(file=row['Filename'])
+            filepath = str(path).format(file=row['Filename'], **row.response_block_map)
             log.debug(f'Queing URL: {url}')
             downloader.enqueue_file(url, filename=filepath)
 
