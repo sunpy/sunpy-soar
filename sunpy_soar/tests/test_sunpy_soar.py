@@ -79,7 +79,7 @@ def test_download_path(tmp_path):
     time = a.Time('2021-02-01', '2021-02-02')
     level = a.Level(1)
     res = Fido.search(id & time & level)
-    files = Fido.fetch(res[0,0], path=tmp_path / '{instrument}')
+    files = Fido.fetch(res[0, 0], path=tmp_path / '{instrument}')
     assert len(files) == 1
     for f in files:
         assert 'EUI' in f
