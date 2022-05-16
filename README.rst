@@ -74,6 +74,13 @@ The third ``near`` argument to ``a.Time`` is not supported - you will have to
 manually filter the results if you want to find the one closest to a given
 time.
 
+Maintainence Notes
+==================
+
+This package is maintained separately from sunpy core as we expect that the Virtual Solar Observatory will, in time, index all the solar orbiter data products, meaning that the data accessible through this package will already be accessible with sunpy.
+The SunPy developers will be maintaining this package on a best-effort basis until that point.
+Contributions for new features and bug fixes are welcome.
+
 Changelog
 =========
 
