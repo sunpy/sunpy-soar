@@ -84,6 +84,14 @@ Contributions for new features and bug fixes are welcome.
 Changelog
 =========
 
+1.3
+---
+
+- Add a python 3.10 test by @dstansby in https://github.com/sunpy/sunpy-soar/pull/21
+- Use a date with less EUI results for tests by @dstansby in https://github.com/sunpy/sunpy-soar/pull/27
+- Add pre-commit by @dstansby in https://github.com/sunpy/sunpy-soar/pull/28
+- Support path string interpolation by @wtbarnes in https://github.com/sunpy/sunpy-soar/pull/24
+
 1.2
 ---
 - The ``Identifier`` attribute is deprecated - use ``Product`` instead, which
