@@ -84,6 +84,13 @@ Contributions for new features and bug fixes are welcome.
 Changelog
 =========
 
+1.3
+---
+
+- Support path string interpolation by @wtbarnes in https://github.com/sunpy/sunpy-soar/pull/24
+  This allows one to do the following: Fido.fetch(query, path=tmp_path / '{instrument}') and the name of the intrument will be used in the save path.
+  This will work for all supported Fido attrs.
+  
 1.2
 ---
 - The ``Identifier`` attribute is deprecated - use ``Product`` instead, which
