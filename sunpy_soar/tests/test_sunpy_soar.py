@@ -1,7 +1,9 @@
 import os
+from pathlib import Path
 
 import astropy.units as u
 import pytest
+
 import sunpy.map
 from sunpy.net import Fido
 from sunpy.net import attrs as a
@@ -10,7 +12,7 @@ from sunpy.util.exceptions import SunpyDeprecationWarning
 from sunpy_soar.client import SOARClient
 
 
-def test_search():
+def test_search() -> None:
     id = a.Instrument('EUI')
     time = a.Time('2021-02-11', '2021-02-12')
     level = a.Level(1)
@@ -30,7 +32,7 @@ def test_search():
     sunpy.map.Map(fname)
 
 
-def test_search_low_latency():
+def test_search_low_latency() -> None:
     time = a.Time('2020-11-13', '2020-11-14')
     level = a.Level('LL02')
     product = a.soar.Product('MAG')
@@ -43,7 +45,7 @@ def test_search_low_latency():
     assert len(files) == 1
 
 
-def test_deprecated_identifier():
+def test_deprecated_identifier() -> None:
     id = a.Instrument('EUI')
     time = a.Time('2021-02-11', '2021-02-12')
     level = a.Level(1)
@@ -56,7 +58,7 @@ def test_deprecated_identifier():
     assert res1.__str__() == res2.__str__()
 
 
-def test_insitu_search():
+def test_insitu_search() -> None:
     id = a.Instrument('MAG')
     time = a.Time('2020-04-16', '2020-04-17')
     identifier = a.soar.Product('MAG-RTN-NORMAL-1-MINUTE')
@@ -69,7 +71,7 @@ def test_insitu_search():
     assert len(files) == 1
 
 
-def test_no_results():
+def test_no_results() -> None:
     id = a.Instrument('EUI')
     time = a.Time('2019-02-01', '2019-02-02')
     query = id & time
@@ -78,14 +80,14 @@ def test_no_results():
     assert len(res) == 0
 
 
-def test_no_instrument():
+def test_no_instrument() -> None:
     # Check that a time only search returns results
     time = a.Time('2020-04-16', '2020-04-17')
     res = SOARClient().search(time)
     assert len(res) == 50
 
 
-def test_download_path(tmp_path):
+def test_download_path(tmp_path: Path) -> None:
     # Check that we can download things to a custom path using
     # the search parameters
     id = a.Instrument('EUI')
