@@ -1,7 +1,9 @@
 import warnings
+from typing import Any, Dict, List, Tuple
 
 import sunpy.net.attrs as a
-from sunpy.net.attr import AttrAnd, AttrOr, AttrWalker, DataAttr, SimpleAttr
+from sunpy.net.attr import (Attr, AttrAnd, AttrOr, AttrWalker, DataAttr,
+                            SimpleAttr)
 from sunpy.util.exceptions import SunpyDeprecationWarning, SunpyUserWarning
 
 __all__ = ['Product']
@@ -18,7 +20,7 @@ class Identifier(Product):
     The data product identifier to search for.
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: Tuple[Any], **kwargs: Dict[Any, Any]):
         warnings.warn(
             "'a.soar.Identifier' is deprecated; use 'a.soar.Product' instead.",
             SunpyDeprecationWarning)
@@ -29,30 +31,30 @@ walker = AttrWalker()
 
 
 @walker.add_creator(AttrOr)
-def create_or(wlk, tree):
+def create_or(wlk: AttrWalker, tree: Attr) -> List[List[str]]:
     """
     Creator for OR. Loops through the next level down in the tree and appends
     the individual results to a list.
     """
-    results = []
+    results: List[List[str]] = []
     for sub in tree.attrs:
         results.append(wlk.create(sub))
     return results
 
 
 @walker.add_creator(AttrAnd, DataAttr)
-def create_and(wlk, tree):
+def create_and(wlk: AttrWalker, tree: Attr) -> List[List[str]]:
     """
     Creator for And and other simple attributes. No walking needs to be done,
     so simply call the applier function.
     """
-    result = []
+    result: List[str] = []
     wlk.apply(tree, result)
     return [result]
 
 
 @walker.add_applier(AttrAnd)
-def apply_and(wlk, and_attr, params):
+def apply_and(wlk: AttrWalker, and_attr: AttrAnd, params: List[str]) -> None:
     """
     Applier for And.
 
@@ -87,14 +89,14 @@ params : list[str]
 
 
 @walker.add_applier(a.Time)
-def _(wlk, attr, params):
+def _(wlk: AttrWalker, attr: a.Time, params: List[str]) -> None:
     start = attr.start.strftime('%Y-%m-%d+%H:%M:%S')
     end = attr.end.strftime('%Y-%m-%d+%H:%M:%S')
     params.append(f"begin_time>='{start}'+AND+begin_time<='{end}'")
 
 
 @walker.add_applier(a.Level)
-def _(wlk, attr, params):
+def _(wlk: AttrWalker, attr: a.Level, params: List[str]) -> None:
     level = attr.value
     if isinstance(level, int):
         level = f"L{level}"
@@ -111,10 +113,10 @@ def _(wlk, attr, params):
 
 
 @walker.add_applier(a.Instrument)
-def _(wlk, attr, params):
+def _(wlk: AttrWalker, attr: a.Instrument, params: List[str]) -> None:
     params.append(f"instrument='{attr.value}'")
 
 
 @walker.add_applier(Product, Identifier)
-def _(wlk, attr, params):
+def _(wlk: AttrWalker, attr: Identifier, params: List[str]) -> None:
     params.append(f"descriptor='{attr.value}'")

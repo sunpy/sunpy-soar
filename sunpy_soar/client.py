@@ -1,10 +1,16 @@
+import os
+from typing import Any, Dict, List, Tuple
+
 import astropy.table
 import astropy.units as u
 import requests
+from parfive import Downloader
+
 import sunpy.net.attrs as a
 from sunpy import log
-from sunpy.net.attr import and_
+from sunpy.net.attr import Attr, and_
 from sunpy.net.base_client import BaseClient, QueryResponseTable
+from sunpy.net.fido_factory import UnifiedResponse
 from sunpy.time import parse_time
 
 from sunpy_soar.attrs import Identifier, Product, walker
@@ -17,7 +23,7 @@ class SOARClient(BaseClient):
     Client to access the Solar Orbiter Archive (SOAR).
     """
 
-    def search(self, *query, **kwargs):
+    def search(self, *query: Tuple[Attr], **kwargs: Dict[Any, Any]) -> QueryResponseTable:
         query = and_(*query)
         queries = walker.create(query)
 
@@ -31,7 +37,7 @@ class SOARClient(BaseClient):
         return qrt
 
     @staticmethod
-    def _construct_url(query):
+    def _construct_url(query: List[str]) -> str:
         """
         Construct search URL.
 
@@ -43,7 +49,7 @@ class SOARClient(BaseClient):
         base_url = ('http://soar.esac.esa.int/soar-sl-tap/tap/'
                     'sync?REQUEST=doQuery&')
         # Need to manually set the intervals based on a query
-        request_dict = {}
+        request_dict: Dict[str, str] = {}
         request_dict['LANG'] = 'ADQL'
         request_dict['FORMAT'] = 'json'
 
@@ -60,14 +66,11 @@ class SOARClient(BaseClient):
         request_dict['QUERY'] = '+'.join([f'{item}+{url_query[item]}' for
                                           item in url_query])
 
-        request_str = ''
-        request_str = [f'{item}={request_dict[item]}' for item in request_dict]
-        request_str = '&'.join(request_str)
-
-        return base_url + request_str
+        request = [f'{item}={request_dict[item]}' for item in request_dict]
+        return base_url + '&'.join(request)
 
     @staticmethod
-    def _do_search(query):
+    def _do_search(query: List[str]) -> astropy.table.QTable:
         """
         Query the SOAR server with a single query.
 
@@ -89,7 +92,7 @@ class SOARClient(BaseClient):
 
         # Do some list/dict wrangling
         names = [m['name'] for m in r.json()['metadata']]
-        info = {name: [] for name in names}
+        info: Dict[str, List[str]] = {name: [] for name in names}
         for entry in r.json()['data']:
             for i, name in enumerate(names):
                 info[name].append(entry[i])
@@ -108,7 +111,7 @@ class SOARClient(BaseClient):
                                      'Filesize': info['filesize']
                                      })
 
-    def fetch(self, query_results, *, path, downloader, **kwargs):
+    def fetch(self, query_results: UnifiedResponse, *, path: os.PathLike, downloader: Downloader, **kwargs: Dict[Any, Any]) -> None:
         """
         Queue a set of results to be downloaded. `BaseClient` does the actual
         downloading, so we just have to queue up the ``downloader``.
@@ -141,7 +144,7 @@ class SOARClient(BaseClient):
             downloader.enqueue_file(url, filename=filepath)
 
     @classmethod
-    def _can_handle_query(cls, *query):
+    def _can_handle_query(cls, *query: Tuple[Attr]) -> bool:
         """
         Check if this client can handle a given Fido query.
 
@@ -155,6 +158,6 @@ class SOARClient(BaseClient):
         return cls.check_attr_types_in_query(query, required, optional)
 
     @classmethod
-    def _attrs_module(cls):
+    def _attrs_module(cls) -> Tuple[str, str]:
         # Register SOAR specific attributes with Fido
         return 'soar', 'sunpy_soar.attrs'

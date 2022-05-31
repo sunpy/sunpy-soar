@@ -54,5 +54,12 @@ repos:
       - id: mixed-line-ending
         exclude: ".*(.fits|.fts|.fit|.header|.txt|tca.*)$"
 
+  -   repo: https://github.com/pre-commit/mirrors-mypy
+      rev: v0.960
+      hooks:
+      - id: mypy
+        additional_dependencies: [types-requests, types-setuptools]
+        args: ['--disallow-untyped-defs', '--config-file=mypy.ini']
+
 ci:
   autofix_prs: false
