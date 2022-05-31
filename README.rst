@@ -67,7 +67,7 @@ provided. Other search attributes can be used too - sunpy-soar recognises the
 following:
 
 - ``a.Instrument``
-- ``a.Level``
+- ``a.Level`` - one of ``L0, L1, L2, L3, LL01, LL02, LL03``
 - ``a.soar.Product``
 
 The third ``near`` argument to ``a.Time`` is not supported - you will have to
@@ -84,13 +84,17 @@ Contributions for new features and bug fixes are welcome.
 Changelog
 =========
 
+1.4
+---
+- Added support for searching for and fetching low latency data.
+
 1.3
 ---
 
 - Added support for path string interpolation, which allows you to do (for example)
   ``Fido.fetch(query, path=tmp_path / '{instrument}')`` and the name of the intrument will be used in the save path.
   This works for all supported Fido attrs.
-  
+
 1.2
 ---
 - The ``Identifier`` attribute is deprecated - use ``Product`` instead, which

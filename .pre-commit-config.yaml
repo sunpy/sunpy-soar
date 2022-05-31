@@ -31,7 +31,6 @@ repos:
     rev: 5.10.1
     hooks:
       - id: isort
-        args: ["--sp", "setup.cfg"]
         exclude: ".*(.fits|.fts|.fit|.header|.txt|tca.*|extern.*|.rst|.md|cm/__init__.py|sunpy/extern|docs/conf.py)$"
   - repo: https://github.com/pre-commit/mirrors-autopep8
     rev: v1.6.0
