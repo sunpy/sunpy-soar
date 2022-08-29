@@ -84,6 +84,10 @@ Contributions for new features and bug fixes are welcome.
 Changelog
 =========
 
+1.5
+---
+- Registered a list of valid data product identifiers with the ``a.soar.Product`` attribute. To see these use ``print(a.soar.Product)``.
+
 1.4
 ---
 - Added support for searching for and fetching low latency data.
