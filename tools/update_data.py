@@ -5,6 +5,7 @@ from astroquery.utils.tap.core import TapPlus
 
 soar = TapPlus('http://soar.esac.esa.int/soar-sl-tap/tap')
 
+
 def get_cdf_descriptors():
     # Get data descriptors for CDF files
     print("Updating CDF descriptors...")
@@ -15,6 +16,7 @@ def get_cdf_descriptors():
         desc = row['cdf_descriptor'].split('>')[0].upper()
         descriptors[desc] = row['logical_source_description']
     return descriptors
+
 
 def get_fits_descriptors():
     # Get data descriptors for FITS files
