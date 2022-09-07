@@ -62,23 +62,25 @@ data using ``sunpy.net.Fido``:
 Available search attributes
 ---------------------------
 The easiest way to access search attributes is using
-``import sunpy.net.attrs as a``. When constructing a search, ``a.Time`` must be
-provided. Other search attributes can be used too - sunpy-soar recognises the
+``import sunpy.net.attrs as a``. When constructing a search for SOAR ``a.Time`` must be
+provided. Other search attributes can be used too - ``sunpy-soar`` recognises the
 following:
 
 - ``a.Instrument``
 - ``a.Level`` - one of ``L0, L1, L2, L3, LL01, LL02, LL03``
 - ``a.soar.Product``
 
-The third ``near`` argument to ``a.Time`` is not supported - you will have to
+The third ``near`` argument to ``a.Time`` is not currently supported - you will have to
 manually filter the results if you want to find the one closest to a given
 time.
 
-Maintainence Notes
-==================
+``sunpy-soar`` and the VSO
+==========================
+``sunpy-soar`` queries the official repository of Solar Orbiter data, the SOAR. The Virtual Solar Observatory (VSO) as of writing (September 2022) mirrors a subset of the Solar Orbiter archive alongside many other solar physics data sources. The VSO allows data from multiple missions/observatories to be easily queried in one go, but users should be aware that the VSO is not the official repository for Solar Orbiter data and does not currently (as of September 2022) provide a comprehensive listing of all available Solar Orbiter data.
 
-This package is maintained separately from sunpy core as we expect that the Virtual Solar Observatory will, in time, index all the solar orbiter data products, meaning that the data accessible through this package will already be accessible with sunpy.
-The SunPy developers will be maintaining this package on a best-effort basis until that point.
+Development
+===========
+The SunPy developers maintain this package.
 Contributions for new features and bug fixes are welcome.
 
 Changelog
