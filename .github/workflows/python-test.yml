@@ -26,7 +26,8 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install --pre .[tests]
+        python -m pip install --pre sunpy
+        python -m pip install .[tests]
     - name: Run tests
       run: |
         pytest --cov-report=xml
