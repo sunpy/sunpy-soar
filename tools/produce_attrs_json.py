@@ -1,6 +1,8 @@
 import json
 import pathlib
+
 from astroquery.utils.tap.core import TapPlus
+
 
 def get_all_instruments():
     SOAR = TapPlus(url="http://soar.esac.esa.int/soar-sl-tap/tap")
@@ -16,6 +18,7 @@ def get_all_instruments():
         else:
             instr_desc[r["name"]] = r["long_name"]
     return instr_desc
+
 
 if __name__ == '__main__':
     attr_file = pathlib.Path(__file__).parent.parent / 'sunpy_soar' / 'data' / 'instrument_attrs.json'
