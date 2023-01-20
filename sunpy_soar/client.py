@@ -6,7 +6,7 @@ import astropy.units as u
 import requests
 import sunpy.net.attrs as a
 from sunpy import log
-from sunpy.net.attr import and_
+from sunpy.net.attr import SimpleAttr, and_
 from sunpy.net.base_client import BaseClient, QueryResponseTable
 from sunpy.time import parse_time
 
@@ -105,7 +105,7 @@ class SOARClient(BaseClient):
                                      'End time': info['end_time'],
                                      'Data item ID': info['data_item_id'],
                                      'Filename': info['filename'],
-                                     'Filesize': info['filesize']
+                                     'Filesize': info['filesize'],
                                      })
 
     def fetch(self, query_results, *, path, downloader, **kwargs):
@@ -144,6 +144,7 @@ class SOARClient(BaseClient):
     def _can_handle_query(cls, *query):
         """
         Check if this client can handle a given Fido query.
+        Checks to see if a SOAR instrument or product is provided in the query.
 
         Returns
         -------
@@ -151,8 +152,15 @@ class SOARClient(BaseClient):
             True if this client can handle the given query.
         """
         required = {a.Time}
-        optional = {a.Instrument, a.Level, Product, Identifier}
-        return cls.check_attr_types_in_query(query, required, optional)
+        optional = {a.Instrument, a.Level, a.Provider, Product, Identifier}
+        if not cls.check_attr_types_in_query(query, required, optional):
+            return False
+        for key in cls.register_values():
+            all_vals = [i[0].lower() for i in cls.register_values()[key]]
+            for x in query:
+                if isinstance(x, key) and issubclass(key, SimpleAttr) and str(x.value).lower() not in all_vals:
+                    return False
+        return True
 
     @classmethod
     def _attrs_module(cls):
