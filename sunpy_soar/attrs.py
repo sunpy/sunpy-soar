@@ -4,7 +4,7 @@ import sunpy.net.attrs as a
 from sunpy.net.attr import AttrAnd, AttrOr, AttrWalker, DataAttr, SimpleAttr
 from sunpy.util.exceptions import SunpyDeprecationWarning, SunpyUserWarning
 
-__all__ = ['Product']
+__all__ = ['Product', 'Instrument']
 
 
 class Product(SimpleAttr):
@@ -12,6 +12,10 @@ class Product(SimpleAttr):
     The data product identifier to search for.
     """
 
+class Instrument(SimpleAttr):
+    """
+    The Solar Orbiter instrument to search for.
+    """
 
 class Identifier(Product):
     """

@@ -43,3 +43,4 @@ if __name__ == '__main__':
     descriptors = get_all_descriptors()
     with open(attr_file, 'w') as attrs_file:
         json.dump(dict(sorted(descriptors.items())), attrs_file, indent=2)
+
