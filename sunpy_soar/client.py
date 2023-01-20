@@ -26,6 +26,8 @@ class SOARClient(BaseClient):
 
         results = []
         for query_parameters in queries:
+            if "provider='SOAR'" in query_parameters:
+                query_parameters.remove("provider='SOAR'")
             results.append(self._do_search(query_parameters))
         table = astropy.table.vstack(results)
         qrt = QueryResponseTable(table, client=self)
@@ -186,4 +188,4 @@ class SOARClient(BaseClient):
 
         all_instr = [(id, desc) for id, desc in all_instr.items()]
 
-        return {Product: all_datasets, a.Instrument: all_instr}
+        return {Product: all_datasets, a.Instrument: all_instr, a.Provider:  [('SOAR', 'Solar Orbiter Archive.')]}
