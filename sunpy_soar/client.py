@@ -10,7 +10,7 @@ from sunpy.net.attr import and_
 from sunpy.net.base_client import BaseClient, QueryResponseTable
 from sunpy.time import parse_time
 
-from sunpy_soar.attrs import Identifier, Product, Instrument, walker
+from sunpy_soar.attrs import Identifier, Product, walker
 
 __all__ = ['SOARClient']
 
@@ -172,11 +172,10 @@ class SOARClient(BaseClient):
         # Convert from dict to list of tuples
         all_datasets = [(id, desc) for id, desc in all_datasets.items()]
 
-
         instr_path = pathlib.Path(__file__).parent / 'data' / 'instrument_attrs.json'
         with open(instr_path, 'r') as instr_attrs_file:
             all_instr = json.load(instr_attrs_file)
 
         all_instr = [(id, desc) for id, desc in all_instr.items()]
 
-        return {Product: all_datasets, Instrument: all_instr}
+        return {Product: all_datasets, a.Instrument: all_instr}
