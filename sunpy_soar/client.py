@@ -6,7 +6,7 @@ import astropy.units as u
 import requests
 import sunpy.net.attrs as a
 from sunpy import log
-from sunpy.net.attr import SimpleAttr, and_
+from sunpy.net.attr import and_
 from sunpy.net.base_client import BaseClient, QueryResponseTable
 from sunpy.time import parse_time
 
@@ -157,11 +157,10 @@ class SOARClient(BaseClient):
         optional = {a.Instrument, a.Level, a.Provider, Product, Identifier}
         if not cls.check_attr_types_in_query(query, required, optional):
             return False
-        for key in cls.register_values():
-            all_vals = [i[0].lower() for i in cls.register_values()[key]]
-            for x in query:
-                if isinstance(x, key) and issubclass(key, SimpleAttr) and str(x.value).lower() not in all_vals:
-                    return False
+        instr = [i[0].lower() for i in cls.register_values()[a.Instrument]]
+        for x in query:
+            if isinstance(x, a.Instrument) and str(x.value).lower() not in instr:
+                return False
         return True
 
     @classmethod
