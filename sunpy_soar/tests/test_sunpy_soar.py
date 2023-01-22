@@ -102,3 +102,20 @@ def test_registered_attrs():
     attr_str = str(a.soar.Product)
     # Check that at least one attr value is registered
     assert 'epd_ept_asun_burst_ele_close' in attr_str
+
+
+def test_registered_instr_attrs():
+    # check if the Solo instruments are registered in a.Instrument
+    instr_attr = a.Instrument
+    assert "SOAR" in instr_attr._attr_registry[instr_attr].client
+    assert "stix" in instr_attr._attr_registry[instr_attr].name
+
+
+def test_when_provider_passed():
+    # tests when a.Provider.soar is passed that only SOARClient results returned
+    id = a.Instrument('EUI')
+    time = a.Time('2022-04-01 00:00', '2022-04-01 01:00')
+    provider = a.Provider.soar
+    res = Fido.search(time & id & provider)
+    assert len(res) == 1
+    assert "soar" in res.keys()
