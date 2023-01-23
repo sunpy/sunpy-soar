@@ -111,7 +111,7 @@ def test_registered_instr_attrs():
     assert "stix" in instr_attr._attr_registry[instr_attr].name
 
 
-def test_when_provider_passed():
+def test_when_soar_provider_passed():
     # tests when a.Provider.soar is passed that only SOARClient results returned
     id = a.Instrument('EUI')
     time = a.Time('2022-04-01 00:00', '2022-04-01 01:00')
@@ -119,3 +119,13 @@ def test_when_provider_passed():
     res = Fido.search(time & id & provider)
     assert len(res) == 1
     assert "soar" in res.keys()
+
+
+def test_when_sdac_provider_passed():
+    # tests when a.Provider.soar is passed that only SOARClient results returned
+    id = a.Instrument('EUI')
+    time = a.Time('2022-04-01 00:00', '2022-04-01 01:00')
+    provider = a.Provider.sdac
+    res = Fido.search(time & id & provider)
+    assert len(res) == 1
+    assert "vso" in res.keys()
