@@ -157,10 +157,13 @@ class SOARClient(BaseClient):
         optional = {a.Instrument, a.Level, a.Provider, Product, Identifier}
         if not cls.check_attr_types_in_query(query, required, optional):
             return False
+        print(query)
         # check to make sure the instrument attr passed is one provided by the SOAR
         instr = [i[0].lower() for i in cls.register_values()[a.Instrument]]
         for x in query:
             if isinstance(x, a.Instrument) and str(x.value).lower() not in instr:
+                return False
+            if isinstance(x, a.Provider) and str(x.value).lower() != "soar":
                 return False
         return True
 
