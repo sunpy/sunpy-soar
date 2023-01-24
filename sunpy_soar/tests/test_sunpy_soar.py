@@ -105,14 +105,14 @@ def test_registered_attrs():
 
 
 def test_registered_instr_attrs():
-    # check if the Solo instruments are registered in a.Instrument
+    # Check if the Solo instruments are registered in a.Instrument
     instr_attr = a.Instrument
     assert "SOAR" in instr_attr._attr_registry[instr_attr].client
     assert "stix" in instr_attr._attr_registry[instr_attr].name
 
 
 def test_when_soar_provider_passed():
-    # tests when a.Provider.soar is passed that only SOARClient results returned
+    # Tests when a.Provider.soar is passed that only SOARClient results are returned
     id = a.Instrument('EUI')
     time = a.Time('2022-04-01 00:00', '2022-04-01 01:00')
     provider = a.Provider.soar
@@ -122,7 +122,7 @@ def test_when_soar_provider_passed():
 
 
 def test_when_sdac_provider_passed():
-    # tests when a.Provider.soar is passed that only SOARClient results returned
+    # tests that only VSO EUI results are returned when explicitly setting the provider to SDAC
     id = a.Instrument('EUI')
     time = a.Time('2022-04-01 00:00', '2022-04-01 01:00')
     provider = a.Provider.sdac
@@ -132,7 +132,9 @@ def test_when_sdac_provider_passed():
 
 
 def test_when_wrong_provider_passed():
-    # tests when a.Provider.soar is passed that only SOARClient results returned
+    # Tests that no results are returned when a provider is passed which does not provide EUI data.
+    # This is different from the above test because the SDAC and the SOAR both provide EUI data while
+    # NOAA has no overlap with the data provided by the SOAR.
     id = a.Instrument('EUI')
     time = a.Time('2022-04-01 00:00', '2022-04-01 01:00')
     provider = a.Provider.noaa
