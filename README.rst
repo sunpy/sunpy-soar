@@ -86,6 +86,14 @@ Contributions for new features and bug fixes are welcome.
 Changelog
 =========
 
+1.6
+---
+- Registered a list of instruments available from the SOAR, with the ``a.Instrument`` attribute.
+- Registered the SOAR in the ``a.Provider`` attribute, meaning that a use cam specifiy to the Fido search to only query the SOAR by
+use of ``a.Provider.soar``.
+- The ``_can_handle_query`` function within the SOARClient now checks to make sure if the SOAR supplies the queried data which
+fixes a bug which searched the SOAR for any data (e.g. AIA data).
+
 1.5
 ---
 - Registered a list of valid data product identifiers with the ``a.soar.Product`` attribute. To see these use ``print(a.soar.Product)``.
