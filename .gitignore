@@ -9,3 +9,5 @@ docs/auto_examples
 __pycache__
 .eggs/*
 dist/*
+.history
+.hypothesis/

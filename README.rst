@@ -19,8 +19,8 @@ When interacting with the sunpy-soar project you are asked to follow the `SunPy 
 Installation
 ------------
 
-sunpy-soar requires `python >= 3.7` and `sunpy >= 2.1`. Currently it can only be installed from
-PyPI using:
+sunpy-soar requires `python >= 3.7` and `sunpy >= 2.1`.
+Currently it can only be installed from PyPI using:
 
 .. code-block:: bash
 
@@ -35,8 +35,7 @@ or conda using
 Example usage
 -------------
 
-The code below gives an example of how to search and download Solar Orbiter
-data using ``sunpy.net.Fido``:
+The code below gives an example of how to search and download Solar Orbiter data using ``sunpy.net.Fido``:
 
 .. code-block:: python
 
@@ -61,22 +60,21 @@ data using ``sunpy.net.Fido``:
 
 Available search attributes
 ---------------------------
-The easiest way to access search attributes is using
-``import sunpy.net.attrs as a``. When constructing a search for SOAR ``a.Time`` must be
-provided. Other search attributes can be used too - ``sunpy-soar`` recognises the
-following:
+The easiest way to access search attributes is using ``import sunpy.net.attrs as a``.
+When constructing a search for SOAR ``a.Time`` must be provided.
+Other search attributes can be used too - ``sunpy-soar`` recognises the following:
 
 - ``a.Instrument``
 - ``a.Level`` - one of ``L0, L1, L2, L3, LL01, LL02, LL03``
 - ``a.soar.Product``
 
-The third ``near`` argument to ``a.Time`` is not currently supported - you will have to
-manually filter the results if you want to find the one closest to a given
-time.
+The third ``near`` argument to ``a.Time`` is not currently supported - you will have to manually filter the results if you want to find the one closest to a given time.
 
 ``sunpy-soar`` and the VSO
 ==========================
-``sunpy-soar`` queries the official repository of Solar Orbiter data, the SOAR. The Virtual Solar Observatory (VSO) as of writing (September 2022) mirrors a subset of the Solar Orbiter archive alongside many other solar physics data sources. The VSO allows data from multiple missions/observatories to be easily queried in one go, but users should be aware that the VSO is not the official repository for Solar Orbiter data and does not currently (as of September 2022) provide a comprehensive listing of all available Solar Orbiter data.
+``sunpy-soar`` queries the official repository of Solar Orbiter data, the SOAR.
+The Virtual Solar Observatory (VSO) as of writing (September 2022) mirrors a subset of the Solar Orbiter archive alongside many other solar physics data sources.
+The VSO allows data from multiple missions/observatories to be easily queried in one go, but users should be aware that the VSO is not the official repository for Solar Orbiter data and does not currently (as of September 2022) provide a comprehensive listing of all available Solar Orbiter data.
 
 Development
 ===========
@@ -85,6 +83,10 @@ Contributions for new features and bug fixes are welcome.
 
 Changelog
 =========
+
+1.7
+---
+- Added STIX data products to the list of valid data product identifiers.
 
 1.6
 ---
