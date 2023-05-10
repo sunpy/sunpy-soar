@@ -55,6 +55,20 @@ def get_all_instruments():
     return instr_desc
 
 
+def get_all_soops():
+    # Get the unique soop names
+    print("Updating SOOP descriptors...")
+    SOAR = TapPlus(url="http://soar.esac.esa.int/soar-sl-tap/tap")
+    job = SOAR.launch_job('select * from soar.soop')
+    res = job.get_results()
+
+    soop_names = {}
+    for row in res:
+        soop_names[row["soop_name"]] = ''
+
+    return soop_names
+
+
 if __name__ == '__main__':
     attr_file = pathlib.Path(__file__).parent.parent / 'sunpy_soar' / 'data' / 'attrs.json'
     descriptors = get_all_descriptors()
@@ -65,3 +79,8 @@ if __name__ == '__main__':
     instr_descriptors = get_all_instruments()
     with open(instr_file, 'w') as instrs_file:
         json.dump(dict(sorted(instr_descriptors.items())), instrs_file, indent=2)
+
+    soop_file = pathlib.Path(__file__).parent.parent / 'sunpy_soar' / 'data' / 'soop_attrs.json'
+    soop_descriptors = get_all_soops()
+    with open(soop_file, 'w') as soops_file:
+        json.dump(dict(sorted(soop_descriptors.items())), soops_file, indent=2)
