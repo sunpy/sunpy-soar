@@ -108,8 +108,7 @@ class SOARClient(BaseClient):
                                      'Data item ID': info['data_item_id'],
                                      'Filename': info['filename'],
                                      'Filesize': info['filesize'],
-                                     'SOOP Name': info["soop_name"],
-                                     'SOOP Type': info["soop_type"]})
+                                     'SOOP Name': info["soop_name"]})
 
     def fetch(self, query_results, *, path, downloader, **kwargs):
         """
