@@ -179,17 +179,24 @@ class SOARClient(BaseClient):
 
     @staticmethod
     def load_dataset_values():
+        # Instrument attrs
         attrs_path = pathlib.Path(__file__).parent / 'data' / 'attrs.json'
         with open(attrs_path, 'r') as attrs_file:
             all_datasets = json.load(attrs_file)
-
         # Convert from dict to list of tuples
         all_datasets = [(id, desc) for id, desc in all_datasets.items()]
 
+        # Instrument attrs
         instr_path = pathlib.Path(__file__).parent / 'data' / 'instrument_attrs.json'
         with open(instr_path, 'r') as instr_attrs_file:
             all_instr = json.load(instr_attrs_file)
-
         all_instr = [(id, desc) for id, desc in all_instr.items()]
 
-        return {Product: all_datasets, a.Instrument: all_instr, a.Provider:  [('SOAR', 'Solar Orbiter Archive.')]}
+        soop_path = pathlib.Path(__file__).parent / 'data' / 'soop_attrs.json'
+        with open(soop_path, 'r') as soop_path_file:
+            all_soops = json.load(soop_path_file)
+
+        all_soops = [(id, desc) for id, desc in all_soops.items()]
+
+        return {Product: all_datasets, a.Instrument: all_instr,
+                SOOP: all_soops, a.Provider:  [('SOAR', 'Solar Orbiter Archive.')]}
