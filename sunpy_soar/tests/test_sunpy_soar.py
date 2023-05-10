@@ -112,8 +112,8 @@ def test_registered_instr_attrs():
 
 
 def test_registered_soop_names():
-    # Check if the Solo instruments are registered in a.Instrument
-    soop_attr = a.soar.SOOP
+    # Check if the soop names are registered in a.soar.SOOP
+    soop_attr = str(a.soar.SOOP)
     assert " R_SMALL_MRES_MCAD_AR-Long-Term " in str(soop_attr)
 
 
