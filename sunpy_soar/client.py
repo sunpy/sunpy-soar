@@ -10,7 +10,7 @@ from sunpy.net.attr import and_
 from sunpy.net.base_client import BaseClient, QueryResponseTable
 from sunpy.time import parse_time
 
-from sunpy_soar.attrs import Identifier, Product, walker
+from sunpy_soar.attrs import SOOP, Identifier, Product, walker
 
 __all__ = ['SOARClient']
 
@@ -108,7 +108,8 @@ class SOARClient(BaseClient):
                                      'Data item ID': info['data_item_id'],
                                      'Filename': info['filename'],
                                      'Filesize': info['filesize'],
-                                     })
+                                     'SOOP Name': info["soop_name"],
+                                     'SOOP Type': info["soop_type"]})
 
     def fetch(self, query_results, *, path, downloader, **kwargs):
         """
@@ -154,7 +155,7 @@ class SOARClient(BaseClient):
             True if this client can handle the given query.
         """
         required = {a.Time}
-        optional = {a.Instrument, a.Level, a.Provider, Product, Identifier}
+        optional = {a.Instrument, a.Level, a.Provider, Product, Identifier, SOOP}
         if not cls.check_attr_types_in_query(query, required, optional):
             return False
         # check to make sure the instrument attr passed is one provided by the SOAR.
