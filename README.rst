@@ -84,6 +84,10 @@ Contributions for new features and bug fixes are welcome.
 Changelog
 =========
 
+1.8
+---
+- Added ability to query with SOOP name.
+
 1.7
 ---
 - Added STIX data products to the list of valid data product identifiers.

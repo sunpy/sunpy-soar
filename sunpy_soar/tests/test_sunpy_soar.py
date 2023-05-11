@@ -114,7 +114,7 @@ def test_registered_instr_attrs():
 def test_registered_soop_names():
     # Check if the soop names are registered in a.soar.SOOP
     soop_attr = str(a.soar.SOOP)
-    assert "R_SMALL_MRES_MCAD_AR-Long-Term" in soop_attr
+    assert "\nr_small_mres_mcad_ar_long_term" in soop_attr
 
 
 def test_search_soop():
