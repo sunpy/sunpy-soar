@@ -10,6 +10,7 @@
 # -- Project information -----------------------------------------------------
 
 from sunpy_soar import __version__
+
 project = 'sunpy-soar'
 copyright = '2020, The SunPy Community'
 author = 'The SunPy Community'
@@ -109,12 +110,12 @@ graphviz_dot_args = [
 """
 Write the latest changelog into the documentation.
 """
-target_file = os.path.abspath("./whatsnew/latest_changelog.txt")
-try:
-    from sunpy.util.towncrier import generate_changelog_for_docs
-    if is_development:
-        generate_changelog_for_docs("../", target_file)
-except Exception as e:
-    print(f"Failed to add changelog to docs with error {e}.")
-# Make sure the file exists or else sphinx will complain.
-open(target_file, 'a').close()
+# target_file = os.path.abspath("./whatsnew/latest_changelog.txt")
+# try:
+#     from sunpy.util.towncrier import generate_changelog_for_docs
+#     if is_development:
+#         generate_changelog_for_docs("../", target_file)
+# except Exception as e:
+#     print(f"Failed to add changelog to docs with error {e}.")
+# # Make sure the file exists or else sphinx will complain.
+# open(target_file, 'a').close()
