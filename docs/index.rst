@@ -12,4 +12,4 @@ This is the documentation for sunpy-soar.
 Reference/API
 =============
 
-.. automodapi:: sunpy-soar
+.. automodapi:: sunpy_soar
