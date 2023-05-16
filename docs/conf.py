@@ -9,7 +9,7 @@
 
 # -- Project information -----------------------------------------------------
 
-from sunpy_test import __version__
+from sunpy_soar import __version__
 project = 'sunpy-soar'
 copyright = '2020, The SunPy Community'
 author = 'The SunPy Community'
