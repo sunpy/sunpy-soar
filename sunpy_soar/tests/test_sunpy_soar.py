@@ -14,7 +14,7 @@ def test_search():
     id = a.Instrument('EUI')
     time = a.Time('2021-02-11', '2021-02-12')
     level = a.Level(1)
-    product = a.soar.Product('EUI-FSI174-IMAGE')
+    product = a.soar.Product('eui-fsi174-image')
 
     res = Fido.search(id, time, level, product)
     assert len(res) == 1
@@ -33,7 +33,7 @@ def test_search():
 def test_search_low_latency():
     time = a.Time('2020-11-13', '2020-11-14')
     level = a.Level('LL02')
-    product = a.soar.Product('MAG')
+    product = a.soar.Product('mag')
 
     res = Fido.search(time, level, product)
     assert len(res) == 1
@@ -48,8 +48,8 @@ def test_deprecated_identifier():
     time = a.Time('2021-02-11', '2021-02-12')
     level = a.Level(1)
     with pytest.warns(SunpyDeprecationWarning):
-        identifier = a.soar.Identifier('EUI-FSI174-IMAGE')
-    product = a.soar.Product('EUI-FSI174-IMAGE')
+        identifier = a.soar.Identifier('eui-fsi174-image')
+    product = a.soar.Product('eui-fsi174-image')
     res1 = Fido.search(id, time, level, identifier)
     res2 = Fido.search(id, time, level, product)
 
@@ -59,7 +59,7 @@ def test_deprecated_identifier():
 def test_insitu_search():
     id = a.Instrument('MAG')
     time = a.Time('2020-04-16', '2020-04-17')
-    identifier = a.soar.Product('MAG-RTN-NORMAL-1-MINUTE')
+    identifier = a.soar.Product('mag-rtn-normal-1-minute')
 
     res = Fido.search(id, time, identifier)
     assert len(res) == 1
