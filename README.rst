@@ -19,6 +19,11 @@ When interacting with the sunpy-soar project you are asked to follow the `SunPy 
 Installation
 ------------
 
+**Note**
+With the updates to the SOAR, the product names now need to be lowercase.
+This is fixed with the latest release of sunpy-soar, so you may need to update if
+you are having issues finding data.
+
 sunpy-soar requires `python >= 3.7` and `sunpy >= 2.1`.
 Currently it can only be installed from PyPI using:
 
@@ -48,7 +53,7 @@ The code below gives an example of how to search and download Solar Orbiter data
    instrument = a.Instrument('EUI')
    time = a.Time('2021-02-01', '2021-02-02')
    level = a.Level(1)
-   product = a.soar.Product('EUI-FSI174-IMAGE')
+   product = a.soar.Product('eui-fsi174-image')
 
    # Do search
    result = Fido.search(instrument & time & level & product)
