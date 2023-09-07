@@ -12,6 +12,9 @@ class Product(SimpleAttr):
     The data product identifier to search for.
     """
 
+    def __init__(self, value):
+        self.value = value.lower()
+
 
 class Identifier(Product):
     """
