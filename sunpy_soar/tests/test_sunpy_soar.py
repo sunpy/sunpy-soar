@@ -21,6 +21,10 @@ def test_search():
     assert len(res[0]) == 37
     assert u.allclose(res[0, 0]['Filesize'], 3.47*u.Mbyte)
 
+    product = a.soar.Product('EUI-FSI174-IMAGE')
+
+    res = Fido.search(id, time, level, product)
+
     files = Fido.fetch(res[0, 0])
     assert len(files) == 1
     fname = files[0]
