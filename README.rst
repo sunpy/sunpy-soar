@@ -19,6 +19,12 @@ When interacting with the sunpy-soar project you are asked to follow the `SunPy 
 Installation
 ------------
 
+**Note**
+
+With the updates to the SOAR, the product names now need to be lowercase.
+This is fixed with the latest release of sunpy-soar, so you will need to update if
+you are having issues finding data.
+
 sunpy-soar requires `python >= 3.7` and `sunpy >= 2.1`.
 Currently it can only be installed from PyPI using:
 

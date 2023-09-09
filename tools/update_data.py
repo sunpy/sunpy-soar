@@ -13,7 +13,7 @@ def get_cdf_descriptors():
     res = job.get_results()
     descriptors = {}
     for row in res:
-        desc = row['logical_source'].split('_')[-1].upper()
+        desc = row['logical_source'].split('_')[-1]
         descriptors[desc] = row['logical_source_description']
     return descriptors
 
@@ -26,7 +26,7 @@ def get_fits_descriptors():
     res = job.get_results()
     descriptors = {}
     for row in res:
-        desc = row['logical_source'].split('_')[-1].upper()
+        desc = row['logical_source'].split('_')[-1]
         # Currently no way to get a description from the FITS table
         descriptors[desc] = ''
     return descriptors
