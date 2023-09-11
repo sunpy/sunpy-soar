@@ -69,8 +69,8 @@ jobs:
     needs: [test]
     uses: OpenAstronomy/github-actions-workflows/.github/workflows/publish_pure_python.yml@main
     with:
-      test_extras: 'all,tests'
-      test_command: 'pytest -p no:warnings --doctest-rst -m "not mpl_image_compare" --pyargs sunpy-soar'
+      test_extras: 'tests'
+      test_command: 'pytest -p no:warnings --pyargs sunpy_soar'
       submodules: false
     secrets:
       pypi_token: ${{ secrets.pypi_token }}
