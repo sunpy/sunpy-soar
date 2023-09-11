@@ -2,15 +2,14 @@
 ``sunpy-soar``
 **************
 
-|build-status| |coverage|
+|ci-status| |coverage|
 
-.. |build-status| image:: https://github.com/dstansby/sunpy-soar/actions/workflows/python-test.yml/badge.svg
-    :alt: build status
+.. |ci-status| image:: https://github.com/sunpy/sunpy-soar/actions/workflows/ci.yml/badge.svg
+    :alt: CI status
 
 .. |coverage| image:: https://codecov.io/gh/dstansby/sunpy-soar/branch/main/graph/badge.svg?token=5NKZHBX3AW
    :target: https://codecov.io/gh/dstansby/sunpy-soar
-   :alt: code coverage
-
+   :alt: Code coverage
 
 .. note::
 
@@ -21,6 +20,7 @@ A sunpy Fido plugin for accessing data in the Solar Orbiter Archive (SOAR).
 
 Installation
 ------------
+
 ``sunpy-soar`` requires ``python >= 3.9`` and `sunpy >= 5.0`.
 Currently it can only be installed from PyPI using:
 
@@ -62,6 +62,7 @@ The code below gives an example of how to search and download Solar Orbiter data
 
 Available search attributes
 ---------------------------
+
 The easiest way to access search attributes is using ``import sunpy.net.attrs as a``.
 When constructing a search for SOAR ``a.Time`` must be provided.
 Other search attributes can be used too - ``sunpy-soar`` recognises the following:
