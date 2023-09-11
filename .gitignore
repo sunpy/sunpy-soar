@@ -13,3 +13,6 @@ dist/*
 .hypothesis/
 
 .vscode
+.tox
+sunpy_soar/_version.py
+.tmp

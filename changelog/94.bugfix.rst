@@ -1,0 +1,1 @@
+Fixing upper case to lower case descriptors (products) for SOAR 1.11
