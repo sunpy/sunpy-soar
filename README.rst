@@ -11,17 +11,19 @@
    :target: https://codecov.io/gh/dstansby/sunpy-soar
    :alt: Code coverage
 
+
+A sunpy Fido plugin for accessing data in the Solar Orbiter Archive (SOAR). See the `documentation <https://docs.sunpy.org/projects/soar/>`_ for installation instructions and for some examples.
+
 .. note::
 
   With the updates to the SOAR, the product names now need to be lowercase.
-  This is fixed with the latest release of sunpy-soar, so you will need to update if you are having issues finding data.
+  This is fixed with the latest release of sunpy-soar (v1.9), so you will need to update if you are having issues finding data.
 
-A sunpy Fido plugin for accessing data in the Solar Orbiter Archive (SOAR).
 
 Installation
 ------------
 
-``sunpy-soar`` requires ``python >= 3.9`` and `sunpy >= 5.0`.
+``sunpy-soar`` requires ``python >= 3.9`` and ``sunpy >= 5.0``.
 Currently it can only be installed from PyPI using:
 
 .. code-block:: bash
