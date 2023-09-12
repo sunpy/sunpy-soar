@@ -16,7 +16,7 @@ A sunpy Fido plugin for accessing data in the Solar Orbiter Archive (SOAR). See 
 
 .. note::
 
-  With the updates to the SOAR, the product names now need to be lowercase. 
+  With the updates to the SOAR, the product names now need to be lowercase.
   This is fixed with the latest release of sunpy-soar (v1.9), so you will need to update if you are having issues finding data.
 
 
