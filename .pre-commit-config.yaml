@@ -44,3 +44,6 @@ repos:
       - id: codespell
         additional_dependencies:
           - tomli
+ci:
+  autofix_prs: false
+  autoupdate_schedule: "quarterly"
