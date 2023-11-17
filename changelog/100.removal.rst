@@ -1,1 +1,0 @@
-Removed the Identifier attribute, which is replaced by the Product attribute.

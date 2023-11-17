@@ -1,3 +1,31 @@
+1.1.0 (2023-11-16)
+==================
+
+Also includes changes from v1.9
+
+Removals
+--------
+
+- Removed the Identifier attribute, which is replaced by the Product attribute. (`#100 <https://github.com/sunpy/sunpy-soar/pull/100>`__)
+
+
+New Features
+------------
+
+- Now query returns time sorted table of results. (`#96 <https://github.com/sunpy/sunpy-soar/pull/96>`__)
+
+
+Bug Fixes
+---------
+
+- Fixing upper case to lower case descriptors (products) for SOAR 1.11 (`#94 <https://github.com/sunpy/sunpy-soar/pull/94>`__)
+
+
+Internal Changes
+----------------
+
+- Retemplate sunpy-soar to follow the sunpy package structure (`#95 <https://github.com/sunpy/sunpy-soar/pull/95>`__)
+
 1.8
 ===
 
