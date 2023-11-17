@@ -1,1 +1,0 @@
-Retemplate sunpy-soar to follow the sunpy package structure

@@ -43,6 +43,7 @@ jobs:
       envs: |
         - windows: py310
         - macos: py39
+        - linux: py311-devdeps
     secrets:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
@@ -69,6 +70,7 @@ jobs:
     needs: [test]
     uses: OpenAstronomy/github-actions-workflows/.github/workflows/publish_pure_python.yml@main
     with:
+      python-version: '3.9'
       test_extras: 'tests'
       test_command: 'pytest -p no:warnings --pyargs sunpy_soar'
       submodules: false
