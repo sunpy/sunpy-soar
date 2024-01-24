@@ -8,6 +8,7 @@ This is the documentation for sunpy-soar.
    :maxdepth: 1
 
    changelog
+   generated/gallery/index
 
 Installation
 ============
