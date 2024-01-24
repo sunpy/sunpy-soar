@@ -21,7 +21,6 @@ is_development = ".dev" in __version__
 
 # -- General configuration ---------------------------------------------------
 extensions = [
-    "sphinx_design",
     "sphinx_gallery.gen_gallery",
     "matplotlib.sphinxext.plot_directive",
     "sphinx_automodapi.automodapi",
