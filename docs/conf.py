@@ -2,7 +2,7 @@
 
 # -- Project information -----------------------------------------------------
 
-from pathlib import Path
+import pathlib
 from datetime import datetime
 
 from sunpy_soar import __version__
@@ -16,6 +16,8 @@ is_development = ".dev" in __version__
 # -- General configuration ---------------------------------------------------
 
 extensions = [
+    "sphinx_gallery.gen_gallery",
+    "matplotlib.sphinxext.plot_directive",
     "sphinx_automodapi.automodapi",
     "sphinx_automodapi.smart_resolver",
     "sphinx_changelog",
@@ -72,9 +74,25 @@ copybutton_prompt_is_regexp = True
 nitpicky = True
 # This is not used. See docs/nitpick-exceptions file for the actual listing.
 nitpick_ignore = []
-for line in Path("nitpick-exceptions").open():
+for line in pathlib.Path("nitpick-exceptions").open():
     if line.strip() == "" or line.startswith("#"):
         continue
     dtype, target = line.split(None, 1)
     target = target.strip()
     nitpick_ignore.append((dtype, target))
+
+
+# -- Options for the Sphinx gallery -------------------------------------------
+path = pathlib.Path.cwd()
+example_dir = path.parent.joinpath("examples")
+sphinx_gallery_conf = {
+    "backreferences_dir": str(path.joinpath("generated", "modules")),
+    "filename_pattern": "^((?!skip_).)*$",
+    "examples_dirs": example_dir,
+    "gallery_dirs": path.joinpath("generated", "gallery"),
+    "default_thumb_file": path.joinpath("logo", "sunpy_icon_128x128.png"),
+    "abort_on_example_error": False,
+    "plot_gallery": "True",
+    "remove_config_comments": True,
+    "only_warn_on_example_error": True,
+}
