@@ -8,6 +8,7 @@ A sunpy Fido plugin for accessing data in the Solar Orbiter Archive (SOAR).
    :maxdepth: 1
 
    changelog
+   generated/gallery/index
 
 Installation
 ============
