@@ -1,3 +1,4 @@
+
 name: CI
 
 on:
@@ -28,12 +29,24 @@ jobs:
       toxdeps: tox-pypi-filter
       posargs: -n auto
       envs: |
-        - linux: py311
+        - linux: py312
     secrets:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
+  sdist_verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - run: python -m pip install -U --user build
+      - run: python -m build . --sdist
+      - run: python -m pip install -U --user twine
+      - run: python -m twine check dist/*
+
   test:
-    needs: [core]
+    needs: [core, sdist_verify]
     uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@main
     with:
       submodules: false
@@ -41,9 +54,9 @@ jobs:
       toxdeps: tox-pypi-filter
       posargs: -n auto
       envs: |
-        - windows: py310
-        - macos: py39
-        - linux: py311-devdeps
+        - windows: py311
+        - macos: py310
+        - linux: py310-oldestdeps
     secrets:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
@@ -51,7 +64,7 @@ jobs:
     needs: [core]
     uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@main
     with:
-      default_python: '3.9'
+      default_python: '3.10'
       submodules: false
       pytest: false
       toxdeps: tox-pypi-filter
@@ -66,13 +79,30 @@ jobs:
       envs: |
         - linux: build_docs
 
-  publish:
-    needs: [test]
-    uses: OpenAstronomy/github-actions-workflows/.github/workflows/publish_pure_python.yml@main
+  cron:
+    if: |
+      github.event_name == 'workflow_dispatch' || (
+        github.event_name == 'pull_request' &&
+        contains(github.event.pull_request.labels.*.name, 'Run cron CI')
+      )
+    uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@main
     with:
-      python-version: '3.9'
-      test_extras: 'tests'
-      test_command: 'pytest -p no:warnings --pyargs sunpy_soar'
+      default_python: '3.10'
       submodules: false
+      coverage: codecov
+      toxdeps: tox-pypi-filter
+      envs: |
+        - linux: py311-devdeps
     secrets:
-      pypi_token: ${{ secrets.pypi_token }}
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+publish_pure:
+      needs: [test, docs]
+      uses: OpenAstronomy/github-actions-workflows/.github/workflows/publish_pure_python.yml@main
+      with:
+        python-version: '3.10'
+        test_extras: 'tests'
+        test_command: 'pytest -p no:warnings --doctest-rst --pyargs sunpy-soar'
+        submodules: false
+      secrets:
+        pypi_token: ${{ secrets.pypi_token }}

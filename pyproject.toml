@@ -1,5 +1,8 @@
 [build-system]
-requires = ["setuptools>=45", "setuptools_scm[toml]>=6.2"]
+requires = [
+  "setuptools>=62.1",
+  "setuptools_scm[toml]>=6.2",
+  "wheel",]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools_scm]
@@ -77,18 +80,6 @@ extend-ignore = [
     # TODO: Fix in future
     "E741",  # Ambiguous variable name
 ]
-
-[tool.ruff.per-file-ignores]
-"examples/*.py" = [
-    "T201", # We need print in our examples
-]
-
-[tool.ruff.pydocstyle]
-convention = "numpy"
-
-[tool.codespell]
-skip = "*.asdf,*.fits,*.fts,*.header,*.json,*.xsh,*cache*,*egg*,*extern*,.git,.idea,.tox,_build,*truncated,*.svg,.asv_env,.history"
-ignore-words-list = "sav,soop,"
 
 [tool.towncrier]
     package = "sunpy_soar"
