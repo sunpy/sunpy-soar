@@ -5,30 +5,43 @@ requires = [
   "wheel",]
 build-backend = "setuptools.build_meta"
 
-[tool.setuptools_scm]
-write_to = "sunpy_soar/_version.py"
-
-[tool.black]
-line-length = 120
-target-version = ['py39']
-
-[tool.isort]
-profile = "black"
-line_length = 120
-length_sort = "False"
-length_sort_sections = "stdlib"
-
-[tool.ruff]
-# Allow unused variables when underscore-prefixed.
-dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
-target-version = "py39"
-line-length = 120
-exclude=[
-    ".git,",
-    "__pycache__",
-    "build",
-    "tools/**",
+[project]
+name = "sunpy_soar"
+description = "A sunpy FIDO plugin for accessing data in the Solar Orbiter Archive (SOAR)."
+requires-python = ">=3.9"
+readme = { file = "README.rst", content-type = "text/x-rst" }
+license = { file = "licenses/LICENSE.rst", content-type = "text/plain" }
+authors = [
+  { name = "The Sunpy Community", email = "sunpy@googlegroups.com" },
 ]
+dependencies = []
+dynamic = ["version"]
+
+[project.optional-dependencies]
+tests = [
+  "pytest",
+  "pytest-doctestplus",
+  "pytest-cov"
+]
+docs = [
+  "sphinx",
+  "sphinx-automodapi",
+]
+
+[project.urls]
+repository = "https://sunpy.org"
+
+[tool.setuptools]
+zip-safe = false
+include-package-data = true
+
+[tool.setuptools.packages.find]
+
+[tool.setuptools_scm]
+write_to = "ndcube/_version.py"
+
+
+
 select = [
        "E",
        "F",
