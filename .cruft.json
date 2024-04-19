@@ -5,7 +5,7 @@
   "context": {
     "cookiecutter": {
       "package_name": "sunpy-soar",
-      "module_name": "sunpy-soar",
+      "module_name": "sunpy_soar",
       "short_description": "A sunpy FIDO plugin for accessing data in the Solar Orbiter Archive (SOAR).",
       "author_name": "The SunPy Community",
       "author_email": "sunpy@googlegroups.com",
