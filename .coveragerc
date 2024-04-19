@@ -1,13 +1,13 @@
 [run]
 omit =
-  sunpy-soar/conftest.py
-  sunpy-soar/*setup_package*
-  sunpy-soar/extern/*
-  sunpy-soar/version*
-  */sunpy-soar/conftest.py
-  */sunpy-soar/*setup_package*
-  */sunpy-soar/extern/*
-  */sunpy-soar/version*
+  sunpy_soar/conftest.py
+  sunpy_soar/*setup_package*
+  sunpy_soar/extern/*
+  sunpy_soar/version*
+  */sunpy_soar/conftest.py
+  */sunpy_soar/*setup_package*
+  */sunpy_soar/extern/*
+  */sunpy_soar/version*
 
 [report]
 exclude_lines =
