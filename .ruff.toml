@@ -4,7 +4,7 @@ exclude = [
   ".git,",
   "__pycache__",
   "build",
-  "sunpy-soar/version.py",
+  "sunpy_soar/version.py",
 ]
 
 [lint]
