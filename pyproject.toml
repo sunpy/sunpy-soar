@@ -21,13 +21,13 @@ dynamic = ["version"]
 tests = [
   "pytest",
   "pytest-doctestplus",
-  "pytest-cov"
+  "pytest-cov",
+  "pytest-xdist",
 ]
 docs = [
   "sphinx",
   "sphinx-automodapi",
 ]
-
 [project.urls]
 repository = "https://sunpy.org"
 
@@ -39,8 +39,6 @@ include-package-data = true
 
 [tool.setuptools_scm]
 write_to = "ndcube/_version.py"
-
-
 
 select = [
        "E",
