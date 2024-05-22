@@ -9,6 +9,7 @@ The example uses <packages> to <do something> and <other package> to <do other
 thing>. Include links to referenced packages like this: `sunpy.map` to
 show the sunpy.map or like this `~sunpy.map` to show just 'map'.a
 """
+
 import matplotlib.pyplot as plt
 import numpy as np
 

@@ -8,8 +8,7 @@
 import datetime
 from pathlib import Path
 
-import pathlib
-from datetime import datetime
+from sunpy_sphinx_theme import PNG_ICON
 
 from sunpy_soar import __version__
 
@@ -97,16 +96,17 @@ with Path("nitpick-exceptions").open() as f:
         nitpick_ignore.append((dtype, target))
 
 # -- Options for the Sphinx gallery -------------------------------------------
-path = pathlib.Path.cwd()
-example_dir = path.parent.joinpath("examples")
 sphinx_gallery_conf = {
-    "backreferences_dir": str(path.joinpath("generated", "modules")),
+    "backreferences_dir": Path("generated") / "modules",
     "filename_pattern": "^((?!skip_).)*$",
-    "examples_dirs": example_dir,
-    "gallery_dirs": path.joinpath("generated", "gallery"),
-    "default_thumb_file": path.joinpath("logo", "sunpy_icon_128x128.png"),
+    "examples_dirs": Path("..") / "examples",
+    "gallery_dirs": Path("generated") / "gallery",
+    "matplotlib_animations": True,
+    # Comes from the theme.
+    "default_thumb_file": PNG_ICON,
     "abort_on_example_error": False,
     "plot_gallery": "True",
     "remove_config_comments": True,
+    "doc_module": ("sunpy-soar"),
     "only_warn_on_example_error": True,
 }

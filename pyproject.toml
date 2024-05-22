@@ -30,10 +30,13 @@ tests = [
   "sunpy[map,net]>=5.0",
 ]
 docs = [
-  "sphinx",
+  "matplotlib",
   "sphinx-automodapi",
   "sphinx-changelog",
   "sphinx-copybutton",
+  "sphinx-gallery",
+  "sphinx",
+  "sphinxext-opengraph",
   "sunpy-sphinx-theme",
 ]
 
