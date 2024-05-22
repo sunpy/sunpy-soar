@@ -8,6 +8,8 @@
 import datetime
 from pathlib import Path
 
+from sunpy_sphinx_theme import PNG_ICON
+
 from sunpy_soar import __version__
 
 project = "sunpy-soar"
@@ -18,6 +20,8 @@ is_development = ".dev" in __version__
 
 # -- General configuration ---------------------------------------------------
 extensions = [
+    "sphinx_gallery.gen_gallery",
+    "matplotlib.sphinxext.plot_directive",
     "sphinx_automodapi.automodapi",
     "sphinx_automodapi.smart_resolver",
     "sphinx_changelog",
@@ -90,3 +94,19 @@ with Path("nitpick-exceptions").open() as f:
         dtype, target = line.split(None, 1)
         target = target.strip()
         nitpick_ignore.append((dtype, target))
+
+# -- Options for the Sphinx gallery -------------------------------------------
+sphinx_gallery_conf = {
+    "backreferences_dir": Path("generated") / "modules",
+    "filename_pattern": "^((?!skip_).)*$",
+    "examples_dirs": Path("..") / "examples",
+    "gallery_dirs": Path("generated") / "gallery",
+    "matplotlib_animations": True,
+    # Comes from the theme.
+    "default_thumb_file": PNG_ICON,
+    "abort_on_example_error": False,
+    "plot_gallery": "True",
+    "remove_config_comments": True,
+    "doc_module": ("sunpy-soar"),
+    "only_warn_on_example_error": True,
+}
