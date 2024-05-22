@@ -238,12 +238,14 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-### Extra Python Items and SunPy Specific
+### Extra Python Items and Package Specific
 docs/whatsnew/latest_changelog.txt
 examples/**/*.csv
 figure_test_images*
 tags
 baseline
+docs/generated/
+docs/sg_execution_times.rst
 
 # Release script
 .github_cache

@@ -63,18 +63,16 @@ lint.select = [
     "YTT",
 ]
 lint.extend-ignore = [
-    # TODO: Fix in future
-    "E501",  # Line too long
-    "E741",  # Ambiguous variable name
-    "FBT002", # Bool arg
     "COM812", # May cause conflicts when used with the formatter
     "ISC001",  # May cause conflicts when used with the formatter
 ]
 
 [lint.per-file-ignores]
 "examples/*.py" = [
-    "INP001", # examples is part of an implicit namespace package
-    "T201", # We need print in our examples
+    "INP001", # Implicit namespace package
+    "T201", # Use print
+    "B018", # Not print but display
+    "ERA001", # Commented out code
 ]
 "docs/conf.py" = [
     "INP001", # conf.py is part of an implicit namespace package
