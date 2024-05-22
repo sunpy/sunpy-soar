@@ -2,7 +2,8 @@
 requires = [
   "setuptools>=62.1",
   "setuptools_scm[toml]>=6.2",
-  "wheel",]
+  "wheel",
+]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -10,26 +11,39 @@ name = "sunpy_soar"
 description = "A sunpy FIDO plugin for accessing data in the Solar Orbiter Archive (SOAR)."
 requires-python = ">=3.10"
 readme = { file = "README.rst", content-type = "text/x-rst" }
-license = { file = "licenses/LICENSE.rst", content-type = "text/plain" }
+license = { file = "licenses/LICENSE.rst" }
 authors = [
+  { name = "David Stansby"},
   { name = "The Sunpy Community", email = "sunpy@googlegroups.com" },
 ]
-dependencies = []
+dependencies = [
+  "sunpy[net]>=5.0"
+]
 dynamic = ["version"]
 
 [project.optional-dependencies]
 tests = [
-  "pytest",
-  "pytest-doctestplus",
   "pytest-cov",
+  "pytest-doctestplus",
   "pytest-xdist",
+  "pytest",
+  "sunpy[map,net]>=5.0",
 ]
 docs = [
   "sphinx",
   "sphinx-automodapi",
+  "sphinx-changelog",
+  "sphinx-copybutton",
+  "sunpy-sphinx-theme",
 ]
+
 [project.urls]
-repository = "https://sunpy.org"
+Homepage = "https://sunpy.org"
+Download = "https://pypi.org/project/sunpy-soar/"
+"Source Code" = "https://github.com/sunpy/sunpy-soar/"
+Documentation = "https://docs.sunpy.org/projects/soar/"
+Changelog = "https://docs.sunpy.org/projects/soar/changelog.html"
+"Issue Tracker" = "https://github.com/sunpy/sunpy-soar/issues"
 
 [tool.setuptools]
 zip-safe = false
@@ -38,59 +52,7 @@ include-package-data = true
 [tool.setuptools.packages.find]
 
 [tool.setuptools_scm]
-write_to = "ndcube/_version.py"
-
-select = [
-       "E",
-       "F",
-       "W",
-       "UP",
-       "PT",
-       "RET",
-       "TID",
-       "PLE",
-       "NPY",
-       "RUF",
-       "PGH",
-       "PTH",
-       "BLE",
-       "FBT",
-       "B",
-       "A",
-       "COM",
-       "C4",
-       "T20",
-       "RSE",
-       "ERA",
-]
-fixable = [
-       "E",
-       "F",
-       "W",
-       "UP",
-       "PT",
-       "RET",
-       "TID",
-       "PLE",
-       "NPY",
-       "RUF",
-       "PGH",
-       "PTH",
-       "BLE",
-       "FBT",
-       "B",
-       "A",
-       "COM",
-       "C4",
-       "T20",
-       "RSE",
-       "ERA",
-]
-extend-ignore = [
-    "E501",  # Line too long
-    # TODO: Fix in future
-    "E741",  # Ambiguous variable name
-]
+write_to = "sunpy_soar/_version.py"
 
 [tool.towncrier]
     package = "sunpy_soar"

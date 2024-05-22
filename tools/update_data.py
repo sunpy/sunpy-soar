@@ -44,7 +44,18 @@ def get_all_instruments():
     job = SOAR.launch_job("select * from soar.instrument")
     res = job.get_results()
 
-    instruments = ["EPD", "EUI", "MAG", "METIS", "PHI", "RPW", "SOLOHI", "SPICE", "STIX", "SWA"]
+    instruments = [
+        "EPD",
+        "EUI",
+        "MAG",
+        "METIS",
+        "PHI",
+        "RPW",
+        "SOLOHI",
+        "SPICE",
+        "STIX",
+        "SWA",
+    ]
     instr_desc = {}
     for r in res:
         if r["name"] not in instruments:
@@ -69,17 +80,26 @@ def get_all_soops():
 
 
 if __name__ == "__main__":
-    attr_file = pathlib.Path(__file__).parent.parent / "sunpy_soar" / "data" / "attrs.json"
+    attr_file = (
+        pathlib.Path(__file__).parent.parent / "sunpy_soar" / "data" / "attrs.json"
+    )
     descriptors = get_all_descriptors()
     with attr_file.open("w") as attrs_file:
         json.dump(dict(sorted(descriptors.items())), attrs_file, indent=2)
 
-    instr_file = pathlib.Path(__file__).parent.parent / "sunpy_soar" / "data" / "instrument_attrs.json"
+    instr_file = (
+        pathlib.Path(__file__).parent.parent
+        / "sunpy_soar"
+        / "data"
+        / "instrument_attrs.json"
+    )
     instr_descriptors = get_all_instruments()
     with instr_file.open("w") as instrs_file:
         json.dump(dict(sorted(instr_descriptors.items())), instrs_file, indent=2)
 
-    soop_file = pathlib.Path(__file__).parent.parent / "sunpy_soar" / "data" / "soop_attrs.json"
+    soop_file = (
+        pathlib.Path(__file__).parent.parent / "sunpy_soar" / "data" / "soop_attrs.json"
+    )
     soop_descriptors = get_all_soops()
     with soop_file.open("w") as soops_file:
         json.dump(dict(sorted(soop_descriptors.items())), soops_file, indent=2)

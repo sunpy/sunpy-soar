@@ -22,6 +22,6 @@ exclude =
     __pycache__
     docs/conf.py
     build
-    sunpy-soar/__init__.py
+    sunpy_soar/__init__.py
 rst-directives =
     plot

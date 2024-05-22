@@ -1,37 +1,89 @@
+# Allow unused variables when underscore-prefixed.
+lint.dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 target-version = "py310"
-line-length = 110
-exclude = [
-  ".git,",
-  "__pycache__",
-  "build",
-  "sunpy_soar/version.py",
+line-length = 120
+exclude=[
+    ".git,",
+    "__pycache__",
+    "build",
+    "tools/**",
 ]
-
-[lint]
-select = ["E", "F", "W", "UP", "PT"]
-extend-ignore = [
-  # pycodestyle (E, W)
-  "E501", # LineTooLong                             # TODO! fix
-  # pytest (PT)
-  "PT001", # Always use pytest.fixture()
-  "PT004", # Fixtures which don't return anything should have leading _
-  "PT007", # Parametrize should be lists of tuples  # TODO! fix
-  "PT011", # Too broad exception assert             # TODO! fix
-  "PT023", # Always use () on pytest decorators
+lint.select = [
+    "A",
+    "ARG",
+    "ASYNC",
+    "B",
+    "BLE",
+    "C4",
+#    "C90",
+    "COM",
+#    "D",
+    "DTZ",
+    "E",
+    "EM",
+    "ERA",
+    "EXE",
+    "F",
+    "FBT",
+    "FLY",
+#    "FURB",
+    "G",
+    "I",
+    "ICN",
+    "INP",
+    "INT",
+    "ISC",
+    "LOG",
+#    "N",
+    "NPY",
+    "PERF",
+    "PGH",
+    "PIE",
+#    "PL",
+    "PLE",
+    "PT",
+    "PTH",
+    "PYI",
+    "Q",
+    "RET",
+    "RSE",
+    "RUF",
+#    "S",
+    "SIM",
+    "SLF",
+    "SLOT",
+    "T10",
+    "T20",
+    "TCH",
+    "TID",
+    "TRIO",
+    "TRY",
+    "UP",
+    "W",
+    "YTT",
+]
+lint.extend-ignore = [
+    # TODO: Fix in future
+    "E501",  # Line too long
+    "E741",  # Ambiguous variable name
+    "FBT002", # Bool arg
+    "COM812", # May cause conflicts when used with the formatter
+    "ISC001",  # May cause conflicts when used with the formatter
 ]
 
 [lint.per-file-ignores]
-# Part of configuration, not a package.
-"setup.py" = ["INP001"]
-"conftest.py" = ["INP001"]
+"examples/*.py" = [
+    "INP001", # examples is part of an implicit namespace package
+    "T201", # We need print in our examples
+]
 "docs/conf.py" = [
-  "E402"  # Module imports not at top of file
+    "INP001", # conf.py is part of an implicit namespace package
 ]
-"docs/*.py" = [
-  "INP001",  # Implicit-namespace-package. The examples are not a package.
-]
-"__init__.py" = ["E402", "F401", "F403"]
-"test_*.py" = ["B011", "D", "E402", "PGH001", "S101"]
 
 [lint.pydocstyle]
 convention = "numpy"
+
+[format]
+docstring-code-format = true
+indent-style = "space"
+quote-style = "double"
