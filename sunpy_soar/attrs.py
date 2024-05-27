@@ -129,3 +129,8 @@ def _(wlk, attr, params):  # NOQA: ARG001
 @walker.add_applier(SOOP)
 def _(wlk, attr, params):  # NOQA: ARG001
     params.append(f"soop_name='{attr.value}'")
+
+
+@walker.add_applier(a.Detector)
+def _(wlk, attr, params):
+    params.append(f"Detector='{attr.value}'")

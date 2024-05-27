@@ -20,7 +20,9 @@ class SOARClient(BaseClient):
     Client to access the Solar Orbiter Archive (SOAR).
     """
 
-    def search(self, *query, **kwargs):  # NOQA: ARG002
+    join_needed = False
+
+    def search(self, *query, **kwargs):
         query = and_(*query)
         queries = walker.create(query)
 
@@ -36,34 +38,129 @@ class SOARClient(BaseClient):
         return qrt
 
     @staticmethod
+    def construct_query(query, join_needed):
+        """
+        Construct the WHERE part of the query with the appropriate table
+        aliases.
+
+        Parameters
+        ----------
+        query : list[str]
+            List of query items.
+        join_needed : bool
+            Flag indicating whether a join is needed.
+
+        Returns
+        -------
+        str
+            Constructed WHERE part of the query.
+        """
+        final_query = ""
+        for parameter in query:
+            prefix = "h1." if not join_needed or not parameter.startswith("Detector") else "h2."
+            if parameter.startswith("begin_time"):
+                time_list = parameter.split("+AND+")
+                begin_start = f"h1.{time_list[0]}"
+                begin_end = f"h1.{time_list[1]}"
+                final_query += f"{begin_start}+AND+{begin_end}+AND+h2.dimension_index='1'+AND+"
+            else:
+                final_query += f"{prefix}{parameter}+AND+"
+
+        return final_query[:-5]
+
+    @staticmethod
+    def construct_from_and_select(data_table, instrument_table):
+        """
+        Construct the FROM and SELECT parts of the SQL query.
+
+        Parameters
+        ----------
+        data_table : str
+            Name of the data table.
+        instrument_table : str
+            Name of the instrument table.
+
+        Returns
+        -------
+        tuple[str, str]
+            FROM and SELECT parts of the query.
+        """
+        from_part = f"{data_table} AS h1"
+        select_part = (
+            "h1.instrument, h1.descriptor, h1.level, h1.begin_time, h1.end_time, "
+            "h1.data_item_id, h1.filesize, h1.filename, h1.soop_name"
+        )
+        if instrument_table:
+            from_part += f" JOIN {instrument_table} AS h2 USING (data_item_oid)"
+            select_part += ", h2.detector, h2.dimension_index"
+        return from_part, select_part
+
+    @staticmethod
+    def get_instrument_table(query_item):
+        """
+        Get the instrument table name from the query item.
+
+        Parameters
+        ----------
+        query_item : str
+            Query item containing the instrument name.
+
+        Returns
+        -------
+        str
+            Instrument table name.
+        """
+        instrument_name = query_item.split("=")[1][1:-1].split("-")[0].upper()
+        if instrument_name == "STIX":
+            instrument_name = "STX"
+        elif instrument_name == "SOLOHI":
+            instrument_name = "SHI"
+        else:
+            instrument_name = instrument_name[:3]
+        return f"v_{instrument_name.lower()}_sc_fits", instrument_name
+
+    @staticmethod
     def _construct_payload(query):
         """
         Construct search payload.
 
         Parameters
         ----------
-        payload : dict[str]
-            Payload to send to the TAP server.
+        query : list[str]
+            List of query items.
+
+        Returns
+        -------
+        dict
+            Payload dictionary to be sent with the query.
         """
-        # Construct ADQL query
-        url_query = {}
-        url_query["SELECT"] = "*"
-        # Assume science data by default
-        url_query["FROM"] = "v_sc_data_item"
+        # Default data table
+        data_table = "v_sc_data_item"
+        instrument_table = None
+        instrument_name = ""
+
         for q in query:
-            if q.startswith("level") and q.split("=")[1][1:3] == "LL":
-                # Low latency data
-                url_query["FROM"] = "v_ll_data_item"
+            if q.startswith(("instrument", "descriptor")):
+                instrument_table, instrument_name = SOARClient.get_instrument_table(q)
+            elif q.startswith("level") and q.split("=")[1][1:3] == "LL":
+                data_table = "v_ll_data_item"
+                if instrument_table:
+                    instrument_table = instrument_table.replace("_sc_", "_ll_")
 
-        url_query["WHERE"] = "+AND+".join(query)
-        adql_query = "+".join([f"{item}+{url_query[item]}" for item in url_query])
+        if instrument_name in ["EUI", "STX", "MET", "SPI", "PHI", "SHI"]:
+            SOARClient.join_needed = True
+            from_part, select_part = SOARClient.construct_from_and_select(data_table, instrument_table)
+            where_part = SOARClient.construct_query(query, SOARClient.join_needed)
+        else:
+            from_part = data_table
+            select_part = "*"
+            where_part = "+AND+".join(query)
 
-        return {
-            "REQUEST": "doQuery",
-            "LANG": "ADQL",
-            "FORMAT": "json",
-            "QUERY": adql_query,
-        }
+        adql_query = {"SELECT": select_part, "FROM": from_part, "WHERE": where_part}
+
+        adql_query_str = "+".join([f"{key}+{value}" for key, value in adql_query.items()])
+
+        return {"REQUEST": "doQuery", "LANG": "ADQL", "FORMAT": "json", "QUERY": adql_query_str}
 
     @staticmethod
     def _do_search(query):
@@ -87,11 +184,13 @@ class SOARClient(BaseClient):
         # Get request info
         r = requests.get(f"{tap_endpoint}/sync", params=payload)
         log.debug(f"Sent query: {r.url}")
+
         r.raise_for_status()
 
         # Do some list/dict wrangling
         names = [m["name"] for m in r.json()["metadata"]]
         info = {name: [] for name in names}
+
         for entry in r.json()["data"]:
             for i, name in enumerate(names):
                 info[name].append(entry[i])
@@ -113,10 +212,12 @@ class SOARClient(BaseClient):
                 "SOOP Name": info["soop_name"],
             },
         )
+        if SOARClient.join_needed and "detector" in info:
+            result_table["Detector"] = info["detector"]
         result_table.sort("Start time")
         return result_table
 
-    def fetch(self, query_results, *, path, downloader, **kwargs):  # NOQA: ARG002
+    def fetch(self, query_results, *, path, downloader, **kwargs):
         """
         Queue a set of results to be downloaded.
         `sunpy.net.base_client.BaseClient` does the actual downloading, so we
@@ -160,7 +261,7 @@ class SOARClient(BaseClient):
             True if this client can handle the given query.
         """
         required = {a.Time}
-        optional = {a.Instrument, a.Level, a.Provider, Product, SOOP}
+        optional = {a.Instrument, a.Detector, a.Level, a.Provider, Product, SOOP, a.Wavelength}
         if not cls.check_attr_types_in_query(query, required, optional):
             return False
         # check to make sure the instrument attr passed is one provided by the SOAR.
