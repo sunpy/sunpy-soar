@@ -132,5 +132,5 @@ def _(wlk, attr, params):  # NOQA: ARG001
 
 
 @walker.add_applier(a.Detector)
-def _(wlk, attr, params):
+def _(wlk, attr, params):  # NOQA: ARG001
     params.append(f"Detector='{attr.value}'")

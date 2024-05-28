@@ -22,7 +22,7 @@ class SOARClient(BaseClient):
 
     join_needed = False
 
-    def search(self, *query, **kwargs):
+    def search(self, *query, **kwargs):  # NOQA: ARG002
         query = and_(*query)
         queries = walker.create(query)
 
@@ -71,7 +71,7 @@ class SOARClient(BaseClient):
     @staticmethod
     def construct_from_and_select(data_table, instrument_table):
         """
-        Construct the FROM and SELECT parts of the SQL query.
+        Construct the FROM and SELECT parts of the ADQL query.
 
         Parameters
         ----------
@@ -217,7 +217,7 @@ class SOARClient(BaseClient):
         result_table.sort("Start time")
         return result_table
 
-    def fetch(self, query_results, *, path, downloader, **kwargs):
+    def fetch(self, query_results, *, path, downloader, **kwargs):  # NOQA: ARG002
         """
         Queue a set of results to be downloaded.
         `sunpy.net.base_client.BaseClient` does the actual downloading, so we
@@ -261,7 +261,7 @@ class SOARClient(BaseClient):
             True if this client can handle the given query.
         """
         required = {a.Time}
-        optional = {a.Instrument, a.Detector, a.Level, a.Provider, Product, SOOP, a.Wavelength}
+        optional = {a.Instrument, a.Detector, a.Level, a.Provider, Product, SOOP}
         if not cls.check_attr_types_in_query(query, required, optional):
             return False
         # check to make sure the instrument attr passed is one provided by the SOAR.
