@@ -38,10 +38,9 @@ class SOARClient(BaseClient):
         return qrt
 
     @staticmethod
-    def construct_query(query, join_needed):
+    def construct_join(query, join_needed, data_table, instrument_table):
         """
-        Construct the WHERE part of the query with the appropriate table
-        aliases.
+        Construct the WHERE, FROM, and SELECT parts of the ADQL query.
 
         Parameters
         ----------
@@ -49,11 +48,15 @@ class SOARClient(BaseClient):
             List of query items.
         join_needed : bool
             Flag indicating whether a join is needed.
+        data_table : str
+            Name of the data table.
+        instrument_table : str
+            Name of the instrument table.
 
         Returns
         -------
-        str
-            Constructed WHERE part of the query.
+        tuple[str, str, str]
+            WHERE, FROM, and SELECT parts of the query.
         """
         final_query = ""
         for parameter in query:
@@ -66,25 +69,7 @@ class SOARClient(BaseClient):
             else:
                 final_query += f"{prefix}{parameter}+AND+"
 
-        return final_query[:-5]
-
-    @staticmethod
-    def construct_from_and_select(data_table, instrument_table):
-        """
-        Construct the FROM and SELECT parts of the ADQL query.
-
-        Parameters
-        ----------
-        data_table : str
-            Name of the data table.
-        instrument_table : str
-            Name of the instrument table.
-
-        Returns
-        -------
-        tuple[str, str]
-            FROM and SELECT parts of the query.
-        """
+        where_part = final_query[:-5]
         from_part = f"{data_table} AS h1"
         select_part = (
             "h1.instrument, h1.descriptor, h1.level, h1.begin_time, h1.end_time, "
@@ -93,7 +78,7 @@ class SOARClient(BaseClient):
         if instrument_table:
             from_part += f" JOIN {instrument_table} AS h2 USING (data_item_oid)"
             select_part += ", h2.detector, h2.dimension_index"
-        return from_part, select_part
+        return where_part, from_part, select_part
 
     @staticmethod
     def get_instrument_table(query_item):
@@ -138,28 +123,30 @@ class SOARClient(BaseClient):
         data_table = "v_sc_data_item"
         instrument_table = None
         instrument_name = ""
-
+        instrument_found = False
         for q in query:
-            if q.startswith(("instrument", "descriptor")):
+            if q.startswith("instrument"):
+                instrument_table, instrument_name = SOARClient.get_instrument_table(q)
+                instrument_found = True
+            elif q.startswith("descriptor") and not instrument_found:
                 instrument_table, instrument_name = SOARClient.get_instrument_table(q)
             elif q.startswith("level") and q.split("=")[1][1:3] == "LL":
                 data_table = "v_ll_data_item"
                 if instrument_table:
                     instrument_table = instrument_table.replace("_sc_", "_ll_")
-
-        if instrument_name in ["EUI", "STX", "MET", "SPI", "PHI", "SHI"]:
-            SOARClient.join_needed = True
-            from_part, select_part = SOARClient.construct_from_and_select(data_table, instrument_table)
-            where_part = SOARClient.construct_query(query, SOARClient.join_needed)
-        else:
-            from_part = data_table
-            select_part = "*"
-            where_part = "+AND+".join(query)
+            if instrument_name in ["EUI", "STX", "MET", "SPI", "PHI", "SHI"]:
+                SOARClient.join_needed = True
+                where_part, from_part, select_part = SOARClient.construct_join(
+                    query, SOARClient.join_needed, data_table, instrument_table
+                )
+            else:
+                from_part = data_table
+                select_part = "*"
+                where_part = "+AND+".join(query)
 
         adql_query = {"SELECT": select_part, "FROM": from_part, "WHERE": where_part}
 
         adql_query_str = "+".join([f"{key}+{value}" for key, value in adql_query.items()])
-
         return {"REQUEST": "doQuery", "LANG": "ADQL", "FORMAT": "json", "QUERY": adql_query_str}
 
     @staticmethod

@@ -150,3 +150,53 @@ def test_when_wrong_provider_passed():
     provider = a.Provider.noaa
     res = Fido.search(time & instrument & provider)
     assert len(res) == 0
+
+
+def test_search_detector():
+    instrument = a.Instrument("EUI")
+    time = a.Time("2020-03-03 15:00", "2020-03-03 16:00")
+    level = a.Level(1)
+    detector = a.Detector("HRI_EUV")
+    res = Fido.search(instrument & time & level & detector)
+    assert "Detector" in res[0].columns
+    assert res.file_num == 20
+
+
+def test_join_science_query():
+    result = SOARClient._construct_payload(  # NOQA: SLF001
+        [
+            "instrument='EUI'",
+            "begin_time>='2021-02-01+00:00:00'+AND+begin_time<='2021-02-02+00:00:00'",
+            "level='L1'",
+            "descriptor='eui-fsi174-image'",
+        ]
+    )
+
+    # Formatted assert statement
+    assert result["QUERY"] == (
+        "SELECT+h1.instrument, h1.descriptor, h1.level, h1.begin_time, h1.end_time, "
+        "h1.data_item_id, h1.filesize, h1.filename, h1.soop_name, h2.detector, "
+        "h2.dimension_index+FROM+v_sc_data_item AS h1 JOIN v_eui_sc_fits AS h2 USING (data_item_oid)"
+        "+WHERE+h1.instrument='EUI'+AND+h1.begin_time>='2021-02-01+00:00:00'+AND+h1.begin_time<='2021-02-02+00:00:00'"
+        "+AND+h2.dimension_index='1'+AND+h1.level='L1'+AND+h1.descriptor='eui-fsi174-image'"
+    )
+
+
+def test_join_low_latency_query():
+    result = SOARClient._construct_payload(  # NOQA: SLF001
+        [
+            "instrument='EUI'",
+            "begin_time>='2021-02-01+00:00:00'+AND+begin_time<='2021-02-02+00:00:00'",
+            "level='LL01'",
+            "descriptor='eui-fsi174-image'",
+        ]
+    )
+
+    # Formatted assert statement
+    assert result["QUERY"] == (
+        "SELECT+h1.instrument, h1.descriptor, h1.level, h1.begin_time, h1.end_time, "
+        "h1.data_item_id, h1.filesize, h1.filename, h1.soop_name, h2.detector, "
+        "h2.dimension_index+FROM+v_ll_data_item AS h1 JOIN v_eui_ll_fits AS h2 USING (data_item_oid)"
+        "+WHERE+h1.instrument='EUI'+AND+h1.begin_time>='2021-02-01+00:00:00'+AND+h1.begin_time<='2021-02-02+00:00:00'"
+        "+AND+h2.dimension_index='1'+AND+h1.level='LL01'+AND+h1.descriptor='eui-fsi174-image'"
+    )
