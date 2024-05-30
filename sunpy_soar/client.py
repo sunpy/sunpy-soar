@@ -65,7 +65,10 @@ class SOARClient(BaseClient):
                 time_list = parameter.split("+AND+")
                 begin_start = f"h1.{time_list[0]}"
                 begin_end = f"h1.{time_list[1]}"
-                final_query += f"{begin_start}+AND+{begin_end}+AND+h2.dimension_index='1'+AND+"
+                final_query += f"{begin_start}+AND+{begin_end}+AND+"
+                # As there are no dimensions in STIX, the dimension index need not be included in the query for STIX.
+                if "stx" not in instrument_table:
+                    final_query += "h2.dimension_index='1'+AND+"
             else:
                 final_query += f"{prefix}{parameter}+AND+"
 
@@ -85,6 +88,15 @@ class SOARClient(BaseClient):
         """
         Get the instrument table name from the query item.
 
+        For different instruments the table names are:
+
+        - SOLOHI: v_shi_sc_fits
+        - EUI: v_eui_sc_fits
+        - STIX: v_stx_sc_fits
+        - SPICE: v_spi_sc_fits
+        - PHI: v_phi_sc_fits
+        - METIS: v_met_sc_fits
+
         Parameters
         ----------
         query_item : str
@@ -101,6 +113,8 @@ class SOARClient(BaseClient):
         elif instrument_name == "SOLOHI":
             instrument_name = "SHI"
         else:
+            # For all other remote-sensing instruments, the table alias is derived from
+            # the first three letters of the instrument name.
             instrument_name = instrument_name[:3]
         return f"v_{instrument_name.lower()}_sc_fits", instrument_name
 
@@ -134,6 +148,7 @@ class SOARClient(BaseClient):
                 data_table = "v_ll_data_item"
                 if instrument_table:
                     instrument_table = instrument_table.replace("_sc_", "_ll_")
+            # The table aliases employed in the instrument-specific tables are as follows.
             if instrument_name in ["EUI", "STX", "MET", "SPI", "PHI", "SHI"]:
                 SOARClient.join_needed = True
                 where_part, from_part, select_part = SOARClient.construct_join(
@@ -171,7 +186,6 @@ class SOARClient(BaseClient):
         # Get request info
         r = requests.get(f"{tap_endpoint}/sync", params=payload)
         log.debug(f"Sent query: {r.url}")
-
         r.raise_for_status()
 
         # Do some list/dict wrangling

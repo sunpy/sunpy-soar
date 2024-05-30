@@ -152,7 +152,17 @@ def test_when_wrong_provider_passed():
     assert len(res) == 0
 
 
-def test_search_detector():
+def test_search_detector_Instrument_dimension_0():
+    # As STIX data has zero dimensions, there is no detector information available in the SOAR data.
+    instrument = a.Instrument("STIX")
+    time = a.Time("2023-03-03 00:00", "2023-03-03 23:59")
+    level = a.Level(1)
+    res = Fido.search(instrument & time & level)
+    assert "Detector" in res[0].columns
+    assert res.file_num == 35
+
+
+def test_search_detector_Instrument_dimension_2():
     instrument = a.Instrument("EUI")
     time = a.Time("2020-03-03 15:00", "2020-03-03 16:00")
     level = a.Level(1)
@@ -160,6 +170,16 @@ def test_search_detector():
     res = Fido.search(instrument & time & level & detector)
     assert "Detector" in res[0].columns
     assert res.file_num == 20
+
+
+def test_search_detector_Instrument_dimension_4():
+    instrument = a.Instrument("SPICE")
+    time = a.Time("2023-03-03 15:00", "2023-03-03 16:00")
+    level = a.Level(1)
+    detector = a.Detector("SW")
+    res = Fido.search(instrument & time & level & detector)
+    assert "Detector" in res[0].columns
+    assert res.file_num == 11
 
 
 def test_join_science_query():
