@@ -20,8 +20,6 @@ class SOARClient(BaseClient):
     Client to access the Solar Orbiter Archive (SOAR).
     """
 
-    join_needed = False
-
     def search(self, *query, **kwargs):  # NOQA: ARG002
         query = and_(*query)
         queries = walker.create(query)
@@ -68,6 +66,7 @@ class SOARClient(BaseClient):
                 final_query += f"{begin_start}+AND+{begin_end}+AND+"
                 # As there are no dimensions in STIX, the dimension index need not be included in the query for STIX.
                 if "stx" not in instrument_table:
+                    # To avoid duplicate rows in the output table, the dimension index is set to 1.
                     final_query += "h2.dimension_index='1'+AND+"
             else:
                 final_query += f"{prefix}{parameter}+AND+"
@@ -83,40 +82,21 @@ class SOARClient(BaseClient):
             select_part += ", h2.detector, h2.dimension_index"
         return where_part, from_part, select_part
 
-    @staticmethod
-    def get_instrument_table(query_item):
+    def join_needed(instrument_name):
         """
-        Get the instrument table name from the query item.
-
-        For different instruments the table names are:
-
-        - SOLOHI: v_shi_sc_fits
-        - EUI: v_eui_sc_fits
-        - STIX: v_stx_sc_fits
-        - SPICE: v_spi_sc_fits
-        - PHI: v_phi_sc_fits
-        - METIS: v_met_sc_fits
+        Determines if a join is needed based on the given instrument name.
 
         Parameters
         ----------
-        query_item : str
-            Query item containing the instrument name.
+        instrument_name : str
+            Name of the instrument.
 
         Returns
         -------
-        str
-            Instrument table name.
+        bool
+            True if a join is needed, False otherwise.
         """
-        instrument_name = query_item.split("=")[1][1:-1].split("-")[0].upper()
-        if instrument_name == "STIX":
-            instrument_name = "STX"
-        elif instrument_name == "SOLOHI":
-            instrument_name = "SHI"
-        else:
-            # For all other remote-sensing instruments, the table alias is derived from
-            # the first three letters of the instrument name.
-            instrument_name = instrument_name[:3]
-        return f"v_{instrument_name.lower()}_sc_fits", instrument_name
+        return instrument_name in ["EUI", "STX", "MET", "SPI", "PHI", "SHI"]
 
     @staticmethod
     def _construct_payload(query):
@@ -136,28 +116,38 @@ class SOARClient(BaseClient):
         # Default data table
         data_table = "v_sc_data_item"
         instrument_table = None
-        instrument_name = ""
-        instrument_found = False
+        # Mapping is established between the SOAR instrument names and its corresponding SOAR instrument table alias.
+        instrument_mapping = {
+            "SOLOHI": "SHI",
+            "EUI": "EUI",
+            "STIX": "STX",
+            "SPICE": "SPI",
+            "PHI": "PHI",
+            "METIS": "MET",
+        }
+
+        instrument_name = None
         for q in query:
-            if q.startswith("instrument"):
-                instrument_table, instrument_name = SOARClient.get_instrument_table(q)
-                instrument_found = True
-            elif q.startswith("descriptor") and not instrument_found:
-                instrument_table, instrument_name = SOARClient.get_instrument_table(q)
+            if q.startswith("instrument") or q.startswith("descriptor") and not instrument_name:
+                instrument_name = q.split("=")[1][1:-1].split("-")[0].upper()
             elif q.startswith("level") and q.split("=")[1][1:3] == "LL":
                 data_table = "v_ll_data_item"
-                if instrument_table:
-                    instrument_table = instrument_table.replace("_sc_", "_ll_")
-            # The table aliases employed in the instrument-specific tables are as follows.
-            if instrument_name in ["EUI", "STX", "MET", "SPI", "PHI", "SHI"]:
-                SOARClient.join_needed = True
-                where_part, from_part, select_part = SOARClient.construct_join(
-                    query, SOARClient.join_needed, data_table, instrument_table
-                )
-            else:
-                from_part = data_table
-                select_part = "*"
-                where_part = "+AND+".join(query)
+
+        if instrument_name:
+            if instrument_name in instrument_mapping:
+                instrument_name = instrument_mapping[instrument_name]
+            instrument_table = f"v_{instrument_name.lower()}_sc_fits"
+            if data_table == "v_ll_data_item" and instrument_table:
+                instrument_table = instrument_table.replace("_sc_", "_ll_")
+
+        if SOARClient.join_needed(instrument_name):
+            where_part, from_part, select_part = SOARClient.construct_join(
+                query, SOARClient.join_needed, data_table, instrument_table
+            )
+        else:
+            from_part = data_table
+            select_part = "*"
+            where_part = "+AND+".join(query)
 
         adql_query = {"SELECT": select_part, "FROM": from_part, "WHERE": where_part}
 

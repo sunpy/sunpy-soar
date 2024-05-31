@@ -153,7 +153,9 @@ def test_when_wrong_provider_passed():
 
 
 def test_search_detector_Instrument_dimension_0():
-    # As STIX data has zero dimensions, there is no detector information available in the SOAR data.
+    # Since STIX data has no dimensions, there is no detector information available in the SOAR data.
+    # Therefore, the search results returned by the SOARClient will contain "None" as the value for the
+    # "Detector" column, indicating that no detector information is available for the given data.
     instrument = a.Instrument("STIX")
     time = a.Time("2023-03-03 00:00", "2023-03-03 23:59")
     level = a.Level(1)
@@ -163,6 +165,9 @@ def test_search_detector_Instrument_dimension_0():
 
 
 def test_search_detector_Instrument_dimension_2():
+    # Instruments "EUI","METIS","PHI","SOLOHI" have two dimensions in the SOAR data.
+    # Selecting no dimension index in the query results in two identical output rows.
+    # To avoid repeating data, we have methods to take dimension index=1, which avoids any repetition.
     instrument = a.Instrument("EUI")
     time = a.Time("2020-03-03 15:00", "2020-03-03 16:00")
     level = a.Level(1)
@@ -173,6 +178,9 @@ def test_search_detector_Instrument_dimension_2():
 
 
 def test_search_detector_Instrument_dimension_4():
+    # The "SPICE" instrument has four dimensions in the SOAR data. As a result,
+    # selecting no dimension index in the query results in four identical output rows.
+    # To avoid repeating data, we have methods to take dimension index=1, which avoids any repetition.
     instrument = a.Instrument("SPICE")
     time = a.Time("2023-03-03 15:00", "2023-03-03 16:00")
     level = a.Level(1)
@@ -192,7 +200,6 @@ def test_join_science_query():
         ]
     )
 
-    # Formatted assert statement
     assert result["QUERY"] == (
         "SELECT+h1.instrument, h1.descriptor, h1.level, h1.begin_time, h1.end_time, "
         "h1.data_item_id, h1.filesize, h1.filename, h1.soop_name, h2.detector, "
@@ -212,7 +219,6 @@ def test_join_low_latency_query():
         ]
     )
 
-    # Formatted assert statement
     assert result["QUERY"] == (
         "SELECT+h1.instrument, h1.descriptor, h1.level, h1.begin_time, h1.end_time, "
         "h1.data_item_id, h1.filesize, h1.filename, h1.soop_name, h2.detector, "
