@@ -35,8 +35,7 @@ class SOARClient(BaseClient):
         qrt.hide_keys = ["Data item ID", "Filename"]
         return qrt
 
-    @staticmethod
-    def construct_join(query, join_needed, data_table, instrument_table):
+    def construct_join(query: list[str], data_table: str, instrument_table: str):
         """
         Construct the WHERE, FROM, and SELECT parts of the ADQL query.
 
@@ -58,7 +57,7 @@ class SOARClient(BaseClient):
         """
         final_query = ""
         for parameter in query:
-            prefix = "h1." if not join_needed or not parameter.startswith("Detector") else "h2."
+            prefix = "h1." if not parameter.startswith("Detector") else "h2."
             if parameter.startswith("begin_time"):
                 time_list = parameter.split("+AND+")
                 begin_start = f"h1.{time_list[0]}"
@@ -81,22 +80,6 @@ class SOARClient(BaseClient):
             from_part += f" JOIN {instrument_table} AS h2 USING (data_item_oid)"
             select_part += ", h2.detector, h2.dimension_index"
         return where_part, from_part, select_part
-
-    def join_needed(instrument_name):
-        """
-        Determines if a join is needed based on the given instrument name.
-
-        Parameters
-        ----------
-        instrument_name : str
-            Name of the instrument.
-
-        Returns
-        -------
-        bool
-            True if a join is needed, False otherwise.
-        """
-        return instrument_name in ["EUI", "STX", "MET", "SPI", "PHI", "SHI"]
 
     @staticmethod
     def _construct_payload(query):
@@ -140,10 +123,8 @@ class SOARClient(BaseClient):
             if data_table == "v_ll_data_item" and instrument_table:
                 instrument_table = instrument_table.replace("_sc_", "_ll_")
 
-        if SOARClient.join_needed(instrument_name):
-            where_part, from_part, select_part = SOARClient.construct_join(
-                query, SOARClient.join_needed, data_table, instrument_table
-            )
+        if instrument_name in ["EUI", "STX", "MET", "SPI", "PHI", "SHI"]:
+            where_part, from_part, select_part = SOARClient.construct_join(query, data_table, instrument_table)
         else:
             from_part = data_table
             select_part = "*"
@@ -203,7 +184,7 @@ class SOARClient(BaseClient):
                 "SOOP Name": info["soop_name"],
             },
         )
-        if SOARClient.join_needed and "detector" in info:
+        if "detector" in info:
             result_table["Detector"] = info["detector"]
         result_table.sort("Start time")
         return result_table
