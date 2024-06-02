@@ -43,8 +43,6 @@ class SOARClient(BaseClient):
         ----------
         query : list[str]
             List of query items.
-        join_needed : bool
-            Flag indicating whether a join is needed.
         data_table : str
             Name of the data table.
         instrument_table : str

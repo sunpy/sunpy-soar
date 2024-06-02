@@ -165,7 +165,7 @@ def test_search_detector_Instrument_dimension_0():
 
 
 def test_search_detector_Instrument_dimension_2():
-    # Instruments "EUI","METIS","PHI","SOLOHI" have two dimensions in the SOAR data.
+    # Instruments "EUI","METIS","PHI" and "SOLOHI" have two dimensions in the SOAR data.
     # Selecting no dimension index in the query results in two identical output rows.
     # To avoid repeating data, we have methods to take dimension index=1, which avoids any repetition.
     instrument = a.Instrument("EUI")
