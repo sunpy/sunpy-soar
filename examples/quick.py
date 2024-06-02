@@ -19,13 +19,13 @@ import sunpy_soar  # NOQA: F401
 instrument = a.Instrument("EUI")
 time = a.Time("2021-02-01", "2021-02-02")
 level = a.Level(1)
-product = a.soar.Product("EPD-FSI174-IMAGE")
+product = a.soar.Product("EUI-FSI174-IMAGE")
 
 #####################################################
 # Now do the search.
 
 result = Fido.search(instrument & time & level & product)
-print(result)
+result
 
 #####################################################
 # Finally we can download the data.
