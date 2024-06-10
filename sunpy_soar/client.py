@@ -1,5 +1,6 @@
 import json
 import pathlib
+import re
 
 import astropy.table
 import astropy.units as u
@@ -54,8 +55,29 @@ class SOARClient(BaseClient):
             WHERE, FROM, and SELECT parts of the query.
         """
         final_query = ""
+        # Extract wavemin and wavemax individually
+        wavemin_pattern = re.compile(r"Wavemin='(\d+\.\d+)'")
+        wavemax_pattern = re.compile(r"h2.Wavemax='(\d+\.\d+)'")
         for parameter in query:
-            prefix = "h1." if not parameter.startswith("Detector") else "h2."
+            wavemin_match = wavemin_pattern.search(parameter)
+            wavemax_match = wavemax_pattern.search(parameter)
+            # If the wavemin and wavemax are same that means only one wavelength is given in query.
+            if wavemin_match and wavemax_match and float(wavemin_match.group(1)) == float(wavemax_match.group(1)):
+                # For SPICE and PHI instruments, we specify the wavemin as a parameter.
+                # This enables us to retrieve columns containing wavemin and their corresponding wavemax values.
+                if "spi" in instrument_table or "phi" in instrument_table:
+                    parameter = f"Wavemin='{wavemin_match.group(1)}'"
+                # For other instruments, we provide the wavemin value to the Wavelength column.
+                # This gives us the Wavelength column in the output table.
+                else:
+                    parameter = f"Wavelength='{wavemin_match.group(1)}'"
+            prefix = (
+                "h1."
+                if not parameter.startswith("Detector")
+                and not parameter.startswith("Wavelength")
+                and not parameter.startswith("Wavemin")
+                else "h2."
+            )
             if parameter.startswith("begin_time"):
                 time_list = parameter.split("+AND+")
                 begin_start = f"h1.{time_list[0]}"
@@ -76,7 +98,12 @@ class SOARClient(BaseClient):
         )
         if instrument_table:
             from_part += f" JOIN {instrument_table} AS h2 USING (data_item_oid)"
-            select_part += ", h2.detector, h2.dimension_index"
+            # For EUI, METIS and SOLOHI, we query on basis of wavelength.
+            if "spi" not in instrument_table and "phi" not in instrument_table:
+                select_part += ", h2.detector, h2.wavelength, h2.dimension_index"
+            # For SPICE and PHI instruments, we query on basis of wavemin and wavemax.
+            else:
+                select_part += ", h2.detector, h2.wavemin, h2.wavemax, h2.dimension_index"
         return where_part, from_part, select_part
 
     @staticmethod
@@ -185,6 +212,11 @@ class SOARClient(BaseClient):
         )
         if "detector" in info:
             result_table["Detector"] = info["detector"]
+        if "wavelength" in info:
+            result_table["Wavelength"] = info["wavelength"]
+        if "wavemin" in info:
+            result_table["Wavemin"] = info["wavemin"]
+            result_table["Wavemax"] = info["wavemax"]
         result_table.sort("Start time")
         return result_table
 
@@ -232,7 +264,7 @@ class SOARClient(BaseClient):
             True if this client can handle the given query.
         """
         required = {a.Time}
-        optional = {a.Instrument, a.Detector, a.Level, a.Provider, Product, SOOP}
+        optional = {a.Instrument, a.Detector, a.Wavelength, a.Level, a.Provider, Product, SOOP}
         if not cls.check_attr_types_in_query(query, required, optional):
             return False
         # check to make sure the instrument attr passed is one provided by the SOAR.

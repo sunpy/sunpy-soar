@@ -190,6 +190,39 @@ def test_search_detector_Instrument_dimension_4():
     assert res.file_num == 11
 
 
+def test_search_wavelength_column_wavelength():
+    # Instruments EUI, SOLOHI, and METIS have "Wavelength" column in SOAR data.
+    instrument = a.Instrument("EUI")
+    time = a.Time("2023-04-03 15:00", "2023-04-03 16:00")
+    level = a.Level(1)
+    wavelength = a.Wavelength(304 * u.AA)
+    res = Fido.search(instrument & time & level & wavelength)
+    assert "Wavelength" in res[0].columns
+    assert res.file_num == 12
+
+    # Test for wavelength when wavemin and wavemax both values are given.
+    wavelength = a.Wavelength(171 * u.AA, 185 * u.AA)
+    res = Fido.search(instrument & time & level & wavelength)
+    assert res.file_num == 12
+
+
+def test_search_wavelength_column_wavemin_wavemax():
+    # For Instruments PHI and SPICE, "Wavemin" and "Wavemax" columns are available.
+    instrument = a.Instrument("SPICE")
+    time = a.Time("2023-05-02", "2023-05-03")
+    level = a.Level(1)
+    wavelength = a.Wavelength(69.6836 * u.AA, 79.4698 * u.AA)
+    res = Fido.search(instrument & time & level & wavelength)
+    assert "Wavemin" in res[0].columns
+    assert "Wavemax" in res[0].columns
+    assert res.file_num == 12
+
+    # Test for wavelength when only wavemin value is given.
+    wavelength = a.Wavelength(69.6836 * u.AA)
+    res = Fido.search(instrument & time & level & wavelength)
+    assert res.file_num == 13
+
+
 def test_join_science_query():
     result = SOARClient._construct_payload(  # NOQA: SLF001
         [
@@ -202,7 +235,7 @@ def test_join_science_query():
 
     assert result["QUERY"] == (
         "SELECT+h1.instrument, h1.descriptor, h1.level, h1.begin_time, h1.end_time, "
-        "h1.data_item_id, h1.filesize, h1.filename, h1.soop_name, h2.detector, "
+        "h1.data_item_id, h1.filesize, h1.filename, h1.soop_name, h2.detector, h2.wavelength, "
         "h2.dimension_index+FROM+v_sc_data_item AS h1 JOIN v_eui_sc_fits AS h2 USING (data_item_oid)"
         "+WHERE+h1.instrument='EUI'+AND+h1.begin_time>='2021-02-01+00:00:00'+AND+h1.begin_time<='2021-02-02+00:00:00'"
         "+AND+h2.dimension_index='1'+AND+h1.level='L1'+AND+h1.descriptor='eui-fsi174-image'"
@@ -221,7 +254,7 @@ def test_join_low_latency_query():
 
     assert result["QUERY"] == (
         "SELECT+h1.instrument, h1.descriptor, h1.level, h1.begin_time, h1.end_time, "
-        "h1.data_item_id, h1.filesize, h1.filename, h1.soop_name, h2.detector, "
+        "h1.data_item_id, h1.filesize, h1.filename, h1.soop_name, h2.detector, h2.wavelength, "
         "h2.dimension_index+FROM+v_ll_data_item AS h1 JOIN v_eui_ll_fits AS h2 USING (data_item_oid)"
         "+WHERE+h1.instrument='EUI'+AND+h1.begin_time>='2021-02-01+00:00:00'+AND+h1.begin_time<='2021-02-02+00:00:00'"
         "+AND+h2.dimension_index='1'+AND+h1.level='LL01'+AND+h1.descriptor='eui-fsi174-image'"
