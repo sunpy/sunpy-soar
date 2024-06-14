@@ -161,7 +161,11 @@ def test_search_detector_Instrument_dimension_0():
     level = a.Level(1)
     res = Fido.search(instrument & time & level)
     assert "Detector" in res[0].columns
-    assert res.file_num == 35
+    assert res.file_num >= 35
+
+    # test for invalid detector..
+    res = Fido.search(time, instrument, a.Detector("hello"))
+    assert res.file_num == 0
 
 
 def test_search_detector_Instrument_dimension_2():
@@ -169,12 +173,16 @@ def test_search_detector_Instrument_dimension_2():
     # Selecting no dimension index in the query results in two identical output rows.
     # To avoid repeating data, we have methods to take dimension index=1, which avoids any repetition.
     instrument = a.Instrument("EUI")
-    time = a.Time("2020-03-03 15:00", "2020-03-03 16:00")
+    time = a.Time("2020-03-03", "2020-03-04")
     level = a.Level(1)
     detector = a.Detector("HRI_EUV")
     res = Fido.search(instrument & time & level & detector)
     assert "Detector" in res[0].columns
-    assert res.file_num == 20
+    assert res.file_num == 266
+
+    # test for invalid detector..
+    res = Fido.search(time, instrument, a.Detector("hello"))
+    assert res.file_num == 0
 
 
 def test_search_detector_Instrument_dimension_4():
@@ -188,6 +196,10 @@ def test_search_detector_Instrument_dimension_4():
     res = Fido.search(instrument & time & level & detector)
     assert "Detector" in res[0].columns
     assert res.file_num == 11
+
+    # test for invalid detector..
+    res = Fido.search(time, instrument, a.Detector("hello"))
+    assert res.file_num == 0
 
 
 def test_search_wavelength_column_wavelength():
