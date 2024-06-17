@@ -12,13 +12,13 @@ Currently it can be installed from PyPI using:
 
 .. code-block:: bash
 
-   pip install sunpy_soar
+   pip install sunpy-soar
 
 or conda using
 
 .. code-block:: bash
 
-   conda install -c conda-forge sunpy_soar
+   conda install -c conda-forge sunpy-soar
 
 ``sunpy-soar`` and the VSO
 ==========================
