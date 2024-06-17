@@ -32,7 +32,7 @@ Getting Help
 
 For more information or to ask questions about ``sunpy-soar`` or any other SunPy Project library, check out:
 
--  `sunpy-soar documentation <https://docs.sunpy.org/en/stable/>`__
+-  `sunpy-soar documentation <https://docs.sunpy.org/projects/soar/>`__
 -  `SunPy chat`_
 -  `SunPy mailing list <https://groups.google.com/forum/#!forum/sunpy>`__
 -  `SunPy community forum <https://community.openastronomy.org/c/sunpy/5>`__
