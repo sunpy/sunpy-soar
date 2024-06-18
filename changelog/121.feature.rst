@@ -1,0 +1,1 @@
+Added gallery examples for `wavelength` and `detector`.
