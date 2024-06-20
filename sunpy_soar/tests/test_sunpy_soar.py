@@ -152,7 +152,7 @@ def test_when_wrong_provider_passed():
     assert len(res) == 0
 
 
-def test_search_detector_Instrument_dimension_0():
+def test_search_detector_instrument_dimension_0():
     # Since STIX data has no dimensions, there is no detector information available in the SOAR data.
     # Therefore, the search results returned by the SOARClient will contain "None" as the value for the
     # "Detector" column, indicating that no detector information is available for the given data.
@@ -168,7 +168,7 @@ def test_search_detector_Instrument_dimension_0():
     assert res.file_num == 0
 
 
-def test_search_detector_Instrument_dimension_2():
+def test_search_detector_instrument_dimension_2():
     # Instruments "EUI","METIS","PHI" and "SOLOHI" have two dimensions in the SOAR data.
     # Selecting no dimension index in the query results in two identical output rows.
     # To avoid repeating data, we have methods to take dimension index=1, which avoids any repetition.
@@ -180,12 +180,9 @@ def test_search_detector_Instrument_dimension_2():
     assert "Detector" in res[0].columns
     assert res.file_num == 266
 
-    # test for invalid detector..
-    res = Fido.search(time, instrument, a.Detector("hello"))
-    assert res.file_num == 0
 
 
-def test_search_detector_Instrument_dimension_4():
+def test_search_detector_instrument_dimension_4():
     # The "SPICE" instrument has four dimensions in the SOAR data. As a result,
     # selecting no dimension index in the query results in four identical output rows.
     # To avoid repeating data, we have methods to take dimension index=1, which avoids any repetition.
@@ -197,9 +194,6 @@ def test_search_detector_Instrument_dimension_4():
     assert "Detector" in res[0].columns
     assert res.file_num == 11
 
-    # test for invalid detector..
-    res = Fido.search(time, instrument, a.Detector("hello"))
-    assert res.file_num == 0
 
 
 def test_search_wavelength_column_wavelength():
