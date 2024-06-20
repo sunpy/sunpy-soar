@@ -36,7 +36,7 @@ class SOARClient(BaseClient):
         qrt.hide_keys = ["Data item ID", "Filename"]
         return qrt
 
-    def construct_join(query: list[str], data_table: str, instrument_table: str):
+    def add_join_to_query(query: list[str], data_table: str, instrument_table: str):
         """
         Construct the WHERE, FROM, and SELECT parts of the ADQL query.
 
@@ -63,9 +63,11 @@ class SOARClient(BaseClient):
             wavemax_match = wavemax_pattern.search(parameter)
             # If the wavemin and wavemax are same that means only one wavelength is given in query.
             if wavemin_match and wavemax_match and float(wavemin_match.group(1)) == float(wavemax_match.group(1)):
-                # For SPICE and PHI instruments, we specify the wavemin as a parameter.
+                # For PHI, we specify the wavemin as a parameter.
                 # This enables us to retrieve columns containing wavemin and their corresponding wavemax values.
-                if "spi" in instrument_table or "phi" in instrument_table:
+                # For SPICE we get data in form of wavemin/wavemax columns, but only for the first spectral window.
+                # Therefore, to make sure this data is not misleading to the user we do not return any values.
+                if "phi" in instrument_table:
                     parameter = f"Wavemin='{wavemin_match.group(1)}'"
                 # For other instruments, we provide the wavemin value to the Wavelength column.
                 # This gives us the Wavelength column in the output table.
@@ -99,9 +101,9 @@ class SOARClient(BaseClient):
         if instrument_table:
             from_part += f" JOIN {instrument_table} AS h2 USING (data_item_oid)"
             # For EUI, METIS and SOLOHI, we query on basis of wavelength.
-            if "spi" not in instrument_table and "phi" not in instrument_table:
+            if "phi" not in instrument_table:
                 select_part += ", h2.detector, h2.wavelength, h2.dimension_index"
-            # For SPICE and PHI instruments, we query on basis of wavemin and wavemax.
+            # For PHI, we query on basis of wavemin and wavemax.
             else:
                 select_part += ", h2.detector, h2.wavemin, h2.wavemax, h2.dimension_index"
         return where_part, from_part, select_part
@@ -150,7 +152,7 @@ class SOARClient(BaseClient):
 
         # Need to establish join for remote sensing instruments as they have instrument tables in SOAR.
         if instrument_name in ["EUI", "STX", "MET", "SPI", "PHI", "SHI"]:
-            where_part, from_part, select_part = SOARClient.construct_join(query, data_table, instrument_table)
+            where_part, from_part, select_part = SOARClient.add_join_to_query(query, data_table, instrument_table)
         else:
             from_part = data_table
             select_part = "*"
