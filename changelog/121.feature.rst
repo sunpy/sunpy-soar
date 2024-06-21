@@ -1,1 +1,1 @@
-Added gallery examples for `wavelength` and `detector`.
+Created a how-to guide, added a guide to query wavelength and added a gallery example for `wavelength` and `detector`.
