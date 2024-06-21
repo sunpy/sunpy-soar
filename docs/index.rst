@@ -52,3 +52,4 @@ This will walk you through getting set up for contributing.
    api
    changelog
    coc
+   how_to/index
