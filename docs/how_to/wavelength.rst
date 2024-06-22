@@ -6,9 +6,7 @@ How to query using Wavelength in SOAR
 
 ``sunpy-soar`` provides a convenient methods to query Wavelength for all different instruments available in SOAR.
 In this guide, we will demonstrate how we can query for Wavelength for different instruments.
-For instruments EUI, METIS and SOLOHI we get query results in form of wavelength,
-for instrument PHI we get query results in form of wavemin and wavemax and
-for instruments SPICE and STIX we do not get any meaningful data for wavelength.
+For instruments EUI, METIS and SOLOHI we get query results in form of wavelength, for instrument PHI we get query results in form of wavemin and wavemax and for instruments SPICE and STIX we do not get any meaningful data for wavelength.
 
 For instruments EUI, METIS and SOLOHI passing a single Wavelength
 =================================================================
@@ -16,8 +14,6 @@ For instruments EUI, METIS and SOLOHI passing a single Wavelength
 When a single wavelength is provided it is interpreted as the wavelength.
 
 .. code-block:: python
-
-
     >>> import astropy.units as u
     >>> import sunpy.net.attrs as a
     >>> from sunpy.net import Fido
