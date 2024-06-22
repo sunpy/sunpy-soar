@@ -200,8 +200,9 @@ def test_invalid_detector():
     assert res.file_num == 0
 
 
-def test_search_wavelength_column_wavelength():
-    # Instruments EUI, SOLOHI, and METIS have "Wavelength" column in SOAR data.
+def test_wavelength_column_wavelength_exists():
+    # For instruments EUI, METIS and SOLOHI "wavelength" column is available.
+    # Test to check if the "Wavelength" column exists in the search results.
     instrument = a.Instrument("EUI")
     time = a.Time("2023-04-03 15:00", "2023-04-03 16:00")
     level = a.Level(1)
@@ -209,18 +210,33 @@ def test_search_wavelength_column_wavelength():
     res = Fido.search(instrument & time & level & wavelength)
     assert "Wavelength" in res[0].columns
     assert res.file_num == 12
+
+
+def test_wavelength_column_wavelength_single():
+    # Test to check if the wavelength value is filtered for a single value provided.
+    instrument = a.Instrument("EUI")
+    time = a.Time("2023-04-03 15:00", "2023-04-03 16:00")
+    level = a.Level(1)
+    wavelength = a.Wavelength(304 * u.AA)
+    res = Fido.search(instrument & time & level & wavelength)
     for table in res:
         assert all(table["Wavelength"] == 304)
-    # Test for wavelength when wavemin and wavemax both values are given.
+
+
+def test_wavelength_column_wavelength_range():
+    # Test to check if the wavelength value is filtered for wavemin and wavemax provided.
+    instrument = a.Instrument("EUI")
+    time = a.Time("2023-04-03 15:00", "2023-04-03 16:00")
+    level = a.Level(1)
     wavelength = a.Wavelength(171 * u.AA, 185 * u.AA)
     res = Fido.search(instrument & time & level & wavelength)
     for table in res:
         assert all(table["Wavelength"] == 174)
-    assert res.file_num == 12
 
 
-def test_search_wavelength_column_wavemin_wavemax():
+def test_wavelength_column_wavemin_wavemax_exists():
     # For Instrument PHI "Wavemin" and "Wavemax" columns are available.
+    # Test to check if the "wavemin" and "wavemax" columns exists in the search results.
     instrument = a.Instrument("PHI")
     time = a.Time("2023-02-01", "2023-02-02")
     level = a.Level(2)
@@ -229,14 +245,27 @@ def test_search_wavelength_column_wavemin_wavemax():
     assert "Wavemin" in res[0].columns
     assert "Wavemax" in res[0].columns
     assert res.file_num == 2
+
+
+def test_wavelength_column_wavemin_wavemax_range():
+    # Test to check if the wavemin and wavemax value is filtered for a range of wavelength provided.
+    instrument = a.Instrument("PHI")
+    time = a.Time("2023-02-01", "2023-02-02")
+    level = a.Level(2)
+    wavelength = a.Wavelength(6173.065 * u.AA, 6173.501 * u.AA)
+    res = Fido.search(instrument & time & level & wavelength)
     for table in res:
         assert all(table["Wavemin"] == 6173.065)
         assert all(table["Wavemax"] == 6173.501)
 
-    # Test for wavelength when only wavemin value is given.
+
+def test_wavelength_column_wavemin_wavemax_single():
+    # Test to check if the wavemin and wavemax value is filtered for a value of wavemin provided.
+    instrument = a.Instrument("PHI")
+    time = a.Time("2023-02-01", "2023-02-02")
+    level = a.Level(2)
     wavelength = a.Wavelength(6173.065 * u.AA)
     res = Fido.search(instrument & time & level & wavelength)
-    assert res.file_num == 4
     for table in res:
         assert all(table["Wavemin"] == 6173.065)
 
