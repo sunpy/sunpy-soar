@@ -12,6 +12,7 @@ from sunpy.net import Fido
 
 #####################################################
 # Importing sunpy_soar registers the client with sunpy
+
 import sunpy_soar  # NOQA: F401
 
 #####################################################
@@ -22,17 +23,10 @@ time = a.Time("2023-02-01 01:00", "2023-02-01 05:00")
 level = a.Level(2)
 detector = a.Detector("UVD")
 wavelength = a.Wavelength(121.6 * u.AA)
+
 #####################################################
 # Now do the search.
 
 result = Fido.search(instrument & time & level & detector & wavelength)
-result
+print(result)
 
-#####################################################
-# Finally we can download the data.
-#
-# For this example, we will comment out the download part
-# as we want to avoid downloading data in the documentation build
-
-# files = Fido.fetch(result)
-# print(files)
