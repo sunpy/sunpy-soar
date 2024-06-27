@@ -152,16 +152,14 @@ def test_when_wrong_provider_passed():
     assert len(res) == 0
 
 
-def test_search_detector_instrument_dimension_0():
-    # Since STIX data has no dimensions, there is no detector information available in the SOAR data.
-    # Therefore, the search results returned by the SOARClient will contain "None" as the value for the
-    # "Detector" column, indicating that no detector information is available for the given data.
-    instrument = a.Instrument("STIX")
-    time = a.Time("2023-03-03 00:00", "2023-03-03 23:59")
+def test_search_wavelength_detector_column():
+    instrument = a.Instrument("EUI")
+    time = a.Time("2021-02-01", "2021-02-02")
     level = a.Level(1)
-    res = Fido.search(instrument & time & level)
+    product = a.soar.Product("EUI-FSI174-IMAGE")
+    res = Fido.search(instrument & time & level & product)
+    assert "Wavelength" in res[0].columns
     assert "Detector" in res[0].columns
-    assert res.file_num >= 35
 
 
 def test_search_detector_instrument_dimension_2():
