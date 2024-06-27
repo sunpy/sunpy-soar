@@ -151,7 +151,7 @@ class SOARClient(BaseClient):
                 instrument_table = instrument_table.replace("_sc_", "_ll_")
 
         # Need to establish join for remote sensing instruments as they have instrument tables in SOAR.
-        if instrument_name in ["EUI", "STX", "MET", "SPI", "PHI", "SHI"]:
+        if instrument_name in ["EUI", "MET", "SPI", "PHI", "SHI"]:
             where_part, from_part, select_part = SOARClient.add_join_to_query(query, data_table, instrument_table)
         else:
             from_part = data_table
