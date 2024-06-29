@@ -1,1 +1,0 @@
-Added support for ``detector`` and ``wavelength`` search attributes and the ability to filter with them.

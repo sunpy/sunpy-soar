@@ -152,14 +152,16 @@ def test_when_wrong_provider_passed():
     assert len(res) == 0
 
 
-def test_search_wavelength_detector_column():
-    instrument = a.Instrument("EUI")
-    time = a.Time("2021-02-01", "2021-02-02")
+def test_search_detector_instrument_dimension_0():
+    # Since STIX data has no dimensions, there is no detector information available in the SOAR data.
+    # Therefore, the search results returned by the SOARClient will contain "None" as the value for the
+    # "Detector" column, indicating that no detector information is available for the given data.
+    instrument = a.Instrument("STIX")
+    time = a.Time("2023-03-03 00:00", "2023-03-03 23:59")
     level = a.Level(1)
-    product = a.soar.Product("EUI-FSI174-IMAGE")
-    res = Fido.search(instrument & time & level & product)
-    assert "Wavelength" in res[0].columns
+    res = Fido.search(instrument & time & level)
     assert "Detector" in res[0].columns
+    assert res.file_num >= 35
 
 
 def test_search_detector_instrument_dimension_2():
@@ -272,18 +274,18 @@ def test_join_science_query():
     result = SOARClient._construct_payload(  # NOQA: SLF001
         [
             "instrument='EUI'",
-            "begin_time>='2021-02-01+00:00:00'+AND+begin_time<='2021-02-02+00:00:00'",
+            "begin_time>='2021-02-01 00:00:00' AND begin_time<='2021-02-02 00:00:00'",
             "level='L1'",
             "descriptor='eui-fsi174-image'",
         ]
     )
 
-    assert result["QUERY"] == (
-        "SELECT+h1.instrument, h1.descriptor, h1.level, h1.begin_time, h1.end_time, "
+    assert result == (
+        "SELECT h1.instrument, h1.descriptor, h1.level, h1.begin_time, h1.end_time, "
         "h1.data_item_id, h1.filesize, h1.filename, h1.soop_name, h2.detector, h2.wavelength, "
-        "h2.dimension_index+FROM+v_sc_data_item AS h1 JOIN v_eui_sc_fits AS h2 USING (data_item_oid)"
-        "+WHERE+h1.instrument='EUI'+AND+h1.begin_time>='2021-02-01+00:00:00'+AND+h1.begin_time<='2021-02-02+00:00:00'"
-        "+AND+h2.dimension_index='1'+AND+h1.level='L1'+AND+h1.descriptor='eui-fsi174-image'"
+        "h2.dimension_index FROM v_sc_data_item AS h1 JOIN v_eui_sc_fits AS h2 USING (data_item_oid)"
+        " WHERE h1.instrument='EUI' AND h1.begin_time>='2021-02-01 00:00:00' AND h1.begin_time<='2021-02-02 00:00:00'"
+        " AND h2.dimension_index='1' AND h1.level='L1' AND h1.descriptor='eui-fsi174-image'"
     )
 
 
@@ -291,16 +293,16 @@ def test_join_low_latency_query():
     result = SOARClient._construct_payload(  # NOQA: SLF001
         [
             "instrument='EUI'",
-            "begin_time>='2021-02-01+00:00:00'+AND+begin_time<='2021-02-02+00:00:00'",
+            "begin_time>='2021-02-01 00:00:00' AND begin_time<='2021-02-02 00:00:00'",
             "level='LL01'",
             "descriptor='eui-fsi174-image'",
         ]
     )
 
-    assert result["QUERY"] == (
-        "SELECT+h1.instrument, h1.descriptor, h1.level, h1.begin_time, h1.end_time, "
+    assert result == (
+        "SELECT h1.instrument, h1.descriptor, h1.level, h1.begin_time, h1.end_time, "
         "h1.data_item_id, h1.filesize, h1.filename, h1.soop_name, h2.detector, h2.wavelength, "
-        "h2.dimension_index+FROM+v_ll_data_item AS h1 JOIN v_eui_ll_fits AS h2 USING (data_item_oid)"
-        "+WHERE+h1.instrument='EUI'+AND+h1.begin_time>='2021-02-01+00:00:00'+AND+h1.begin_time<='2021-02-02+00:00:00'"
-        "+AND+h2.dimension_index='1'+AND+h1.level='LL01'+AND+h1.descriptor='eui-fsi174-image'"
+        "h2.dimension_index FROM v_ll_data_item AS h1 JOIN v_eui_ll_fits AS h2 USING (data_item_oid)"
+        " WHERE h1.instrument='EUI' AND h1.begin_time>='2021-02-01 00:00:00' AND h1.begin_time<='2021-02-02 00:00:00'"
+        " AND h2.dimension_index='1' AND h1.level='LL01' AND h1.descriptor='eui-fsi174-image'"
     )
