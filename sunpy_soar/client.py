@@ -32,7 +32,7 @@ class SOARClient(BaseClient):
         table = astropy.table.vstack(results)
         table["Filesize"] = (table["Filesize"] * u.byte).to(u.Mbyte).round(3)
         qrt = QueryResponseTable(table, client=self)
-        qrt.hide_keys = ["data_item_oid", "Filename", "dimension_index"]
+        qrt.hide_keys = ["data_item_id", "Filename", "dimension_index"]
         return qrt
 
     def add_join_to_query(query: list[str], data_table: str, instrument_table: str):
