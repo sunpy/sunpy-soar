@@ -150,7 +150,7 @@ class SOARClient(BaseClient):
                 instrument_table = instrument_table.replace("_sc_", "_ll_")
 
         # Need to establish join for remote sensing instruments as they have instrument tables in SOAR.
-        if instrument_name in ["EUI", "STX", "MET", "SPI", "PHI", "SHI"]:
+        if instrument_name in ["EUI", "MET", "SPI", "PHI", "SHI"]:
             where_part, from_part, select_part = SOARClient.add_join_to_query(query, data_table, instrument_table)
         else:
             from_part = data_table
@@ -191,15 +191,12 @@ class SOARClient(BaseClient):
             "filesize": "Filesize",
             "soop_name": "SOOP Name",
         }
-        if "wavelength" in results.colnames:
-            new_colnames["wavelength"] = "Wavelength"
-            new_colnames["detector"] = "Detector"
-        if "wavemin" in results.colnames:
-            new_colnames["wavemin"] = "Wavemin"
-            new_colnames["wavemax"] = "Wavemax"
-            new_colnames["detector"] = "Detector"
+        new_colnames.update(
+            {k: k.capitalize() for k in ["wavelength", "wavemin", "wavemax", "detector"] if k in results.colnames}
+        )
         for old_name, new_name in new_colnames.items():
-            results.rename_column(old_name, new_name)
+            if old_name in results.colnames:
+                results.rename_column(old_name, new_name)
         results.sort("Start time")
         return results
 
