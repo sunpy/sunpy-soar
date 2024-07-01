@@ -195,8 +195,7 @@ class SOARClient(BaseClient):
             {k: k.capitalize() for k in ["wavelength", "wavemin", "wavemax", "detector"] if k in results.colnames}
         )
         for old_name, new_name in new_colnames.items():
-            if old_name in results.colnames:
-                results.rename_column(old_name, new_name)
+            results.rename_column(old_name, new_name)
         results.sort("Start time")
         return results
 
