@@ -88,9 +88,9 @@ params : list[str]
 
 @walker.add_applier(a.Time)
 def _(wlk, attr, params):  # NOQA: ARG001
-    start = attr.start.strftime("%Y-%m-%d+%H:%M:%S")
-    end = attr.end.strftime("%Y-%m-%d+%H:%M:%S")
-    params.append(f"begin_time>='{start}'+AND+begin_time<='{end}'")
+    start = attr.start.strftime("%Y-%m-%d %H:%M:%S")
+    end = attr.end.strftime("%Y-%m-%d %H:%M:%S")
+    params.append(f"begin_time>='{start}' AND begin_time<='{end}'")
 
 
 @walker.add_applier(a.Level)
@@ -129,3 +129,15 @@ def _(wlk, attr, params):  # NOQA: ARG001
 @walker.add_applier(SOOP)
 def _(wlk, attr, params):  # NOQA: ARG001
     params.append(f"soop_name='{attr.value}'")
+
+
+@walker.add_applier(a.Detector)
+def _(wlk, attr, params):  # NOQA: ARG001
+    params.append(f"Detector='{attr.value}'")
+
+
+@walker.add_applier(a.Wavelength)
+def _(wlk, attr, params):  # NOQA: ARG001
+    wavemin = attr.min.value
+    wavemax = attr.max.value
+    params.append(f"Wavemin='{wavemin}' AND h2.Wavemax='{wavemax}'")

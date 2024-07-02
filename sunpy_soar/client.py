@@ -1,14 +1,14 @@
 import json
 import pathlib
+import re
 
 import astropy.table
 import astropy.units as u
-import requests
 import sunpy.net.attrs as a
+from astroquery.utils.tap.core import TapPlus
 from sunpy import log
 from sunpy.net.attr import and_
 from sunpy.net.base_client import BaseClient, QueryResponseTable
-from sunpy.time import parse_time
 
 from sunpy_soar.attrs import SOOP, Product, walker
 
@@ -30,10 +30,82 @@ class SOARClient(BaseClient):
                 query_parameters.remove("provider='SOAR'")
             results.append(self._do_search(query_parameters))
         table = astropy.table.vstack(results)
+        table["Filesize"] = (table["Filesize"] * u.byte).to(u.Mbyte).round(3)
         qrt = QueryResponseTable(table, client=self)
-        qrt["Filesize"] = (qrt["Filesize"] * u.byte).to(u.Mbyte).round(3)
-        qrt.hide_keys = ["Data item ID", "Filename"]
+        qrt.hide_keys = ["data_item_id", "Filename", "dimension_index"]
         return qrt
+
+    def add_join_to_query(query: list[str], data_table: str, instrument_table: str):
+        """
+        Construct the WHERE, FROM, and SELECT parts of the SQL query.
+
+        Parameters
+        ----------
+        query : list[str]
+            List of query items.
+        data_table : str
+            Name of the data table.
+        instrument_table : str
+            Name of the instrument table.
+
+        Returns
+        -------
+        tuple[str, str, str]
+            WHERE, FROM, and SELECT parts of the query.
+        """
+        final_query = ""
+        # Extract wavemin and wavemax individually
+        wavemin_pattern = re.compile(r"Wavemin='(\d+\.\d+)'")
+        wavemax_pattern = re.compile(r"h2.Wavemax='(\d+\.\d+)'")
+        for parameter in query:
+            wavemin_match = wavemin_pattern.search(parameter)
+            wavemax_match = wavemax_pattern.search(parameter)
+            # If the wavemin and wavemax are the same, that means only one wavelength is given in the query.
+            if wavemin_match and wavemax_match and float(wavemin_match.group(1)) == float(wavemax_match.group(1)):
+                # For PHI, we specify the wavemin as a parameter.
+                # This enables us to retrieve columns containing wavemin and their corresponding wavemax values.
+                # For SPICE we get data in the form of wavemin/wavemax columns, but only for the first spectral window.
+                # Therefore, to make sure this data is not misleading to the user we do not return any values.
+                if "phi" in instrument_table:
+                    parameter = f"Wavemin='{wavemin_match.group(1)}'"
+                # For other instruments, we provide the wavemin value to the Wavelength column.
+                # This gives us the Wavelength column in the output table.
+                else:
+                    parameter = f"Wavelength='{wavemin_match.group(1)}'"
+            prefix = (
+                "h1."
+                if not parameter.startswith("Detector")
+                and not parameter.startswith("Wavelength")
+                and not parameter.startswith("Wavemin")
+                else "h2."
+            )
+            if parameter.startswith("begin_time"):
+                time_list = parameter.split(" AND ")
+                begin_start = f"h1.{time_list[0]}"
+                begin_end = f"h1.{time_list[1]}"
+                final_query += f"{begin_start} AND {begin_end} AND "
+                # As there are no dimensions in STIX, the dimension index need not be included in the query for STIX.
+                if "stx" not in instrument_table:
+                    # To avoid duplicate rows in the output table, the dimension index is set to 1.
+                    final_query += "h2.dimension_index='1' AND "
+            else:
+                final_query += f"{prefix}{parameter} AND "
+
+        where_part = final_query[:-5]
+        from_part = f"{data_table} AS h1"
+        select_part = (
+            "h1.instrument, h1.descriptor, h1.level, h1.begin_time, h1.end_time, "
+            "h1.data_item_id, h1.filesize, h1.filename, h1.soop_name"
+        )
+        if instrument_table:
+            from_part += f" JOIN {instrument_table} AS h2 USING (data_item_oid)"
+            # For EUI, METIS and SOLOHI, we query on basis of wavelength.
+            if "phi" not in instrument_table:
+                select_part += ", h2.detector, h2.wavelength, h2.dimension_index"
+            # For PHI, we query on basis of wavemin and wavemax.
+            else:
+                select_part += ", h2.detector, h2.wavemin, h2.wavemax, h2.dimension_index"
+        return where_part, from_part, select_part
 
     @staticmethod
     def _construct_payload(query):
@@ -42,28 +114,52 @@ class SOARClient(BaseClient):
 
         Parameters
         ----------
-        payload : dict[str]
-            Payload to send to the TAP server.
+        query : list[str]
+            List of query items.
+
+        Returns
+        -------
+        str
+            SQL query string.
         """
-        # Construct ADQL query
-        url_query = {}
-        url_query["SELECT"] = "*"
-        # Assume science data by default
-        url_query["FROM"] = "v_sc_data_item"
-        for q in query:
-            if q.startswith("level") and q.split("=")[1][1:3] == "LL":
-                # Low latency data
-                url_query["FROM"] = "v_ll_data_item"
-
-        url_query["WHERE"] = "+AND+".join(query)
-        adql_query = "+".join([f"{item}+{url_query[item]}" for item in url_query])
-
-        return {
-            "REQUEST": "doQuery",
-            "LANG": "ADQL",
-            "FORMAT": "json",
-            "QUERY": adql_query,
+        # Default data table
+        data_table = "v_sc_data_item"
+        instrument_table = None
+        # Mapping is established between the SOAR instrument names and its corresponding SOAR instrument table alias.
+        instrument_mapping = {
+            "SOLOHI": "SHI",
+            "EUI": "EUI",
+            "STIX": "STX",
+            "SPICE": "SPI",
+            "PHI": "PHI",
+            "METIS": "MET",
         }
+
+        instrument_name = None
+        for q in query:
+            if (q.startswith(("instrument", "descriptor"))) and not instrument_name:
+                instrument_name = q.split("=")[1][1:-1].split("-")[0].upper()
+            elif q.startswith("level") and q.split("=")[1][1:3] == "LL":
+                data_table = "v_ll_data_item"
+
+        if instrument_name:
+            if instrument_name in instrument_mapping:
+                instrument_name = instrument_mapping[instrument_name]
+            instrument_table = f"v_{instrument_name.lower()}_sc_fits"
+            if data_table == "v_ll_data_item" and instrument_table:
+                instrument_table = instrument_table.replace("_sc_", "_ll_")
+
+        # Need to establish join for remote sensing instruments as they have instrument tables in SOAR.
+        if instrument_name in ["EUI", "MET", "SPI", "PHI", "SHI"]:
+            where_part, from_part, select_part = SOARClient.add_join_to_query(query, data_table, instrument_table)
+        else:
+            from_part = data_table
+            select_part = (
+                "instrument, descriptor, level, begin_time, end_time, data_item_id, filename, filesize, soop_name"
+            )
+            where_part = " AND ".join(query)
+
+        return f"SELECT {select_part} FROM {from_part} WHERE {where_part}"
 
     @staticmethod
     def _do_search(query):
@@ -77,44 +173,31 @@ class SOARClient(BaseClient):
 
         Returns
         -------
-        astropy.table.QTable
+        astropy.table.Table
             Query results.
         """
         tap_endpoint = "http://soar.esac.esa.int/soar-sl-tap/tap"
-        payload = SOARClient._construct_payload(query)
-        # Need to force requests to not form-encode the parameters
-        payload = "&".join([f"{key}={val}" for key, val in payload.items()])
-        # Get request info
-        r = requests.get(f"{tap_endpoint}/sync", params=payload)
-        log.debug(f"Sent query: {r.url}")
-        r.raise_for_status()
-
-        # Do some list/dict wrangling
-        names = [m["name"] for m in r.json()["metadata"]]
-        info = {name: [] for name in names}
-        for entry in r.json()["data"]:
-            for i, name in enumerate(names):
-                info[name].append(entry[i])
-
-        if len(info["begin_time"]):
-            info["begin_time"] = parse_time(info["begin_time"]).iso
-            info["end_time"] = parse_time(info["end_time"]).iso
-
-        result_table = astropy.table.QTable(
-            {
-                "Instrument": info["instrument"],
-                "Data product": info["descriptor"],
-                "Level": info["level"],
-                "Start time": info["begin_time"],
-                "End time": info["end_time"],
-                "Data item ID": info["data_item_id"],
-                "Filename": info["filename"],
-                "Filesize": info["filesize"],
-                "SOOP Name": info["soop_name"],
-            },
+        sql_query = SOARClient._construct_payload(query)
+        soar = TapPlus(url=tap_endpoint)
+        job = soar.launch_job_async(sql_query)
+        results = job.results
+        new_colnames = {
+            "instrument": "Instrument",
+            "descriptor": "Data product",
+            "level": "Level",
+            "begin_time": "Start time",
+            "end_time": "End time",
+            "filename": "Filename",
+            "filesize": "Filesize",
+            "soop_name": "SOOP Name",
+        }
+        new_colnames.update(
+            {k: k.capitalize() for k in ["wavelength", "wavemin", "wavemax", "detector"] if k in results.colnames}
         )
-        result_table.sort("Start time")
-        return result_table
+        for old_name, new_name in new_colnames.items():
+            results.rename_column(old_name, new_name)
+        results.sort("Start time")
+        return results
 
     def fetch(self, query_results, *, path, downloader, **kwargs):  # NOQA: ARG002
         """
@@ -142,7 +225,7 @@ class SOARClient(BaseClient):
                 url += "&product_type=LOW_LATENCY"
             else:
                 url += "&product_type=SCIENCE"
-            data_id = row["Data item ID"]
+            data_id = row["data_item_id"]
             url += f"&data_item_id={data_id}"
             filepath = str(path).format(file=row["Filename"], **row.response_block_map)
             log.debug(f"Queuing URL: {url}")
@@ -160,7 +243,7 @@ class SOARClient(BaseClient):
             True if this client can handle the given query.
         """
         required = {a.Time}
-        optional = {a.Instrument, a.Level, a.Provider, Product, SOOP}
+        optional = {a.Instrument, a.Detector, a.Wavelength, a.Level, a.Provider, Product, SOOP}
         if not cls.check_attr_types_in_query(query, required, optional):
             return False
         # check to make sure the instrument attr passed is one provided by the SOAR.
