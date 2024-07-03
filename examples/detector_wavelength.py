@@ -11,7 +11,7 @@ import sunpy.net.attrs as a
 from sunpy.net import Fido
 
 ###############################################################################
-# Importing sunpy_soar registers the client with sunpy
+# Importing sunpy_soar registers the client with sunpy Fido
 import sunpy_soar  # NOQA: F401
 
 ###############################################################################

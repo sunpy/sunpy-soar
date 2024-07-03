@@ -25,21 +25,22 @@ When a single wavelength is provided it is interpreted as the wavelength.
     >>> wavelength = a.Wavelength(121.6 * u.AA)
     >>> result = Fido.search(instrument & time & level & wavelength) # doctest: +REMOTE_DATA
     >>> result  # doctest: +REMOTE_DATA
+    <sunpy.net.fido_factory.UnifiedResponse object at ...>
     Results from 1 Provider:
     <BLANKLINE>
     8 Results from the SOARClient:
     <BLANKLINE>
     Instrument  Data product  Level        Start time               End time        Filesize SOOP Name Detector Wavelength
-                                                                                    Mbyte
+                                                                                     Mbyte
     ---------- -------------- ----- ----------------------- ----------------------- -------- --------- -------- ----------
-        METIS metis-uv-image    L2 2023-02-01 01:00:48.690 2023-02-01 01:11:46.866     0.85      none      UVD      121.6
-        METIS metis-uv-image    L2 2023-02-01 01:30:48.680 2023-02-01 01:41:45.540     0.85      none      UVD      121.6
-        METIS metis-uv-image    L2 2023-02-01 02:00:48.671 2023-02-01 02:11:44.213    12.64      none      UVD      121.6
-        METIS metis-uv-image    L2 2023-02-01 02:30:48.661 2023-02-01 02:41:42.887    12.64      none      UVD      121.6
-        METIS metis-uv-image    L2 2023-02-01 03:00:48.652 2023-02-01 03:11:41.560    12.64      none      UVD      121.6
-        METIS metis-uv-image    L2 2023-02-01 03:30:48.643 2023-02-01 03:41:40.233    12.64      none      UVD      121.6
-        METIS metis-uv-image    L2 2023-02-01 04:00:48.633 2023-02-01 04:11:38.907    12.64      none      UVD      121.6
-        METIS metis-uv-image    L2 2023-02-01 04:30:38.163 2023-02-01 04:40:37.625    12.64      none      UVD      121.6
+         METIS metis-uv-image    L2 2023-02-01 01:00:48.690 2023-02-01 01:11:46.866     0.85      none      UVD      121.6
+         METIS metis-uv-image    L2 2023-02-01 01:30:48.680 2023-02-01 01:41:45.540     0.85      none      UVD      121.6
+         METIS metis-uv-image    L2 2023-02-01 02:00:48.671 2023-02-01 02:11:44.213    12.64      none      UVD      121.6
+         METIS metis-uv-image    L2 2023-02-01 02:30:48.661 2023-02-01 02:41:42.887    12.64      none      UVD      121.6
+         METIS metis-uv-image    L2 2023-02-01 03:00:48.652 2023-02-01 03:11:41.560    12.64      none      UVD      121.6
+         METIS metis-uv-image    L2 2023-02-01 03:30:48.643 2023-02-01 03:41:40.233    12.64      none      UVD      121.6
+         METIS metis-uv-image    L2 2023-02-01 04:00:48.633 2023-02-01 04:11:38.907    12.64      none      UVD      121.6
+         METIS metis-uv-image    L2 2023-02-01 04:30:38.163 2023-02-01 04:40:37.625    12.64      none      UVD      121.6
     <BLANKLINE>
     <BLANKLINE>
 
@@ -54,76 +55,35 @@ When a range of wavelength is provided, it is interpreted as the wavemin and wav
     >>> wavelength = a.Wavelength(580 * u.AA, 640 * u.AA)
     >>> result = Fido.search(instrument & time & level & wavelength) # doctest: +REMOTE_DATA
     >>> result  # doctest: +REMOTE_DATA
+    <sunpy.net.fido_factory.UnifiedResponse object at ...>
     Results from 1 Provider:
     <BLANKLINE>
     64 Results from the SOARClient:
     <BLANKLINE>
     Instrument    Data product    Level        Start time               End time        Filesize SOOP Name Detector Wavelength
-                                                                                        Mbyte
+                                                                                         Mbyte
     ---------- ------------------ ----- ----------------------- ----------------------- -------- --------- -------- ----------
-        METIS        metis-vl-tb    L2 2023-02-01 01:00:00.147 2023-02-01 01:24:37.923    12.64      none      VLD      610.0
-        METIS    metis-vl-stokes    L2 2023-02-01 01:00:00.147 2023-02-01 01:24:37.923   21.067      none      VLD      610.0
-        METIS        metis-vl-pb    L2 2023-02-01 01:00:00.147 2023-02-01 01:24:37.923    12.64      none      VLD      610.0
-        METIS     metis-vl-image    L2 2023-02-01 01:00:00.147 2023-02-01 01:23:05.525   12.643      none      VLD      610.0
-        METIS metis-vl-pol-angle    L2 2023-02-01 01:00:00.147 2023-02-01 01:24:37.923    12.64      none      VLD      610.0
-        ...                ...   ...                     ...                     ...      ...       ...      ...        ...
-        METIS        metis-vl-tb    L2 2023-02-01 04:30:00.201 2023-02-01 04:54:37.981   50.388      none      VLD      610.0
-        METIS        metis-vl-pb    L2 2023-02-01 04:30:00.201 2023-02-01 04:54:37.981   50.388      none      VLD      610.0
-        METIS     metis-vl-image    L2 2023-02-01 04:30:00.201 2023-02-01 04:53:05.585   50.388      none      VLD      610.0
-        METIS     metis-vl-image    L2 2023-02-01 04:30:30.999 2023-02-01 04:53:36.383   50.388      none      VLD      610.0
-        METIS     metis-vl-image    L2 2023-02-01 04:31:01.796 2023-02-01 04:54:07.184   50.388      none      VLD      610.0
-        METIS     metis-vl-image    L2 2023-02-01 04:31:32.593 2023-02-01 04:54:37.979   50.388      none      VLD      610.0
+         METIS        metis-vl-tb    L2 2023-02-01 01:00:00.147 2023-02-01 01:24:37.923    12.64      none      VLD      610.0
+         METIS    metis-vl-stokes    L2 2023-02-01 01:00:00.147 2023-02-01 01:24:37.923   21.067      none      VLD      610.0
+         METIS        metis-vl-pb    L2 2023-02-01 01:00:00.147 2023-02-01 01:24:37.923    12.64      none      VLD      610.0
+         METIS     metis-vl-image    L2 2023-02-01 01:00:00.147 2023-02-01 01:23:05.525   12.643      none      VLD      610.0
+         METIS metis-vl-pol-angle    L2 2023-02-01 01:00:00.147 2023-02-01 01:24:37.923    12.64      none      VLD      610.0
+         METIS     metis-vl-image    L2 2023-02-01 01:00:30.944 2023-02-01 01:23:36.322   12.643      none      VLD      610.0
+         METIS     metis-vl-image    L2 2023-02-01 01:01:01.741 2023-02-01 01:24:07.127   12.643      none      VLD      610.0
+         METIS     metis-vl-image    L2 2023-02-01 01:01:32.538 2023-02-01 01:24:37.922   12.643      none      VLD      610.0
+         METIS    metis-vl-stokes    L2 2023-02-01 01:30:00.150 2023-02-01 01:54:37.922   21.067      none      VLD      610.0
+         METIS metis-vl-pol-angle    L2 2023-02-01 01:30:00.150 2023-02-01 01:54:37.922    12.64      none      VLD      610.0
+           ...                ...   ...                     ...                     ...      ...       ...      ...        ...
+         METIS     metis-vl-image    L2 2023-02-01 04:01:01.774 2023-02-01 04:24:07.158   50.388      none      VLD      610.0
+         METIS     metis-vl-image    L2 2023-02-01 04:01:32.571 2023-02-01 04:24:37.955   50.388      none      VLD      610.0
+         METIS metis-vl-pol-angle    L2 2023-02-01 04:30:00.201 2023-02-01 04:54:37.981   50.388      none      VLD      610.0
+         METIS    metis-vl-stokes    L2 2023-02-01 04:30:00.201 2023-02-01 04:54:37.981   83.981      none      VLD      610.0
+         METIS        metis-vl-tb    L2 2023-02-01 04:30:00.201 2023-02-01 04:54:37.981   50.388      none      VLD      610.0
+         METIS        metis-vl-pb    L2 2023-02-01 04:30:00.201 2023-02-01 04:54:37.981   50.388      none      VLD      610.0
+         METIS     metis-vl-image    L2 2023-02-01 04:30:00.201 2023-02-01 04:53:05.585   50.388      none      VLD      610.0
+         METIS     metis-vl-image    L2 2023-02-01 04:30:30.999 2023-02-01 04:53:36.383   50.388      none      VLD      610.0
+         METIS     metis-vl-image    L2 2023-02-01 04:31:01.796 2023-02-01 04:54:07.184   50.388      none      VLD      610.0
+         METIS     metis-vl-image    L2 2023-02-01 04:31:32.593 2023-02-01 04:54:37.979   50.388      none      VLD      610.0
     Length = 64 rows
-    <BLANKLINE>
-    <BLANKLINE>
-
-For instrument PHI passing a range of Wavelength
-================================================
-
-When a range of wavelength is provided, it is interpreted as the wavemin and wavemax.
-
-.. code-block:: python
-
-
-    >>> instrument = a.Instrument("PHI")
-    >>> time = a.Time("2023-02-01", "2023-02-02")
-    >>> level = a.Level(2)
-    >>> wavelength=a.Wavelength(6173.065*u.AA, 6173.501*u.AA)
-    >>> result = Fido.search(instrument & time & level) # doctest: +REMOTE_DATA
-    >>> result  # doctest: +REMOTE_DATA
-    Results from 1 Provider:
-    <BLANKLINE>
-    2 Results from the SOARClient:
-    <BLANKLINE>
-    Instrument Data product Level        Start time               End time        Filesize SOOP Name Detector Wavemin  Wavemax
-                                                                                Mbyte
-    ---------- ------------ ----- ----------------------- ----------------------- -------- --------- -------- -------- --------
-        PHI phi-fdt-blos    L2 2023-02-01 21:00:09.414 2023-02-01 21:01:09.262    2.586      None      FDT 6173.065 6173.501
-        PHI phi-fdt-icnt    L2 2023-02-01 21:00:09.414 2023-02-01 21:01:09.262    2.586      None      FDT 6173.065 6173.501
-    <BLANKLINE>
-    <BLANKLINE>
-
-For instrument PHI passing a single of Wavelength
-=================================================
-
-When a single value given for wavelength is interpreted as the wavemin.
-
-.. code-block:: python
-
-
-    >>> wavelength=a.Wavelength(6173.065*u.AA)
-    >>> result = Fido.search(instrument & time & level) # doctest: +REMOTE_DATA
-    >>> result  # doctest: +REMOTE_DATA
-    Results from 1 Provider:
-    <BLANKLINE>
-    4 Results from the SOARClient:
-    <BLANKLINE>
-    Instrument Data product Level        Start time               End time        Filesize SOOP Name Detector Wavemin  Wavemax
-                                                                                Mbyte
-    ---------- ------------ ----- ----------------------- ----------------------- -------- --------- -------- -------- --------
-        PHI phi-fdt-blos    L2 2023-02-01 15:00:09.367 2023-02-01 15:01:09.241     2.58      None      FDT 6173.065 6173.502
-        PHI phi-fdt-icnt    L2 2023-02-01 15:00:09.367 2023-02-01 15:01:09.241     2.58      None      FDT 6173.065 6173.502
-        PHI phi-fdt-blos    L2 2023-02-01 21:00:09.414 2023-02-01 21:01:09.262    2.586      None      FDT 6173.065 6173.501
-        PHI phi-fdt-icnt    L2 2023-02-01 21:00:09.414 2023-02-01 21:01:09.262    2.586      None      FDT 6173.065 6173.501
     <BLANKLINE>
     <BLANKLINE>
