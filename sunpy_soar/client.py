@@ -63,16 +63,11 @@ class SOARClient(BaseClient):
             wavemax_match = wavemax_pattern.search(parameter)
             # If the wavemin and wavemax are same that means only one wavelength is given in query.
             if wavemin_match and wavemax_match and float(wavemin_match.group(1)) == float(wavemax_match.group(1)):
-                # For PHI, we specify the wavemin as a parameter.
-                # This enables us to retrieve columns containing wavemin and their corresponding wavemax values.
+                # For PHI and SPICE, we can specify wavemin and wavemax in the query and get the results.
+                # For PHI we have wavelength data in both angstrom and nanometer without it being mentioned in the SOAR.
                 # For SPICE we get data in form of wavemin/wavemax columns, but only for the first spectral window.
-                # Therefore, to make sure this data is not misleading to the user we do not return any values.
-                if "phi" in instrument_table:
-                    parameter = f"Wavemin='{wavemin_match.group(1)}'"
-                # For other instruments, we provide the wavemin value to the Wavelength column.
-                # This gives us the Wavelength column in the output table.
-                else:
-                    parameter = f"Wavelength='{wavemin_match.group(1)}'"
+                # To make sure this data is not misleading to the user we do not return any values for PHI AND SPICE.
+                parameter = f"Wavelength='{wavemin_match.group(1)}'"
             prefix = (
                 "h1."
                 if not parameter.startswith("Detector")
@@ -100,12 +95,7 @@ class SOARClient(BaseClient):
         )
         if instrument_table:
             from_part += f" JOIN {instrument_table} AS h2 USING (data_item_oid)"
-            # For EUI, METIS and SOLOHI, we query on basis of wavelength.
-            if "phi" not in instrument_table:
-                select_part += ", h2.detector, h2.wavelength, h2.dimension_index"
-            # For PHI, we query on basis of wavemin and wavemax.
-            else:
-                select_part += ", h2.detector, h2.wavemin, h2.wavemax, h2.dimension_index"
+            select_part += ", h2.detector, h2.wavelength, h2.dimension_index"
         return where_part, from_part, select_part
 
     @staticmethod
@@ -216,9 +206,6 @@ class SOARClient(BaseClient):
             result_table["Detector"] = info["detector"]
         if "wavelength" in info:
             result_table["Wavelength"] = info["wavelength"]
-        if "wavemin" in info:
-            result_table["Wavemin"] = info["wavemin"]
-            result_table["Wavemax"] = info["wavemax"]
         result_table.sort("Start time")
         return result_table
 
