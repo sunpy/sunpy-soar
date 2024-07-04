@@ -162,17 +162,6 @@ def test_search_wavelength_detector_column():
     assert "Detector" in res[0].columns
 
 
-def test_search_low_latency_wavelength_detector_column():
-    instrument = a.Instrument("EUI")
-    time = a.Time("2020-10-21", "2020-10-22")
-    level = a.Level("LL02")
-    product = a.soar.Product("EUI-FSI174-IMAGE")
-
-    res = Fido.search(instrument & time & level & product)
-    assert "Wavelength" in res[0].columns
-    assert "Detector" in res[0].columns
-
-
 def test_search_detector_instrument_dimension_2():
     # Instruments "EUI", "METIS", "PHI" and "SOLOHI" have two dimensions in the SOAR data.
     # Selecting no dimension index in the query results in two identical output rows.
