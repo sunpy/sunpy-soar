@@ -57,7 +57,7 @@ class SOARClient(BaseClient):
         final_query = ""
         # Extract wavemin and wavemax individually
         wavemin_pattern = re.compile(r"Wavemin='(\d+\.\d+)'")
-        wavemax_pattern = re.compile(r"h2.Wavemax='(\d+\.\d+)'")
+        wavemax_pattern = re.compile(r"Wavemax='(\d+\.\d+)'")
         for parameter in query:
             wavemin_match = wavemin_pattern.search(parameter)
             wavemax_match = wavemax_pattern.search(parameter)
@@ -68,18 +68,12 @@ class SOARClient(BaseClient):
                 # For SPICE we get data in form of wavemin/wavemax columns, but only for the first spectral window.
                 # To make sure this data is not misleading to the user we do not return any values for PHI AND SPICE.
                 parameter = f"Wavelength='{wavemin_match.group(1)}'"
-            prefix = (
-                "h1."
-                if not parameter.startswith("Detector")
-                and not parameter.startswith("Wavelength")
-                and not parameter.startswith("Wavemin")
-                else "h2."
-            )
+            elif wavemin_match and wavemax_match:
+                parameter = f"Wavemin='{wavemin_match.group(1)}'+AND+h2.Wavemax='{wavemax_match.group(1)}'"
+            prefix = "h1." if not parameter.startswith("Detector") and not parameter.startswith("Wave") else "h2."
             if parameter.startswith("begin_time"):
                 time_list = parameter.split("+AND+")
-                begin_start = f"h1.{time_list[0]}"
-                begin_end = f"h1.{time_list[1]}"
-                final_query += f"{begin_start}+AND+{begin_end}+AND+"
+                final_query += f"h1.{time_list[0]}+AND+h1.{time_list[1]}+AND+"
                 # As there are no dimensions in STIX, the dimension index need not be included in the query for STIX.
                 if "stx" not in instrument_table:
                     # To avoid duplicate rows in the output table, the dimension index is set to 1.

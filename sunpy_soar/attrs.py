@@ -140,4 +140,4 @@ def _(wlk, attr, params):  # NOQA: ARG001
 def _(wlk, attr, params):  # NOQA: ARG001
     wavemin = attr.min.value
     wavemax = attr.max.value
-    params.append(f"Wavemin='{wavemin}'+AND+h2.Wavemax='{wavemax}'")
+    params.append(f"Wavemin='{wavemin}'+AND+Wavemax='{wavemax}'")
