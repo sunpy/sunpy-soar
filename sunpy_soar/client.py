@@ -72,8 +72,6 @@ class SOARClient(BaseClient):
             prefix = "h1." if not parameter.startswith("Detector") and not parameter.startswith("Wave") else "h2."
             if parameter.startswith("begin_time"):
                 time_list = parameter.split(" AND ")
-                f"h1.{time_list[0]}"
-                f"h1.{time_list[1]}"
                 final_query += f"h1.{time_list[0]} AND h1.{time_list[1]} AND "
                 # As there are no dimensions in STIX, the dimension index need not be included in the query for STIX.
                 if "stx" not in instrument_table:
