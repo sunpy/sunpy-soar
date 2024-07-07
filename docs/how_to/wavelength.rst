@@ -14,6 +14,8 @@ For instruments EUI, METIS and SOLOHI passing a single Wavelength
 When a single wavelength is provided it is interpreted as the wavelength.
 
 .. code-block:: python
+
+
     >>> import astropy.units as u
     >>> import sunpy.net.attrs as a
     >>> from sunpy.net import Fido
