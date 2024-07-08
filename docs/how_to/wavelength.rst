@@ -14,8 +14,6 @@ For instruments EUI, METIS and SOLOHI passing a single Wavelength
 When a single wavelength is provided it is interpreted as the wavelength.
 
 .. code-block:: python
-
-
     >>> import astropy.units as u
     >>> import sunpy.net.attrs as a
     >>> from sunpy.net import Fido
@@ -52,8 +50,6 @@ For instruments EUI, METIS and SOLOHI passing a range of Wavelength
 When a range of wavelength is provided, it is interpreted as the wavemin and wavemax.
 
 .. code-block:: python
-
-
     >>> wavelength = a.Wavelength(580 * u.AA, 640 * u.AA)
     >>> result = Fido.search(instrument & time & level & wavelength) # doctest: +REMOTE_DATA
     >>> result  # doctest: +REMOTE_DATA
