@@ -37,7 +37,7 @@ class SOARClient(BaseClient):
 
     def add_join_to_query(query: list[str], data_table: str, instrument_table: str):
         """
-        Construct the WHERE, FROM, and SELECT parts of the SQL query.
+        Construct the WHERE, FROM, and SELECT parts of the ADQL query.
 
         Parameters
         ----------
@@ -104,7 +104,7 @@ class SOARClient(BaseClient):
         Returns
         -------
         str
-            SQL query string.
+            ADQL query string.
         """
         # Default data table
         data_table = "v_sc_data_item"
@@ -156,13 +156,13 @@ class SOARClient(BaseClient):
 
         Returns
         -------
-        astropy.table.Table
+        astropy.table.QTable
             Query results.
         """
         tap_endpoint = "http://soar.esac.esa.int/soar-sl-tap/tap"
-        sql_query = SOARClient._construct_payload(query)
+        adql_query = SOARClient._construct_payload(query)
         soar = TapPlus(url=tap_endpoint)
-        job = soar.launch_job_async(sql_query)
+        job = soar.launch_job_async(adql_query)
         results = job.results
         new_colnames = {
             "instrument": "Instrument",
