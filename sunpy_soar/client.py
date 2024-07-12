@@ -4,8 +4,8 @@ import re
 
 import astropy.table
 import astropy.units as u
+import pyvo as vo
 import sunpy.net.attrs as a
-from astroquery.utils.tap.core import TapPlus
 from sunpy import log
 from sunpy.net.attr import and_
 from sunpy.net.base_client import BaseClient, QueryResponseTable
@@ -161,9 +161,9 @@ class SOARClient(BaseClient):
         """
         tap_endpoint = "http://soar.esac.esa.int/soar-sl-tap/tap"
         adql_query = SOARClient._construct_payload(query)
-        soar = TapPlus(url=tap_endpoint)
-        job = soar.launch_job_async(adql_query)
-        results = job.results
+        service = vo.dal.TAPService(tap_endpoint)
+        resultset = service.search(adql_query)
+        table = resultset.to_table()
         new_colnames = {
             "instrument": "Instrument",
             "descriptor": "Data product",
@@ -174,11 +174,11 @@ class SOARClient(BaseClient):
             "filesize": "Filesize",
             "soop_name": "SOOP Name",
         }
-        new_colnames.update({k: k.capitalize() for k in ["wavelength", "detector"] if k in results.colnames})
+        new_colnames.update({k: k.capitalize() for k in ["wavelength", "detector"] if k in table.colnames})
         for old_name, new_name in new_colnames.items():
-            results.rename_column(old_name, new_name)
-        results.sort("Start time")
-        return results
+            table.rename_column(old_name, new_name)
+        table.sort("Start time")
+        return table
 
     def fetch(self, query_results, *, path, downloader, **kwargs):  # NOQA: ARG002
         """

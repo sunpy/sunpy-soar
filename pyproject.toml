@@ -19,7 +19,7 @@ authors = [
 dependencies = [
   "astropy>5.2.0",
   "sunpy[net]>=5.0",
-  "astroquery>=0.4.7"
+  "pyvo>=1.5.2"
 ]
 dynamic = ["version"]
 
