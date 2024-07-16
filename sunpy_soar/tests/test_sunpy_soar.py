@@ -273,7 +273,7 @@ def test_join_low_latency_query():
 
 
 @responses.activate
-def test_SOAR_server_down():
+def test_soar_server_down():
     # As the SOAR server is expected to be down in this test, a JSONDecodeError is expected
     # to be raised due to the absence of a valid JSON response.
     TAP_ENDPOINT = (
