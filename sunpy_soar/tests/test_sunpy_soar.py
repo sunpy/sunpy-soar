@@ -1,3 +1,4 @@
+from json.decoder import JSONDecodeError
 from pathlib import Path
 
 import astropy.units as u
@@ -272,7 +273,6 @@ def test_join_low_latency_query():
     )
 
 
-@pytest.mark.xfail(reason="Expected to fail due to invalid JSON response causing JSONDecodeError")
 @responses.activate
 def test_SOAR_server_down():
     # As the SOAR server is expected to be down in this test, a JSONDecodeError is expected
@@ -282,9 +282,11 @@ def test_SOAR_server_down():
         "WHERE+begin_time%3E='2020-11-13+00:00:00'+AND+begin_time%3C='2020-11-14+00:00:00'+AND+level='LL02'+AND+descriptor='mag'"
     )
     # We do not give any json data similar to the condition when the server is down.
-    responses.add(responses.GET, TAP_ENDPOINT, status=200)
+    responses.add(responses.GET, TAP_ENDPOINT, body="Invalid JSON response", status=200)
 
     time = a.Time("2020-11-13", "2020-11-14")
     level = a.Level("LL02")
     product = a.soar.Product("mag")
-    Fido.search(time, level, product)
+
+    with pytest.raises(JSONDecodeError):
+        Fido.search(time, level, product)
