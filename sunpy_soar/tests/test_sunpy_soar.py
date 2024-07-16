@@ -1,4 +1,3 @@
-from json.decoder import JSONDecodeError
 from pathlib import Path
 
 import astropy.units as u
@@ -288,5 +287,8 @@ def test_SOAR_server_down():
     level = a.Level("LL02")
     product = a.soar.Product("mag")
 
-    with pytest.raises(JSONDecodeError):
+    with pytest.raises(
+        RuntimeError,
+        match="Server returned an invalid JSON response. The SOAR server may be down or not functioning correctly.",
+    ):
         Fido.search(time, level, product)
