@@ -14,7 +14,7 @@ from sunpy.net import Fido
 
 ###############################################################################
 # Importing sunpy_soar registers the client with sunpy Fido
-import sunpy_soar  
+import sunpy_soar  # NOQA: F401
 
 ###############################################################################
 # We shall start with constructing a search query with wavelength and detector.
