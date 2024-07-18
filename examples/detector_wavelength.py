@@ -1,9 +1,11 @@
 """
 ================================================
-Searching SOAR data with Wavelength and Detector
+Searching for Solar Orbiter data using Wavelength and Detector attributes
 ================================================
 
 This example demonstrates how to search and download Solar Orbiter data using ``sunpy.net.Fido``.
+To do this, we can build a query based on several attributes. 
+Here, we will build a search for METIS data from the UVD (Ultra Violet Detector) detector for a specific wavelength.
 """
 
 import astropy.units as u
@@ -12,7 +14,7 @@ from sunpy.net import Fido
 
 ###############################################################################
 # Importing sunpy_soar registers the client with sunpy Fido
-import sunpy_soar  # NOQA: F401
+import sunpy_soar  
 
 ###############################################################################
 # We shall start with constructing a search query with wavelength and detector.
@@ -27,4 +29,7 @@ wavelength = a.Wavelength(121.6 * u.AA)
 # Now do the search.
 
 result = Fido.search(instrument & time & level & detector & wavelength)
-print(result)
+result
+
+###############################################################################
+# To then download the data, you would then use Fido.fetch(result), which will download the data locally.
