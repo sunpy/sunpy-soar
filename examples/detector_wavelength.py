@@ -4,7 +4,7 @@ Searching for Solar Orbiter data using Wavelength and Detector attributes
 ================================================
 
 This example demonstrates how to search and download Solar Orbiter data using ``sunpy.net.Fido``.
-To do this, we can build a query based on several attributes. 
+To do this, we can build a query based on several attributes.
 Here, we will build a search for METIS data from the UVD (Ultra Violet Detector) detector for a specific wavelength.
 """
 
