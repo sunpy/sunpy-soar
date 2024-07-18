@@ -49,7 +49,7 @@ This will walk you through getting set up for contributing.
    :hidden:
 
    generated/gallery/index
+   how_to/index
    api
    changelog
    coc
-   how_to/index

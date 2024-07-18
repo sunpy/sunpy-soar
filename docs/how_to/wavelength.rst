@@ -1,12 +1,13 @@
 .. _sunpy-soar-how-to-query-wavelength:
 
-*************************************
-How to query for Solar Orbiter data using the `Wavelength` attribute using `sunpy-soar`.
-*************************************
+********************************************************************************************
+How to query for Solar Orbiter data using the ``Wavelength`` attribute using ``sunpy-soar``.
+********************************************************************************************
 
-``sunpy-soar`` provides a convenient methods to construct queries using `a.Wavelength` for several different remote sensing instruments available through the SOAR.
-In this guide, we will demonstrate how we can query data using `a.Wavelength` for different instruments.
-For instruments EUI, METIS and SOLOHI we get query results in form of wavelength. However, at this time we cannot search for wavelengths for instruments SPICE, PHI, and STIX as this information is not yet available in the SOAR.
+``sunpy-soar`` provides a convenient methods to construct queries using ``a.Wavelength`` for several different remote sensing instruments available through the SOAR.
+In this guide, we will demonstrate how we can query data using ``a.Wavelength`` for different instruments.
+For instruments EUI, METIS and SOLOHI we get query results in form of wavelength.
+However, at this time we cannot search for wavelengths for instruments SPICE, PHI, and STIX as this information is not yet available in the SOAR.
 
 For instruments EUI, METIS and SOLOHI passing a single Wavelength
 =================================================================
