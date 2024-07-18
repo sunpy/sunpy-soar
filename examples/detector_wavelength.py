@@ -1,7 +1,7 @@
 """
-================================================
+=========================================================================
 Searching for Solar Orbiter data using Wavelength and Detector attributes
-================================================
+=========================================================================
 
 This example demonstrates how to search and download Solar Orbiter data using ``sunpy.net.Fido``.
 To do this, we can build a query based on several attributes.
