@@ -1,8 +1,8 @@
 .. _sunpy-soar-how-to-query-wavelength:
 
-********************************************************************************************
-How to query for Solar Orbiter data using the ``Wavelength`` attribute using ``sunpy-soar``.
-********************************************************************************************
+***************************************************************
+Query for Solar Orbiter data using the ``Wavelength`` attribute
+***************************************************************
 
 ``sunpy-soar`` provides a convenient methods to construct queries using ``a.Wavelength`` for several different remote sensing instruments available through the SOAR.
 In this guide, we will demonstrate how we can query data using ``a.Wavelength`` for different instruments.
