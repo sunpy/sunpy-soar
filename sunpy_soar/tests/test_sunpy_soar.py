@@ -268,3 +268,31 @@ def test_join_low_latency_query():
         "+WHERE+h1.instrument='EUI'+AND+h1.begin_time>='2021-02-01+00:00:00'+AND+h1.begin_time<='2021-02-02+00:00:00'"
         "+AND+h2.dimension_index='1'+AND+h1.level='LL01'+AND+h1.descriptor='eui-fsi174-image'"
     )
+
+
+def test_distance_search_remote_sensing():
+    instrument = a.Instrument("RPW")
+    product = a.soar.Product("rpw-tnr-surv")
+    level = a.Level(2)
+    distance = a.soar.Distance(0.28, 0.30)
+    res = Fido.search(distance & instrument & product & level)
+    assert res.file_num == 21
+
+
+def test_distance_search_insitu():
+    instrument = a.Instrument("METIS")
+    level = a.Level(2)
+    product = a.soar.Product("metis-vl-pol-angle")
+    distance = a.soar.Distance(0.45, 0.46)
+    res = Fido.search(distance & instrument & product & level)
+    assert res.file_num == 172
+
+
+def test_distance_time_search():
+    instrument = a.Instrument("EUI")
+    time = a.Time("2023-04-27", "2023-04-28")
+    level = a.Level(2)
+    product = a.soar.Product("eui-fsi174-image")
+    distance = a.soar.Distance(0.45, 0.46)
+    res = Fido.search(distance & instrument & product & level & time)
+    assert res.file_num == 48

@@ -16,16 +16,12 @@ import sunpy_soar  # NOQA: F401
 #####################################################
 # We shall start with constructing a search query.
 
-instrument = a.Instrument("EUI")
-time = a.Time("2021-02-01", "2021-02-02")
-level = a.Level(1)
-product = a.soar.Product("EUI-FSI174-IMAGE")
-
-#####################################################
-# Now do the search.
-
-result = Fido.search(instrument & time & level & product)
-result
+instrument = a.Instrument("METIS")
+level = a.Level(2)
+product = a.soar.Product("metis-vl-pol-angle")
+distance = a.soar.Distance(0.45, 0.55)
+res = Fido.search(distance & instrument & product & level)
+print(res)
 
 #####################################################
 # Finally we can download the data.

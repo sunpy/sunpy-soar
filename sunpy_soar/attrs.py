@@ -1,7 +1,7 @@
 import warnings
 
 import sunpy.net.attrs as a
-from sunpy.net.attr import AttrAnd, AttrOr, AttrWalker, DataAttr, SimpleAttr
+from sunpy.net.attr import AttrAnd, AttrOr, AttrWalker, DataAttr, Range, SimpleAttr
 from sunpy.util.exceptions import SunpyUserWarning
 
 __all__ = ["Product", "SOOP"]
@@ -23,6 +23,32 @@ class SOOP(SimpleAttr):
     """
     The SOOP name to search for.
     """
+
+
+class Distance(Range):
+    type_name = "distance"
+
+    def __init__(self, dist_min, dist_max=None):
+        """
+        Specifies the distance range.
+
+        Parameters
+        ----------
+        dist_min : `~astropy.units.Quantity`
+            The lower bound of the range.
+        dist_max : `~astropy.units.Quantity`
+            The upper bound of the range, if not specified it will default to
+            the lower bound.
+        """
+        if dist_max is None:
+            dist_max = dist_min
+
+        dist_min, dist_max = sorted([dist_min, dist_max])
+        self.dist_min = dist_min
+        self.dist_max = dist_max
+
+    def collides(self, other):
+        return isinstance(other, self.__class__)
 
 
 walker = AttrWalker()
@@ -141,3 +167,10 @@ def _(wlk, attr, params):  # NOQA: ARG001
     wavemin = attr.min.value
     wavemax = attr.max.value
     params.append(f"Wavemin='{wavemin}'+AND+Wavemax='{wavemax}'")
+
+
+@walker.add_applier(Distance)
+def _(wlk, attr, params):  # NOQA: ARG001
+    dmin = attr.dist_min
+    dmax = attr.dist_max
+    params.append(f"DISTANCE({dmin},{dmax})")
