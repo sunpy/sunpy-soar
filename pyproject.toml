@@ -29,6 +29,7 @@ tests = [
   "pytest-doctestplus",
   "pytest-xdist",
   "pytest",
+  "responses>=0.20.0",
   "sunpy[map,net]>=5.0",
 ]
 docs = [
