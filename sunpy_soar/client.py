@@ -174,7 +174,7 @@ class SOARClient(BaseClient):
         try:
             response_json = r.json()
         except JSONDecodeError as err:
-            msg = "Server returned an invalid JSON response. The SOAR server may be down or not functioning correctly."
+            msg = "The SOAR server returned an invalid JSON response. " "It may be down or not functioning correctly."
             raise RuntimeError(msg) from err
 
         # Do some list/dict wrangling
