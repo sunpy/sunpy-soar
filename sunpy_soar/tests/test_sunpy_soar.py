@@ -271,6 +271,7 @@ def test_join_low_latency_query():
         "+AND+h2.dimension_index='1'+AND+h1.level='LL01'+AND+h1.descriptor='eui-fsi174-image'"
     )
 
+
 def test_distance_search_remote_sensing():
     instrument = a.Instrument("RPW")
     product = a.soar.Product("rpw-tnr-surv")
@@ -298,6 +299,7 @@ def test_distance_time_search():
     res = Fido.search(distance & instrument & product & level & time)
     assert res.file_num == 48
 
+
 @responses.activate
 def test_soar_server_down():
     # As the SOAR server is expected to be down in this test, a JSONDecodeError is expected
@@ -315,7 +317,6 @@ def test_soar_server_down():
 
     with pytest.raises(
         RuntimeError,
-        match=("The SOAR server returned an invalid JSON response. " "It may be down or not functioning correctly."),
+        match=("The SOAR server returned an invalid JSON response. It may be down or not functioning correctly."),
     ):
         Fido.search(time, level, product)
-
