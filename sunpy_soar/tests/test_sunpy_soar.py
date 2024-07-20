@@ -272,7 +272,6 @@ def test_join_low_latency_query():
     )
 
 
-
 def test_distance_query():
     result = SOARClient._construct_payload(  # NOQA: SLF001
         [
