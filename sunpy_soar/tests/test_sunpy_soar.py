@@ -272,6 +272,36 @@ def test_join_low_latency_query():
     )
 
 
+def test_distance_query():
+    result = SOARClient._construct_payload(  # NOQA: SLF001
+        [
+            "instrument='RPW'",
+            "DISTANCE(0.28,0.30)",
+            "level='L2'",
+        ]
+    )
+
+    assert result["QUERY"] == ("SELECT+*+FROM+v_sc_data_item+WHERE+instrument='RPW'+AND+level='L2'&DISTANCE(0.28,0.30)")
+
+
+def test_distance_join_query():
+    result = SOARClient._construct_payload(  # NOQA: SLF001
+        [
+            "instrument='EUI'",
+            "DISTANCE(0.28,0.30)",
+            "level='L2'",
+            "descriptor='eui-fsi174-image'",
+        ]
+    )
+
+    assert result["QUERY"] == (
+        "SELECT+h1.instrument, h1.descriptor, h1.level, h1.begin_time, h1.end_time, "
+        "h1.data_item_id, h1.filesize, h1.filename, h1.soop_name, h2.detector, h2.wavelength, "
+        "h2.dimension_index+FROM+v_sc_data_item AS h1 JOIN v_eui_sc_fits AS h2 USING (data_item_oid)"
+        "+WHERE+h1.instrument='EUI'+AND+h1.level='L2'+AND+h1.descriptor='eui-fsi174-image'&DISTANCE(0.28,0.30)"
+    )
+
+
 def test_distance_search_remote_sensing():
     instrument = a.Instrument("RPW")
     product = a.soar.Product("rpw-tnr-surv")
@@ -296,6 +326,9 @@ def test_distance_time_search():
     level = a.Level(2)
     product = a.soar.Product("eui-fsi174-image")
     distance = a.soar.Distance(0.45, 0.46)
+    res = Fido.search(instrument & product & level & time)
+    assert res.file_num == 96
+    # To check if we get different value when distance parameter is added in search.
     res = Fido.search(distance & instrument & product & level & time)
     assert res.file_num == 48
 
