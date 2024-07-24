@@ -11,7 +11,7 @@ from sunpy.net.attr import and_
 from sunpy.net.base_client import BaseClient, QueryResponseTable
 from sunpy.time import parse_time
 
-from sunpy_soar.attrs import SOOP, Product, walker
+from sunpy_soar.attrs import SOOP, ObservationMode, Product, walker
 
 __all__ = ["SOARClient"]
 
@@ -70,7 +70,13 @@ class SOARClient(BaseClient):
                 parameter = f"Wavelength='{wavemin_match.group(1)}'"
             elif wavemin_match and wavemax_match:
                 parameter = f"Wavemin='{wavemin_match.group(1)}'+AND+h2.Wavemax='{wavemax_match.group(1)}'"
-            prefix = "h1." if not parameter.startswith("Detector") and not parameter.startswith("Wave") else "h2."
+            prefix = (
+                "h1."
+                if not parameter.startswith("Detector")
+                and not parameter.startswith("Wave")
+                and not parameter.startswith("Observation")
+                else "h2."
+            )
             if parameter.startswith("begin_time"):
                 time_list = parameter.split("+AND+")
                 final_query += f"h1.{time_list[0]}+AND+h1.{time_list[1]}+AND+"
@@ -89,7 +95,7 @@ class SOARClient(BaseClient):
         )
         if instrument_table:
             from_part += f" JOIN {instrument_table} AS h2 USING (data_item_oid)"
-            select_part += ", h2.detector, h2.wavelength, h2.dimension_index"
+            select_part += ", h2.detector, h2.wavelength, h2.dimension_index, h2.observation_mode"
         return where_part, from_part, select_part
 
     @staticmethod
@@ -198,6 +204,7 @@ class SOARClient(BaseClient):
         )
         if "detector" in info:
             result_table["Detector"] = info["detector"]
+            result_table["Observation mode"] = info["observation_mode"]
         if "wavelength" in info:
             result_table["Wavelength"] = info["wavelength"]
         result_table.sort("Start time")
@@ -247,7 +254,7 @@ class SOARClient(BaseClient):
             True if this client can handle the given query.
         """
         required = {a.Time}
-        optional = {a.Instrument, a.Detector, a.Wavelength, a.Level, a.Provider, Product, SOOP}
+        optional = {a.Instrument, a.Detector, a.Wavelength, a.Level, a.Provider, Product, SOOP, ObservationMode}
         if not cls.check_attr_types_in_query(query, required, optional):
             return False
         # check to make sure the instrument attr passed is one provided by the SOAR.

@@ -232,6 +232,18 @@ def test_wavelength_range():
         assert all(table["Wavelength"] == 174)
 
 
+def test_search_observation_mode():
+    instrument = a.Instrument("METIS")
+    time = a.Time("2022-03-01", "2022-03-02")
+    level = a.Level(2)
+    product = a.soar.Product("metis-vl-pol-angle")
+    observation = a.soar.ObservationMode("METIS_GENERIC")
+    res = Fido.search(instrument & time & level & product & observation)
+    assert len(res[0]) == 32
+    for table in res:
+        assert all(table["Observation mode"] == "METIS_GENERIC")
+
+
 def test_join_science_query():
     result = SOARClient._construct_payload(  # NOQA: SLF001
         [
@@ -244,8 +256,8 @@ def test_join_science_query():
 
     assert result["QUERY"] == (
         "SELECT+h1.instrument, h1.descriptor, h1.level, h1.begin_time, h1.end_time, "
-        "h1.data_item_id, h1.filesize, h1.filename, h1.soop_name, h2.detector, h2.wavelength, "
-        "h2.dimension_index+FROM+v_sc_data_item AS h1 JOIN v_eui_sc_fits AS h2 USING (data_item_oid)"
+        "h1.data_item_id, h1.filesize, h1.filename, h1.soop_name, h2.detector, h2.wavelength, h2.dimension_index, "
+        "h2.observation_mode+FROM+v_sc_data_item AS h1 JOIN v_eui_sc_fits AS h2 USING (data_item_oid)"
         "+WHERE+h1.instrument='EUI'+AND+h1.begin_time>='2021-02-01+00:00:00'+AND+h1.begin_time<='2021-02-02+00:00:00'"
         "+AND+h2.dimension_index='1'+AND+h1.level='L1'+AND+h1.descriptor='eui-fsi174-image'"
     )
@@ -263,8 +275,8 @@ def test_join_low_latency_query():
 
     assert result["QUERY"] == (
         "SELECT+h1.instrument, h1.descriptor, h1.level, h1.begin_time, h1.end_time, "
-        "h1.data_item_id, h1.filesize, h1.filename, h1.soop_name, h2.detector, h2.wavelength, "
-        "h2.dimension_index+FROM+v_ll_data_item AS h1 JOIN v_eui_ll_fits AS h2 USING (data_item_oid)"
+        "h1.data_item_id, h1.filesize, h1.filename, h1.soop_name, h2.detector, h2.wavelength, h2.dimension_index, "
+        "h2.observation_mode+FROM+v_ll_data_item AS h1 JOIN v_eui_ll_fits AS h2 USING (data_item_oid)"
         "+WHERE+h1.instrument='EUI'+AND+h1.begin_time>='2021-02-01+00:00:00'+AND+h1.begin_time<='2021-02-02+00:00:00'"
         "+AND+h2.dimension_index='1'+AND+h1.level='LL01'+AND+h1.descriptor='eui-fsi174-image'"
     )
