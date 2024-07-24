@@ -17,8 +17,8 @@ authors = [
   { name = "The Sunpy Community", email = "sunpy@googlegroups.com" },
 ]
 dependencies = [
-  "astropy>5.2.0",
-  "sunpy[net]>=5.0",
+  "astropy>=5.3.0",
+  "sunpy[net]>=6.0.0",
   "requests>=2.28.0",
 ]
 dynamic = ["version"]
@@ -29,7 +29,8 @@ tests = [
   "pytest-doctestplus",
   "pytest-xdist",
   "pytest",
-  "sunpy[map,net]>=5.0",
+  "responses>=0.20.0",
+  "sunpy[map,net]>=6.0.0",
 ]
 docs = [
   "matplotlib",
