@@ -34,7 +34,14 @@ class SOARClient(BaseClient):
         table = astropy.table.vstack(results)
         qrt = QueryResponseTable(table, client=self)
         qrt["Filesize"] = (qrt["Filesize"] * u.byte).to(u.Mbyte).round(3)
-        qrt.hide_keys = ["Data item ID", "Filename"]
+        qrt.hide_keys = [
+            "Data item ID",
+            "Filename",
+            "fov_solo_bot_left_arcsec_ty",
+            "fov_solo_bot_left_arcsec_tx",
+            "fov_solo_top_right_arcsec_ty",
+            "fov_solo_top_right_arcsec_tx",
+        ]
         return qrt
 
     def add_join_to_query(query: list[str], data_table: str, instrument_table: str):
@@ -71,7 +78,7 @@ class SOARClient(BaseClient):
                 parameter = f"Wavelength='{wavemin_match.group(1)}'"
             elif wavemin_match and wavemax_match:
                 parameter = f"Wavemin='{wavemin_match.group(1)}'+AND+h2.Wavemax='{wavemax_match.group(1)}'"
-            prefix = "h1." if not parameter.startswith("Detector") and not parameter.startswith("Wave") else "h2."
+            prefix = "h2." if parameter.startswith(("Detector", "Wave", "Observation")) else "h1."
             if parameter.startswith("begin_time"):
                 time_list = parameter.split("+AND+")
                 final_query += f"h1.{time_list[0]}+AND+h1.{time_list[1]}+AND+"
@@ -85,12 +92,35 @@ class SOARClient(BaseClient):
         where_part = final_query[:-5]
         from_part = f"{data_table} AS h1"
         select_part = (
-            "h1.instrument, h1.descriptor, h1.level, h1.begin_time, h1.end_time, "
-            "h1.data_item_id, h1.filesize, h1.filename, h1.soop_name"
+            "h1.instrument, h1.descriptor, h1.level, h1.begin_time, h1.end_time, h1.data_item_id, "
+            "h1.filesize, h1.filename, h1.soop_name, h2.wavelength, h2.detector, h2.dimension_index"
         )
-        if instrument_table:
-            from_part += f" JOIN {instrument_table} AS h2 USING (data_item_oid)"
-            select_part += ", h2.detector, h2.wavelength, h2.dimension_index"
+        # Add the second join always
+        from_part += f" JOIN {instrument_table} AS h2 ON h1.data_item_oid = h2.data_item_oid"
+        # Add the third join conditionally based on the instrument and other conditions
+        join_tables = {
+            "eui": (
+                "v_eui_hri_fov",
+                "fov_solo_bot_left_arcsec_ty, h3.fov_solo_bot_left_arcsec_tx, "
+                "h3.fov_solo_top_right_arcsec_ty, h3.fov_solo_top_right_arcsec_tx",
+            ),
+            "spi": (
+                "v_spice_fov",
+                "fov_solo_bot_left_arcsec_ty, h3.fov_solo_bot_left_arcsec_tx, "
+                "h3.fov_solo_top_right_arcsec_ty, h3.fov_solo_top_right_arcsec_tx",
+            ),
+            "phi": (
+                "v_phi_hrt_fov",
+                "fov_solo_bot_left_arcsec_ty, h3.fov_solo_bot_left_arcsec_tx, "
+                "h3.fov_solo_top_right_arcsec_ty, h3.fov_solo_top_right_arcsec_tx",
+            ),
+        }
+        for instrument in join_tables:
+            if instrument in instrument_table:
+                from_part += f" LEFT JOIN {join_tables[instrument][0]} AS h3 ON h2.filename = h3.filename"
+                select_part += f", h3.{join_tables[instrument][1]}"
+                break
+
         return where_part, from_part, select_part
 
     @staticmethod
@@ -202,10 +232,14 @@ class SOARClient(BaseClient):
                 "SOOP Name": info["soop_name"],
             },
         )
-        if "detector" in info:
-            result_table["Detector"] = info["detector"]
         if "wavelength" in info:
             result_table["Wavelength"] = info["wavelength"]
+        if "detector" in info:
+            result_table["Detector"] = info["detector"]
+            result_table["fov_solo_bot_left_arcsec_ty"] = info["fov_solo_bot_left_arcsec_ty"]
+            result_table["fov_solo_bot_left_arcsec_tx"] = info["fov_solo_bot_left_arcsec_tx"]
+            result_table["fov_solo_top_right_arcsec_ty"] = info["fov_solo_top_right_arcsec_ty"]
+            result_table["fov_solo_top_right_arcsec_tx"] = info["fov_solo_top_right_arcsec_tx"]
         result_table.sort("Start time")
         return result_table
 
