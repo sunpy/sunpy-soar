@@ -13,6 +13,11 @@ requires-python = ">=3.10"
 readme = { file = "README.rst", content-type = "text/x-rst" }
 license = { file = "licenses/LICENSE.rst" }
 authors = [
+<<<<<<<
+=======
+  { name = "The SunPy Community", email = "sunpy@googlegroups.com" },
+]
+>>>>>>>
   { name = "David Stansby"},
   { name = "The Sunpy Community", email = "sunpy@googlegroups.com" },
 ]
