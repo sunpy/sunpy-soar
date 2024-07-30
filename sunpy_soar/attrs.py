@@ -19,6 +19,12 @@ class Product(SimpleAttr):
         self.value = value.lower()
 
 
+class FOV(SimpleAttr):
+    """
+    The Field of View Type to fetch coordinates for.
+    """
+
+
 class SOOP(SimpleAttr):
     """
     The SOOP name to search for.
@@ -141,3 +147,8 @@ def _(wlk, attr, params):  # NOQA: ARG001
     wavemin = attr.min.value
     wavemax = attr.max.value
     params.append(f"Wavemin='{wavemin}'+AND+Wavemax='{wavemax}'")
+
+
+@walker.add_applier(FOV)
+def _(wlk, attr, params):  # NOQA: ARG001
+    params.append(f"FOV ='{attr.value}'")
