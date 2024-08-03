@@ -21,7 +21,7 @@ class Product(SimpleAttr):
 
 class FOV(SimpleAttr):
     """
-    The Field of View Type to fetch coordinates for.
+    The Field of View type to fetch coordinates for.
     """
 
 

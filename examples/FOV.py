@@ -1,10 +1,9 @@
 """
-=========================================================================
-Using sunpy-soar to Retrieve and Plot Fields of View (FOV) on a Solar Map
-=========================================================================
+========================================
+Retrieve and Plot Field of View on a map
+========================================
 
-This example demonstrates how to fetch FOV values and Solar Orbiter data using ``sunpy.net.Fido``,
-and plot them on a ``sunpy.map.Map``.
+This example demonstrates how to fetch Solar Orbiter's Field of View (FOV) for each instrument values and Solar Orbiter data using `sunpy.net.Fido` and plot them on a `sunpy.map.Map`.
 """
 
 import astropy.units as u
@@ -31,12 +30,13 @@ product = a.soar.Product("eui-hrieuv174-image")
 fov = a.soar.FOV("earth")
 
 #####################################################
-# Now do the search.
+# Now we will do the search.
 
 result = Fido.search(instrument & time & level & detector & product & fov)
 
 #####################################################
-# Create a blank map.
+# To plot the FOV, we need a map to overlay them on to.
+# For this we will create a blank map as the base.
 
 data = np.full((10, 10), np.nan)
 skycoord = SkyCoord(0 * u.arcsec, 0 * u.arcsec, obstime="2013-10-28", observer="earth", frame=frames.Helioprojective)
@@ -44,7 +44,7 @@ header = sunpy.map.make_fitswcs_header(data, skycoord, scale=[220, 220] * u.arcs
 blank_map = sunpy.map.Map(data, header)
 
 #####################################################
-# Extract FOV coordinates from Solar Orbiter Archive results.
+# Now we need to  extract the FOV coordinates from search results.
 
 fov_earth_bot_left_tx = result[0]["fov_earth_left_arcsec_tx"][0] * u.arcsec
 fov_earth_bot_left_ty = result[0]["fov_earth_left_arcsec_ty"][0] * u.arcsec
@@ -52,7 +52,7 @@ fov_earth_top_right_tx = result[0]["fov_earth_right_arcsec_tx"][0] * u.arcsec
 fov_earth_top_right_ty = result[0]["fov_earth_right_arcsec_ty"][0] * u.arcsec
 
 #####################################################
-# Create SkyCoord objects for the corners of the FOVs.
+# To plot the corners of the corners of the FOVs, we need turn them into a `~astropy.coordinates.SkyCoord`. 
 
 earth_fov_corners = SkyCoord(
     [
@@ -73,7 +73,7 @@ earth_fov_corners = SkyCoord(
 )
 
 #####################################################
-# Plot the blank map and the FOV.
+# Finally we will plot the blank map and overlay the FOV from Solar Orbiter.
 
 fig = plt.figure()
 ax = fig.add_subplot(projection=blank_map)
