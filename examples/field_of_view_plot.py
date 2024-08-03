@@ -20,7 +20,8 @@ from sunpy.net import Fido
 import sunpy_soar  # NOQA: F401
 
 #####################################################
-# We shall start with constructing a search query.
+# We'll begin by constructing a search query for the Field of View (FOV). 
+# In this example, we'll use the instrument EUI and set the perspective to that of Earth's field of view.
 
 instrument = a.Instrument("EUI")
 time = a.Time("2022-10-13 12:06:00", "2022-10-13 12:06:10")
@@ -39,7 +40,9 @@ result = Fido.search(instrument & time & level & detector & product & fov)
 # For this we will create a blank map as the base.
 
 data = np.full((10, 10), np.nan)
-skycoord = SkyCoord(0 * u.arcsec, 0 * u.arcsec, obstime="2013-10-28", observer="earth", frame=frames.Helioprojective)
+skycoord = SkyCoord(
+    0 * u.arcsec, 0 * u.arcsec, obstime="2022-10-13 12:06:00", observer="earth", frame=frames.Helioprojective
+)
 header = sunpy.map.make_fitswcs_header(data, skycoord, scale=[220, 220] * u.arcsec / u.pixel)
 blank_map = sunpy.map.Map(data, header)
 
@@ -51,41 +54,27 @@ fov_earth_bot_left_ty = result[0]["fov_earth_left_arcsec_ty"][0] * u.arcsec
 fov_earth_top_right_tx = result[0]["fov_earth_right_arcsec_tx"][0] * u.arcsec
 fov_earth_top_right_ty = result[0]["fov_earth_right_arcsec_ty"][0] * u.arcsec
 
-#####################################################
-# To plot the corners of the corners of the FOVs, we need turn them into a `~astropy.coordinates.SkyCoord`. 
-
-earth_fov_corners = SkyCoord(
-    [
-        fov_earth_bot_left_tx,
-        fov_earth_top_right_tx,
-        fov_earth_top_right_tx,
-        fov_earth_bot_left_tx,
-        fov_earth_bot_left_tx,
-    ],
-    [
-        fov_earth_bot_left_ty,
-        fov_earth_bot_left_ty,
-        fov_earth_top_right_ty,
-        fov_earth_top_right_ty,
-        fov_earth_bot_left_ty,
-    ],
-    frame=blank_map.coordinate_frame,
-)
+# Ensure correct ordering of coordinates
+bottom_left_tx = min(fov_earth_bot_left_tx, fov_earth_top_right_tx)
+bottom_left_ty = min(fov_earth_bot_left_ty, fov_earth_top_right_ty)
+top_right_tx = max(fov_earth_bot_left_tx, fov_earth_top_right_tx)
+top_right_ty = max(fov_earth_bot_left_ty, fov_earth_top_right_ty)
 
 #####################################################
-# Finally we will plot the blank map and overlay the FOV from Solar Orbiter.
+# To plot the corners of the corners of the FOVs, we need turn them into a `~astropy.coordinates.SkyCoord`.
 
+earth_fov_bottom_left = SkyCoord(bottom_left_tx, bottom_left_ty, frame=blank_map.coordinate_frame)
+earth_fov_top_right = SkyCoord(top_right_tx, top_right_ty, frame=blank_map.coordinate_frame)
+
+# Plot the blank map and the FOV.
 fig = plt.figure()
 ax = fig.add_subplot(projection=blank_map)
 blank_map.plot(axes=ax)
 blank_map.draw_limb(axes=ax, color="k")
 blank_map.draw_grid(axes=ax, color="k")
 
-# Plot the FOVs
-ax.plot_coord(earth_fov_corners, color="blue", linestyle="-", label="Earth FOV")
-
-# Mark the corners
-ax.plot_coord(earth_fov_corners, "bo")
+# Draw the FOV as a quadrangle
+blank_map.draw_quadrangle(earth_fov_bottom_left, top_right=earth_fov_top_right, axes=ax, edgecolor="blue")
 
 # Set title and show legend
 ax.set_title("Fields of View on Blank Map")
