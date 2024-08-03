@@ -11,20 +11,48 @@ lint.select = [
     "ALL",
 ]
 lint.extend-ignore = [
+    "ANN001", # Missing type annotation for function argument
+    "ANN002", # Missing type annotation for variable
+    "ANN003", # Missing type annotation for keyword
+    "ANN201", # Missing return type annotation for public function
+    "ANN202", # Missing return type annotation for private function
+    "ANN205", # Missing return type annotation for staticmethod
+    "ANN206", # Missing return type annotation for classmethod
     "COM812", # May cause conflicts when used with the formatter
-    "ISC001",  # May cause conflicts when used with the formatter
+    "D200", # One-line docstring should fit on one line
+    "D205", # 1 blank line required between summary line and description
+    "D401", # First line should be in imperative mood
+    "D404", # First word of the docstring should not be "This"\
+    "ISC001", # May cause conflicts when used with the formatter
 ]
 
 [lint.per-file-ignores]
 "examples/*.py" = [
+    "B018", # Not print but display
+    "D400", # First line should end with a period, question mark, or exclamation point
+    "ERA001", # Commented out code
     "INP001", # Implicit namespace package
     "T201", # Use print
-    "B018", # Not print but display
-    "ERA001", # Commented out code
-    "F401", # We need to import soar to register it. 
 ]
 "docs/conf.py" = [
+    "D100", # Missing docstring in public module
     "INP001", # conf.py is part of an implicit namespace package
+]
+"setup.py" = [
+    "D100", # Missing docstring in public module
+]
+"test_*.py" = [
+    "D100", # Missing docstring in public module
+    "D103", # Missing docstring in public function
+    "N806", # in function should be lowercase
+    "PLR2004", # Magic value used in comparison
+    "S101", # Use of `assert` detected
+]
+"sunpy_soar/version.py" = [
+    "D100", # Missing docstring in public module
+]
+"sunpy_soar/conftest.py" = [
+    "D100", # Missing docstring in public module
 ]
 
 [lint.pydocstyle]

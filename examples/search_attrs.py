@@ -11,7 +11,8 @@ import sunpy.net.attrs as a
 
 #####################################################
 # Importing sunpy_soar registers the client with sunpy
-import sunpy_soar  # NOQA: F401
+
+import sunpy_soar  # NOQA: F401 isort:skip
 
 #####################################################
 # The easiest way to access search attributes is using

@@ -88,7 +88,7 @@ nitpicky = True
 # This is not used. See docs/nitpick-exceptions file for the actual listing.
 nitpick_ignore = []
 with Path("nitpick-exceptions").open() as f:
-    for line in f.readlines():
+    for line in f:
         if line.strip() == "" or line.startswith("#"):
             continue
         dtype, target = line.split(None, 1)
