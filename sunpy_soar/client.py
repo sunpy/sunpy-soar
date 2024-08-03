@@ -12,7 +12,7 @@ from sunpy.net.attr import and_
 from sunpy.net.base_client import BaseClient, QueryResponseTable
 from sunpy.time import parse_time
 
-from sunpy_soar.attrs import SOOP, Product, walker
+from sunpy_soar.attrs import FOV, SOOP, Product, walker
 
 __all__ = ["SOARClient"]
 
@@ -34,10 +34,88 @@ class SOARClient(BaseClient):
         table = astropy.table.vstack(results)
         qrt = QueryResponseTable(table, client=self)
         qrt["Filesize"] = (qrt["Filesize"] * u.byte).to(u.Mbyte).round(3)
-        qrt.hide_keys = ["Data item ID", "Filename"]
+        qrt.hide_keys = [
+            "Data item ID",
+            "Filename",
+        ]
         return qrt
 
-    def add_join_to_query(query: list[str], data_table: str, instrument_table: str):
+    @staticmethod
+    def determine_fov_table(query):
+        """
+        Determine the value of 'm' based on the FOV parameter in the query.
+
+        Parameters
+        ----------
+        query : list[str]
+            List of query items.
+
+        Returns
+        -------
+        str or None
+            The value of 'm' ("earth", "solo", or None).
+        """
+        for q in query:
+            match = re.match(r"FOV\s*=\s*'([^']+)'", q)
+            if match:
+                fov_value = match.group(1).lower()
+                if fov_value == "earth":
+                    return "earth"
+                if fov_value == "solar":
+                    return "solo"
+        return None
+
+    def fov_join(self, query, instrument_table: str, where_part: str, from_part: str, select_part: str):
+        """
+        Add FoV (Field of View) join to the query if applicable based on the
+        instrument.
+
+        Parameters
+        ----------
+        instrument_table : str
+            Name of the instrument table.
+        where_part : str
+            The WHERE part of the ADQL query.
+        from_part : str
+            The FROM part of the ADQL query.
+        select_part : str
+            The SELECT part of the ADQL query.
+
+        Returns
+        -------
+        tuple[str, str, str]
+            Updated WHERE, FROM, and SELECT parts of the query.
+        """
+        m = self.determine_fov_table(query)
+        if not m:
+            return where_part, from_part, select_part
+
+        join_tables = {
+            "eui": (
+                "v_eui_hri_fov",
+                f"fov_{m}_bot_left_arcsec_ty, h3.fov_{m}_bot_left_arcsec_tx, "
+                f"h3.fov_{m}_top_right_arcsec_ty, h3.fov_{m}_top_right_arcsec_tx",
+            ),
+            "spi": (
+                "v_spice_fov",
+                f"fov_{m}_bot_left_arcsec_ty, h3.fov_{m}_bot_left_arcsec_tx, "
+                f"h3.fov_{m}_top_right_arcsec_ty, h3.fov_{m}_top_right_arcsec_tx",
+            ),
+            "phi": (
+                "v_phi_hrt_fov",
+                f"fov_{m}_bot_left_arcsec_ty, h3.fov_{m}_bot_left_arcsec_tx, "
+                f"h3.fov_{m}_top_right_arcsec_ty, h3.fov_{m}_top_right_arcsec_tx",
+            ),
+        }
+        for instrument, (table, fields) in join_tables.items():
+            if instrument in instrument_table:
+                from_part += f" LEFT JOIN {table} AS h3 ON h2.filename = h3.filename"
+                select_part += f", {fields}"
+                break
+
+        return where_part, from_part, select_part
+
+    def add_join_to_query(self, query: list[str], data_table: str, instrument_table: str):
         """
         Construct the WHERE, FROM, and SELECT parts of the ADQL query.
 
@@ -60,24 +138,20 @@ class SOARClient(BaseClient):
         wavemin_pattern = re.compile(r"Wavemin='(\d+\.\d+)'")
         wavemax_pattern = re.compile(r"Wavemax='(\d+\.\d+)'")
         for parameter in query:
+            if parameter.startswith("FOV"):
+                continue
             wavemin_match = wavemin_pattern.search(parameter)
             wavemax_match = wavemax_pattern.search(parameter)
-            # If the wavemin and wavemax are same that means only one wavelength is given in query.
+            # If the wavemin and wavemax are the same, that means only one wavelength is given in the query.
             if wavemin_match and wavemax_match and float(wavemin_match.group(1)) == float(wavemax_match.group(1)):
-                # For PHI and SPICE, we can specify wavemin and wavemax in the query and get the results.
-                # For PHI we have wavelength data in both angstrom and nanometer without it being mentioned in the SOAR.
-                # For SPICE we get data in form of wavemin/wavemax columns, but only for the first spectral window.
-                # To make sure this data is not misleading to the user we do not return any values for PHI AND SPICE.
                 parameter = f"Wavelength='{wavemin_match.group(1)}'"
             elif wavemin_match and wavemax_match:
                 parameter = f"Wavemin='{wavemin_match.group(1)}'+AND+h2.Wavemax='{wavemax_match.group(1)}'"
-            prefix = "h1." if not parameter.startswith("Detector") and not parameter.startswith("Wave") else "h2."
+            prefix = "h2." if parameter.startswith(("Detector", "Wave", "Observation")) else "h1."
             if parameter.startswith("begin_time"):
                 time_list = parameter.split("+AND+")
                 final_query += f"h1.{time_list[0]}+AND+h1.{time_list[1]}+AND+"
-                # As there are no dimensions in STIX, the dimension index need not be included in the query for STIX.
                 if "stx" not in instrument_table:
-                    # To avoid duplicate rows in the output table, the dimension index is set to 1.
                     final_query += "h2.dimension_index='1'+AND+"
             else:
                 final_query += f"{prefix}{parameter}+AND+"
@@ -85,12 +159,18 @@ class SOARClient(BaseClient):
         where_part = final_query[:-5]
         from_part = f"{data_table} AS h1"
         select_part = (
-            "h1.instrument, h1.descriptor, h1.level, h1.begin_time, h1.end_time, "
-            "h1.data_item_id, h1.filesize, h1.filename, h1.soop_name"
+            "h1.instrument, h1.descriptor, h1.level, h1.begin_time, h1.end_time, h1.data_item_id, "
+            "h1.filesize, h1.filename, h1.soop_name, h2.wavelength, h2.detector, h2.dimension_index"
         )
-        if instrument_table:
-            from_part += f" JOIN {instrument_table} AS h2 USING (data_item_oid)"
-            select_part += ", h2.detector, h2.wavelength, h2.dimension_index"
+        # Add the second join always
+        from_part += f" JOIN {instrument_table} AS h2 ON h1.data_item_oid = h2.data_item_oid"
+
+        # Add the third join conditionally based on the instrument and other conditions
+        if any(q.startswith("FOV") for q in query):
+            where_part, from_part, select_part = self.fov_join(
+                query, instrument_table, where_part, from_part, select_part
+            )
+
         return where_part, from_part, select_part
 
     @staticmethod
@@ -137,7 +217,7 @@ class SOARClient(BaseClient):
 
         # Need to establish join for remote sensing instruments as they have instrument tables in SOAR.
         if instrument_name in ["EUI", "MET", "SPI", "PHI", "SHI"]:
-            where_part, from_part, select_part = SOARClient.add_join_to_query(query, data_table, instrument_table)
+            where_part, from_part, select_part = SOARClient().add_join_to_query(query, data_table, instrument_table)
         else:
             from_part = data_table
             select_part = "*"
@@ -167,7 +247,6 @@ class SOARClient(BaseClient):
         payload = SOARClient._construct_payload(query)
         # Need to force requests to not form-encode the parameters
         payload = "&".join([f"{key}={val}" for key, val in payload.items()])
-        # Get request info
         r = requests.get(f"{tap_endpoint}/sync", params=payload)
         log.debug(f"Sent query: {r.url}")
         r.raise_for_status()
@@ -189,23 +268,39 @@ class SOARClient(BaseClient):
             info["begin_time"] = parse_time(info["begin_time"]).iso
             info["end_time"] = parse_time(info["end_time"]).iso
 
-        result_table = astropy.table.QTable(
-            {
-                "Instrument": info["instrument"],
-                "Data product": info["descriptor"],
-                "Level": info["level"],
-                "Start time": info["begin_time"],
-                "End time": info["end_time"],
-                "Data item ID": info["data_item_id"],
-                "Filename": info["filename"],
-                "Filesize": info["filesize"],
-                "SOOP Name": info["soop_name"],
-            },
-        )
-        if "detector" in info:
-            result_table["Detector"] = info["detector"]
-        if "wavelength" in info:
-            result_table["Wavelength"] = info["wavelength"]
+        m = SOARClient.determine_fov_table(query)
+        contains_fov = any(q.lower().startswith("fov") for q in query)
+        if not contains_fov:
+            result_table = astropy.table.QTable(
+                {
+                    "Instrument": info["instrument"],
+                    "Data product": info["descriptor"],
+                    "Level": info["level"],
+                    "Start time": info["begin_time"],
+                    "End time": info["end_time"],
+                    "Data item ID": info["data_item_id"],
+                    "Filename": info["filename"],
+                    "Filesize": info["filesize"],
+                    "SOOP Name": info["soop_name"],
+                },
+            )
+            if "wavelength" in info:
+                result_table["Wavelength"] = info["wavelength"]
+            if "detector" in info:
+                result_table["Detector"] = info["detector"]
+        else:
+            result_table = astropy.table.QTable(
+                {
+                    "Instrument": info["instrument"],
+                    "Start time": info["begin_time"],
+                    "End time": info["end_time"],
+                    "Filesize": info["filesize"],
+                    f"fov_{m}_left_arcsec_ty": info[f"fov_{m}_bot_left_arcsec_ty"],
+                    f"fov_{m}_left_arcsec_tx": info[f"fov_{m}_bot_left_arcsec_tx"],
+                    f"fov_{m}_right_arcsec_ty": info[f"fov_{m}_top_right_arcsec_ty"],
+                    f"fov_{m}_right_arcsec_tx": info[f"fov_{m}_top_right_arcsec_tx"],
+                },
+            )
         result_table.sort("Start time")
         return result_table
 
@@ -253,7 +348,7 @@ class SOARClient(BaseClient):
             True if this client can handle the given query.
         """
         required = {a.Time}
-        optional = {a.Instrument, a.Detector, a.Wavelength, a.Level, a.Provider, Product, SOOP}
+        optional = {a.Instrument, a.Detector, a.Wavelength, a.Level, a.Provider, Product, SOOP, FOV}
         if not cls.check_attr_types_in_query(query, required, optional):
             return False
         # check to make sure the instrument attr passed is one provided by the SOAR.

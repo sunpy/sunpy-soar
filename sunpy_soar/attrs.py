@@ -19,6 +19,14 @@ class Product(SimpleAttr):
         self.value = value.lower()
 
 
+class FOV(SimpleAttr):
+    """
+    The Field of View type to fetch coordinates for.
+
+    Allowed values are "solar" and "earth".
+    """
+
+
 class SOOP(SimpleAttr):
     """
     The SOOP name to search for.
@@ -141,3 +149,15 @@ def _(wlk, attr, params):  # NOQA: ARG001
     wavemin = attr.min.value
     wavemax = attr.max.value
     params.append(f"Wavemin='{wavemin}'+AND+Wavemax='{wavemax}'")
+
+
+@walker.add_applier(FOV)
+def _(wlk, attr, params):  # NOQA: ARG001
+    allowed_fovs = ["solar", "earth"]
+    if attr.value not in allowed_fovs:
+        warnings.warn(
+            f"FOV not in list of allowed FOVs for SOAR: {allowed_fovs}",
+            SunpyUserWarning,
+            stacklevel=2,
+        )
+    params.append(f"FOV ='{attr.value}'")
