@@ -3,7 +3,8 @@
 Retrieve and Plot Field of View on a map
 ========================================
 
-This example demonstrates how to fetch Solar Orbiter's Field of View (FOV) for each instrument values and Solar Orbiter data using `sunpy.net.Fido` and plot them on a `sunpy.map.Map`.
+This example demonstrates how to fetch Solar Orbiter's Field of View (FOV) for each instrument values
+and Solar Orbiter data using `sunpy.net.Fido` and plot them on a `sunpy.map.Map`.
 """
 
 import astropy.units as u
@@ -20,7 +21,7 @@ from sunpy.net import Fido
 import sunpy_soar  # NOQA: F401
 
 #####################################################
-# We'll begin by constructing a search query for the Field of View (FOV). 
+# We'll begin by constructing a search query for the Field of View (FOV).
 # In this example, we'll use the instrument EUI and set the perspective to that of Earth's field of view.
 
 instrument = a.Instrument("EUI")

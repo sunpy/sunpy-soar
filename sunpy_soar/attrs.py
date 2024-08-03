@@ -22,6 +22,8 @@ class Product(SimpleAttr):
 class FOV(SimpleAttr):
     """
     The Field of View type to fetch coordinates for.
+
+    Allowed values are "solar" and "earth".
     """
 
 
@@ -151,4 +153,11 @@ def _(wlk, attr, params):  # NOQA: ARG001
 
 @walker.add_applier(FOV)
 def _(wlk, attr, params):  # NOQA: ARG001
+    allowed_fovs = ["solar", "earth"]
+    if attr.value not in allowed_fovs:
+        warnings.warn(
+            f"FOV not in list of allowed FOVs for SOAR: {allowed_fovs}",
+            SunpyUserWarning,
+            stacklevel=2,
+        )
     params.append(f"FOV ='{attr.value}'")
