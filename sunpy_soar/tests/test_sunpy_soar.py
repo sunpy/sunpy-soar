@@ -306,7 +306,7 @@ def test_distance_search_remote_sensing():
     instrument = a.Instrument("RPW")
     product = a.soar.Product("rpw-tnr-surv")
     level = a.Level(2)
-    distance = a.soar.Distance(0.28, 0.30)
+    distance = a.soar.Distance(0.28 * u.AU, 0.30 * u.AU)
     res = Fido.search(distance & instrument & product & level)
     assert res.file_num == 21
 
@@ -315,7 +315,7 @@ def test_distance_search_insitu():
     instrument = a.Instrument("METIS")
     level = a.Level(2)
     product = a.soar.Product("metis-vl-pol-angle")
-    distance = a.soar.Distance(0.45, 0.46)
+    distance = a.soar.Distance(0.45 * u.AU, 0.46 * u.AU)
     res = Fido.search(distance & instrument & product & level)
     assert res.file_num == 172
 
@@ -325,7 +325,7 @@ def test_distance_time_search():
     time = a.Time("2023-04-27", "2023-04-28")
     level = a.Level(2)
     product = a.soar.Product("eui-fsi174-image")
-    distance = a.soar.Distance(0.45, 0.46)
+    distance = a.soar.Distance(0.45 * u.AU, 0.46 * u.AU)
     res = Fido.search(instrument & product & level & time)
     assert res.file_num == 96
     # To check if we get different value when distance parameter is added in search.

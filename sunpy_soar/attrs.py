@@ -1,5 +1,6 @@
 import warnings
 
+import astropy.units as u
 import sunpy.net.attrs as a
 from sunpy.net.attr import AttrAnd, AttrOr, AttrWalker, DataAttr, Range, SimpleAttr
 from sunpy.util.exceptions import SunpyUserWarning
@@ -36,16 +37,44 @@ class Distance(Range):
         ----------
         dist_min : `~astropy.units.Quantity`
             The lower bound of the range.
-        dist_max : `~astropy.units.Quantity`
+        dist_max : `~astropy.units.Quantity`, optional
             The upper bound of the range, if not specified it will default to
             the lower bound.
+
+        Notes
+        -----
+        The valid units for distance are AU, km, and mm. Any unit directly
+        convertible to these units is valid input. This class filters the query
+        by solar distance without relying on a specific distance column.
         """
         if dist_max is None:
             dist_max = dist_min
 
-        dist_min, dist_max = sorted([dist_min, dist_max])
-        self.dist_min = dist_min
-        self.dist_max = dist_max
+        # Ensure both dist_min and dist_max are astropy Quantity instances
+        if not all(isinstance(var, u.Quantity) for var in [dist_min, dist_max]):
+            msg = "Distance inputs must be astropy Quantities"
+            raise TypeError(msg)
+
+        # Ensure both dist_min and dist_max are scalar values
+        if not all([dist_min.isscalar, dist_max.isscalar]):
+            msg = "Both dist_min and dist_max must be scalar values"
+            raise ValueError(msg)
+
+        # Supported units for distance
+        supported_units = [u.AU, u.km, u.mm]
+        for unit in supported_units:
+            if dist_min.unit.is_equivalent(unit):
+                break
+        else:
+            msg = f"This unit is not convertible to any of {supported_units}"
+            raise u.UnitsError(msg)
+
+        # Convert to the chosen unit and sort the values
+        dist_min, dist_max = sorted([dist_min.to(unit), dist_max.to(unit)])
+        self.unit = unit
+
+        # Initialize the parent class with the sorted distances
+        super().__init__(dist_min, dist_max)
 
     def collides(self, other):
         return isinstance(other, self.__class__)
@@ -171,6 +200,16 @@ def _(wlk, attr, params):  # NOQA: ARG001
 
 @walker.add_applier(Distance)
 def _(wlk, attr, params):  # NOQA: ARG001
-    dmin = attr.dist_min
-    dmax = attr.dist_max
+    # The `Distance` attribute is used to filter the query by solar distance
+    # without relying on a specific distance column. It is commonly used
+    # to filter the query without time consideration.
+    dmin = attr.min.value
+    dmax = attr.max.value
+    params.append(f"DISTANCE({dmin},{dmax})")
+    if not (0.28 <= dmin <= 1.0) or not (0.28 <= dmax <= 1.0):
+        warnings.warn(
+            "Distance values must be within the range 0.28 AU to 1.0 AU.",
+            SunpyUserWarning,
+            stacklevel=2,
+        )
     params.append(f"DISTANCE({dmin},{dmax})")
