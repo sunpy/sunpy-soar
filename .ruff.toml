@@ -21,8 +21,9 @@ lint.extend-ignore = [
     "COM812", # May cause conflicts when used with the formatter
     "D200", # One-line docstring should fit on one line
     "D205", # 1 blank line required between summary line and description
+    "D400", # First line should end with a period
     "D401", # First line should be in imperative mood
-    "D404", # First word of the docstring should not be "This"\
+    "D404", # First word of the docstring should not be "This"
     "ISC001", # May cause conflicts when used with the formatter
 ]
 
