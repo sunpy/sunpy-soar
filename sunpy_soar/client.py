@@ -297,15 +297,23 @@ class SOARClient(BaseClient):
             all_instr = json.load(instr_attrs_file)
         all_instr = list(all_instr.items())
 
+        # SOOP attrs
         soop_path = pathlib.Path(__file__).parent / "data" / "soop_attrs.json"
         with soop_path.open() as soop_path_file:
             all_soops = json.load(soop_path_file)
 
         all_soops = list(all_soops.items())
 
+        # Observation modes
+        obs_modes_path = pathlib.Path(__file__).parent / "data" / "observation_attrs.json"
+        with obs_modes_path.open() as obs_modes_file:
+            observation_modes = json.load(obs_modes_file)
+        observation_modes = list(observation_modes.items())
+
         return {
             Product: all_datasets,
             a.Instrument: all_instr,
             SOOP: all_soops,
             a.Provider: [("SOAR", "Solar Orbiter Archive.")],
+            ObservationMode: observation_modes,
         }

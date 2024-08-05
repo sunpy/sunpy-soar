@@ -3,7 +3,7 @@ import pathlib
 
 from astroquery.utils.tap.core import TapPlus
 
-soar = TapPlus("http://soar.esac.esa.int/soar-sl-tap/tap")
+soar = TapPlus(url="http://soar.esac.esa.int/soar-sl-tap/tap")
 
 
 def get_cdf_descriptors():
@@ -21,7 +21,7 @@ def get_cdf_descriptors():
 def get_fits_descriptors():
     # Get data descriptors for FITS files
     print("Updating FITS descriptors...")
-    soar = TapPlus("http://soar.esac.esa.int/soar-sl-tap/tap")
+    soar = TapPlus(url="http://soar.esac.esa.int/soar-sl-tap/tap")
     job = soar.launch_job("select * from soar.fits_dataset")
     res = job.get_results()
     descriptors = {}
@@ -79,6 +79,31 @@ def get_all_soops():
     return soop_names
 
 
+def get_observation_modes():
+    # Fetch observation modes for all instruments combined
+    print("Updating observation modes...")
+    obs_modes = {}
+    instruments = [
+        "eui", "phi", "shi", "spi", "met"
+    ]
+
+    # Set to hold unique observation modes
+    unique_modes = set()
+
+    for instrument in instruments:
+        query = f"SELECT DISTINCT observation_mode FROM v_{instrument}_sc_fits"
+        job = soar.launch_job(query)
+        res = job.get_results()
+        for row in res:
+            mode = row['observation_mode'].strip()  # Strip leading and trailing whitespace
+            if mode:  # Ensure mode is not an empty string
+                unique_modes.add(mode)
+
+    # Convert the set to a sorted list and create a dictionary
+    obs_modes = {mode: "" for mode in sorted(unique_modes)}
+
+    return obs_modes
+
 if __name__ == "__main__":
     attr_file = (
         pathlib.Path(__file__).parent.parent / "sunpy_soar" / "data" / "attrs.json"
@@ -103,3 +128,10 @@ if __name__ == "__main__":
     soop_descriptors = get_all_soops()
     with soop_file.open("w") as soops_file:
         json.dump(dict(sorted(soop_descriptors.items())), soops_file, indent=2)
+
+    obs_modes_file = (
+        pathlib.Path(__file__).parent.parent / "sunpy_soar" / "data" / "observation_attrs.json"
+    )
+    observation_modes = get_observation_modes()
+    with obs_modes_file.open("w") as obs_file:
+        json.dump(observation_modes, obs_file, indent=2)
