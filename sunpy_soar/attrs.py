@@ -25,6 +25,12 @@ class SOOP(SimpleAttr):
     """
 
 
+class ObservationMode(SimpleAttr):
+    """
+    The mode of observation to search for.
+    """
+
+
 walker = AttrWalker()
 
 
@@ -141,3 +147,8 @@ def _(wlk, attr, params):  # NOQA: ARG001
     wavemin = attr.min.value
     wavemax = attr.max.value
     params.append(f"Wavemin='{wavemin}'+AND+Wavemax='{wavemax}'")
+
+
+@walker.add_applier(ObservationMode)
+def _(wlk, attr, params):  # NOQA: ARG001
+    params.append(f"Observation_mode='{attr.value}'")
