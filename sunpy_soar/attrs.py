@@ -4,6 +4,7 @@ import astropy.units as u
 import sunpy.net.attrs as a
 from sunpy.net.attr import AttrAnd, AttrOr, AttrWalker, DataAttr, Range, SimpleAttr
 from sunpy.util.exceptions import SunpyUserWarning
+from astropy.utils.decorators import quantity_input
 
 __all__ = ["Product", "SOOP"]
 
@@ -25,7 +26,7 @@ class SOOP(SimpleAttr):
     The SOOP name to search for.
     """
 
-
+@quantity_input(dist_min=u.m, dist_max=u.m)
 class Distance(Range):
     type_name = "distance"
 
