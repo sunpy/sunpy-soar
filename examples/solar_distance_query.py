@@ -21,11 +21,11 @@ import sunpy_soar  # NOQA: F401
 ###############################################################################
 # We shall start with constructing a search query with instrument, level, detector, and distance.
 
-instrument = a.Instrument("METIS")
-time = a.Time("2022-10-29 00:00:00", "2022-10-29 01:00:00")
+instrument = a.Instrument("EUI")
+time = a.Time("2022-10-29 05:00:00", "2022-10-29 06:00:00")
 level = a.Level(2)
-detector = a.Detector("UVD")
-distance = a.soar.Distance(0.45 * u.AU, 1.22 * u.AU)
+detector = a.Detector("HRI_EUV")
+distance = a.soar.Distance(0.45 * u.AU, 0.46 * u.AU)
 
 ###############################################################################
 # Now do the search without time attribute.
