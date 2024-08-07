@@ -12,7 +12,7 @@ from sunpy.util.exceptions import SunpyUserWarning
 from sunpy_soar.client import SOARClient
 
 
-def test_search():
+def test_search() -> None:
     instrument = a.Instrument("EUI")
     time = a.Time("2022-02-11", "2022-02-12")
     level = a.Level(1)
@@ -38,7 +38,7 @@ def test_search():
     sunpy.map.Map(fname)
 
 
-def test_search_low_latency():
+def test_search_low_latency() -> None:
     time = a.Time("2020-11-13", "2020-11-14")
     level = a.Level("LL02")
     product = a.soar.Product("mag")
@@ -51,7 +51,7 @@ def test_search_low_latency():
     assert len(files) == 1
 
 
-def test_insitu_search():
+def test_insitu_search() -> None:
     instrument = a.Instrument("MAG")
     time = a.Time("2020-04-16", "2020-04-17")
     product = a.soar.Product("mag-rtn-normal-1-minute")
@@ -64,7 +64,7 @@ def test_insitu_search():
     assert len(files) == 1
 
 
-def test_no_results():
+def test_no_results() -> None:
     instrument = a.Instrument("EUI")
     time = a.Time("2019-02-01", "2019-02-02")
     query = instrument & time
@@ -73,14 +73,14 @@ def test_no_results():
     assert len(res) == 0
 
 
-def test_no_instrument():
+def test_no_instrument() -> None:
     # Check that a time only search returns results
     time = a.Time("2020-04-16", "2020-04-17")
     res = SOARClient().search(time)
     assert len(res) == 63
 
 
-def test_download_path(tmp_path):
+def test_download_path(tmp_path) -> None:
     # Check that we can download things to a custom path using
     # the search parameters
     instrument = a.Instrument("EUI")
@@ -93,26 +93,26 @@ def test_download_path(tmp_path):
         assert "EUI" in f
 
 
-def test_registered_attrs():
+def test_registered_attrs() -> None:
     attr_str = str(a.soar.Product)
     # Check that at least one attr value is registered
     assert "epd_ept_asun_burst_ele_close" in attr_str
 
 
-def test_registered_instr_attrs():
+def test_registered_instr_attrs() -> None:
     # Check if the Solo instruments are registered in a.Instrument
     instr_attr = a.Instrument
     assert "SOAR" in instr_attr._attr_registry[instr_attr].client  # NOQA: SLF001
     assert "stix" in instr_attr._attr_registry[instr_attr].name  # NOQA: SLF001
 
 
-def test_registered_soop_names():
+def test_registered_soop_names() -> None:
     # Check if the soop names are registered in a.soar.SOOP
     soop_attr = str(a.soar.SOOP)
     assert "\nr_small_mres_mcad_ar_long_term" in soop_attr
 
 
-def test_search_soop():
+def test_search_soop() -> None:
     instrument = a.Instrument("EUI")
     time = a.Time("2022-04-01 01:00", "2022-04-01 02:00")
     soop_attr = a.soar.SOOP.r_small_mres_mcad_ar_long_term
@@ -125,7 +125,7 @@ def test_search_soop():
     assert res.file_num == 0
 
 
-def test_when_soar_provider_passed():
+def test_when_soar_provider_passed() -> None:
     # Tests when a.Provider.soar is passed that only SOARClient results are returned
     instrument = a.Instrument("EUI")
     time = a.Time("2022-04-01 00:00", "2022-04-01 01:00")
@@ -135,7 +135,7 @@ def test_when_soar_provider_passed():
     assert res["soar"]
 
 
-def test_when_sdac_provider_passed():
+def test_when_sdac_provider_passed() -> None:
     # tests that only VSO EUI results are returned when explicitly setting the provider to SDAC
     instrument = a.Instrument("EUI")
     time = a.Time("2022-04-01 00:00", "2022-04-01 01:00")
@@ -145,7 +145,7 @@ def test_when_sdac_provider_passed():
     assert res["vso"]
 
 
-def test_when_wrong_provider_passed():
+def test_when_wrong_provider_passed() -> None:
     # Tests that no results are returned when a provider is passed which does not provide EUI data.
     # This is different from the above test because the SDAC and the SOAR both provide EUI data while
     # NOAA has no overlap with the data provided by the SOAR.
@@ -156,7 +156,7 @@ def test_when_wrong_provider_passed():
     assert len(res) == 0
 
 
-def test_search_wavelength_detector_column():
+def test_search_wavelength_detector_column() -> None:
     instrument = a.Instrument("EUI")
     time = a.Time("2021-02-01", "2021-02-02")
     level = a.Level(1)
@@ -166,7 +166,7 @@ def test_search_wavelength_detector_column():
     assert "Detector" in res[0].columns
 
 
-def test_search_detector_instrument_dimension_2():
+def test_search_detector_instrument_dimension_2() -> None:
     # Instruments "EUI", "METIS", "PHI" and "SOLOHI" have two dimensions in the SOAR data.
     # Selecting no dimension index in the query results in two identical output rows.
     # To avoid repeating data, we have methods to take dimension index=1, which avoids any repetition.
@@ -179,7 +179,7 @@ def test_search_detector_instrument_dimension_2():
     assert res.file_num == 266
 
 
-def test_search_detector_instrument_dimension_4():
+def test_search_detector_instrument_dimension_4() -> None:
     # The "SPICE" instrument has four dimensions in the SOAR data. As a result,
     # selecting no dimension index in the query results in four identical output rows.
     # To avoid repeating data, we have methods to take dimension index=1, which avoids any repetition.
@@ -192,7 +192,7 @@ def test_search_detector_instrument_dimension_4():
     assert res.file_num == 11
 
 
-def test_invalid_detector():
+def test_invalid_detector() -> None:
     instrument = a.Instrument("SPICE")
     time = a.Time("2023-03-03 15:00", "2023-03-03 16:00")
     level = a.Level(1)
@@ -202,7 +202,7 @@ def test_invalid_detector():
     assert res.file_num == 0
 
 
-def test_wavelength_column_wavelength_exists():
+def test_wavelength_column_wavelength_exists() -> None:
     # For instruments EUI, METIS and SOLOHI "wavelength" column is available.
     # Test to check if the "Wavelength" column exists in the search results.
     instrument = a.Instrument("EUI")
@@ -214,7 +214,7 @@ def test_wavelength_column_wavelength_exists():
     assert res.file_num == 12
 
 
-def test_wavelength_single():
+def test_wavelength_single() -> None:
     # Test to check if the wavelength value is filtered for a single value provided.
     instrument = a.Instrument("EUI")
     time = a.Time("2023-04-03 15:00", "2023-04-03 16:00")
@@ -225,7 +225,7 @@ def test_wavelength_single():
         assert all(table["Wavelength"] == 304)
 
 
-def test_wavelength_range():
+def test_wavelength_range() -> None:
     # Test to check if the wavelength value is filtered for wavemin and wavemax provided.
     instrument = a.Instrument("EUI")
     time = a.Time("2023-04-03 15:00", "2023-04-03 16:00")
@@ -236,7 +236,7 @@ def test_wavelength_range():
         assert all(table["Wavelength"] == 174)
 
 
-def test_join_science_query():
+def test_join_science_query() -> None:
     result = SOARClient._construct_payload(  # NOQA: SLF001
         [
             "instrument='EUI'",
@@ -255,7 +255,7 @@ def test_join_science_query():
     )
 
 
-def test_join_low_latency_query():
+def test_join_low_latency_query() -> None:
     result = SOARClient._construct_payload(  # NOQA: SLF001
         [
             "instrument='EUI'",
@@ -354,7 +354,7 @@ def test_distance_out_of_bounds_warning(recwarn):
 
 
 @responses.activate
-def test_soar_server_down():
+def test_soar_server_down() -> None:
     # As the SOAR server is expected to be down in this test, a JSONDecodeError is expected
     # to be raised due to the absence of a valid JSON response.
     TAP_ENDPOINT = (
