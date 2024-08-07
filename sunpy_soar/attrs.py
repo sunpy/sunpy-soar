@@ -31,7 +31,7 @@ class Distance(Range):
     type_name = "distance"
 
     @quantity_input(dist_min=u.m, dist_max=u.m)
-    def __init__(self, dist_min: u.Quantity, dist_max: u.Quantity = None):
+    def __init__(self, dist_min: u.Quantity, dist_max: u.Quantity):
         """
         Specifies the distance range.
 
@@ -47,10 +47,6 @@ class Distance(Range):
         convertible to these units is valid input. This class filters the query
         by solar distance without relying on a specific distance column.
         """
-        if dist_max is None:
-            msg = "A range of distance must be given."
-            raise ValueError(msg)
-
         # Ensure both dist_min and dist_max are scalar values
         if not all([dist_min.isscalar, dist_max.isscalar]):
             msg = "Both dist_min and dist_max must be scalar values."

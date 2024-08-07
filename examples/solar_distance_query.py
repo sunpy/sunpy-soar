@@ -6,7 +6,7 @@ Searching for Solar Orbiter data using Solar Distance attribute
 This example demonstrates how to search and download Solar Orbiter data using ``sunpy.net.Fido``.
 To do this, we can build a query based on several attributes.
 
-The `Distance` attribute allows us to specify a range of distances from the Sun in astronomical units (AU).
+The ``Distance`` attribute allows us to specify a range of distances from the Sun in astronomical units (AU).
 
 """
 
