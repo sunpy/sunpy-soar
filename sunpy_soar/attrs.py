@@ -2,9 +2,9 @@ import warnings
 
 import astropy.units as u
 import sunpy.net.attrs as a
+from astropy.units import quantity_input
 from sunpy.net.attr import AttrAnd, AttrOr, AttrWalker, DataAttr, Range, SimpleAttr
 from sunpy.util.exceptions import SunpyUserWarning
-from astropy.utils.decorators import quantity_input
 
 __all__ = ["Product", "SOOP"]
 
@@ -26,10 +26,11 @@ class SOOP(SimpleAttr):
     The SOOP name to search for.
     """
 
-@quantity_input(dist_min=u.m, dist_max=u.m)
+
 class Distance(Range):
     type_name = "distance"
 
+    @quantity_input(dist_min=u.m, dist_max=u.m)
     def __init__(self, dist_min: u.Quantity, dist_max: u.Quantity = None):
         """
         Specifies the distance range.
@@ -38,10 +39,8 @@ class Distance(Range):
         ----------
         dist_min : `~astropy.units.Quantity`
             The lower bound of the range.
-        dist_max : `~astropy.units.Quantity`, optional
-            The upper bound of the range, if not specified it will default to
-            the lower bound.
-
+        dist_max : `~astropy.units.Quantity`
+            The upper bound of the range.
         Notes
         -----
         The valid units for distance are AU, km, and mm. Any unit directly
@@ -49,20 +48,19 @@ class Distance(Range):
         by solar distance without relying on a specific distance column.
         """
         if dist_max is None:
-            dist_max = dist_min
-
+            msg = "A range of distance must be given."
+            raise ValueError(msg)
 
         # Ensure both dist_min and dist_max are scalar values
         if not all([dist_min.isscalar, dist_max.isscalar]):
-            msg = "Both dist_min and dist_max must be scalar values"
+            msg = "Both dist_min and dist_max must be scalar values."
             raise ValueError(msg)
 
+        target_unit = u.AU
+        # Convert both dist_min and dist_max to the target unit
+        dist_min = dist_min.to(target_unit)
+        dist_max = dist_max.to(target_unit)
 
-        # Convert to the chosen unit and sort the values
-        dist_min, dist_max = sorted([dist_min.to(unit), dist_max.to(unit)])
-        self.unit = unit
-
-        # Initialize the parent class with the sorted distances
         super().__init__(dist_min, dist_max)
 
     def collides(self, other):
@@ -194,7 +192,6 @@ def _(wlk, attr, params):  # NOQA: ARG001
     # to filter the query without time consideration.
     dmin = attr.min.value
     dmax = attr.max.value
-    params.append(f"DISTANCE({dmin},{dmax})")
     if not (0.28 <= dmin <= 1.0) or not (0.28 <= dmax <= 1.0):
         warnings.warn(
             "Distance values must be within the range 0.28 AU to 1.0 AU.",

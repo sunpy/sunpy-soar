@@ -22,15 +22,21 @@ import sunpy_soar  # NOQA: F401
 # We shall start with constructing a search query with instrument, level, detector, and distance.
 
 instrument = a.Instrument("METIS")
-time = a.Time("2023-02-01 01:00", "2023-02-01 05:00")
+time = a.Time("2022-10-29 00:00:00", "2022-10-29 01:00:00")
 level = a.Level(2)
 detector = a.Detector("UVD")
-distance = a.soar.Distance(0.45 * u.AU, 0.50 * u.AU)
+distance = a.soar.Distance(0.45 * u.AU, 1.22 * u.AU)
 
 ###############################################################################
-# Now do the search.
+# Now do the search without time attribute.
 
 result = Fido.search(instrument & level & detector & distance)
 result
+
+###############################################################################
+# Now do the search with time attribute.
+result = Fido.search(instrument & level & detector & distance & time)
+result
+
 ###############################################################################
 # To then download the data, you would use Fido.fetch(result), which will download the data locally.

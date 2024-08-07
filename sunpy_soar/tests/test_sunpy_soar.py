@@ -4,8 +4,10 @@ import astropy.units as u
 import pytest
 import responses
 import sunpy.map
+from requests.exceptions import HTTPError
 from sunpy.net import Fido
 from sunpy.net import attrs as a
+from sunpy.util.exceptions import SunpyUserWarning
 
 from sunpy_soar.client import SOARClient
 
@@ -331,6 +333,24 @@ def test_distance_time_search():
     # To check if we get different value when distance parameter is added in search.
     res = Fido.search(distance & instrument & product & level & time)
     assert res.file_num == 48
+
+
+def test_distance_out_of_bounds_warning(recwarn):
+    instrument = a.Instrument("EUI")
+    time = a.Time("2023-04-27", "2023-04-28")
+    level = a.Level(2)
+    product = a.soar.Product("eui-fsi174-image")
+    distance = a.soar.Distance(0.45 * u.AU, 1.2 * u.AU)
+    # Run the search and ensure it raises an HTTPError
+    with pytest.raises(HTTPError):
+        Fido.search(distance & instrument & product & level & time)
+    # Check if the warning was raised
+    warnings_list = recwarn.list
+    assert any(
+        warning.message.args[0] == "Distance values must be within the range 0.28 AU to 1.0 AU."
+        and issubclass(warning.category, SunpyUserWarning)
+        for warning in warnings_list
+    )
 
 
 @responses.activate
