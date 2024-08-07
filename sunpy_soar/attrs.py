@@ -30,7 +30,7 @@ class SOOP(SimpleAttr):
 class Distance(Range):
     type_name = "distance"
 
-    def __init__(self, dist_min, dist_max=None):
+    def __init__(self, dist_min: u.Quantity, dist_max: u.Quantity = None):
         """
         Specifies the distance range.
 
@@ -51,24 +51,12 @@ class Distance(Range):
         if dist_max is None:
             dist_max = dist_min
 
-        # Ensure both dist_min and dist_max are astropy Quantity instances
-        if not all(isinstance(var, u.Quantity) for var in [dist_min, dist_max]):
-            msg = "Distance inputs must be astropy Quantities"
-            raise TypeError(msg)
 
         # Ensure both dist_min and dist_max are scalar values
         if not all([dist_min.isscalar, dist_max.isscalar]):
             msg = "Both dist_min and dist_max must be scalar values"
             raise ValueError(msg)
 
-        # Supported units for distance
-        supported_units = [u.AU, u.km, u.mm]
-        for unit in supported_units:
-            if dist_min.unit.is_equivalent(unit):
-                break
-        else:
-            msg = f"This unit is not convertible to any of {supported_units}"
-            raise u.UnitsError(msg)
 
         # Convert to the chosen unit and sort the values
         dist_min, dist_max = sorted([dist_min.to(unit), dist_max.to(unit)])
