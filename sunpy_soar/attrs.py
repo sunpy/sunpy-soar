@@ -35,7 +35,7 @@ class Distance(Range):
     type_name = "distance"
 
     @quantity_input(dist_min=u.m, dist_max=u.m)
-    def __init__(self, dist_min: u.Quantity, dist_max: u.Quantity):
+    def __init__(self, dist_min: u.Quantity, dist_max: u.Quantity):  # NOQA: ANN204
         """
         Specifies the distance range.
 
@@ -45,6 +45,7 @@ class Distance(Range):
             The lower bound of the range.
         dist_max : `~astropy.units.Quantity`
             The upper bound of the range.
+
         Notes
         -----
         The valid units for distance are AU, km, and mm. Any unit directly
@@ -192,7 +193,10 @@ def _(wlk, attr, params):  # NOQA: ARG001
     # to filter the query without time consideration.
     dmin = attr.min.value
     dmax = attr.max.value
-    if not (0.28 <= dmin <= 1.0) or not (0.28 <= dmax <= 1.0):
+    min_possible = 0.28
+    max_possible = 1.0
+
+    if not (min_possible <= dmin <= max_possible) or not (min_possible <= dmax <= max_possible):
         warnings.warn(
             "Distance values must be within the range 0.28 AU to 1.0 AU.",
             SunpyUserWarning,

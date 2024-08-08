@@ -122,7 +122,7 @@ class SOARClient(BaseClient):
         return where_part, from_part, select_part
 
     @staticmethod
-    def _construct_payload(query):
+    def _construct_payload(query):  # NOQA: C901
         """
         Construct search payload.
 
@@ -296,7 +296,6 @@ class SOARClient(BaseClient):
         bool
             True if this client can handle the given query.
         """
-
         required = {Distance} if any(isinstance(q, Distance) for q in query) else {a.Time}
 
         optional = {a.Instrument, a.Detector, a.Wavelength, a.Level, a.Provider, Product, SOOP, Distance, a.Time}
