@@ -122,7 +122,7 @@ class SOARClient(BaseClient):
         return where_part, from_part, select_part
 
     @staticmethod
-    def _construct_payload(query):  # NOQA: C901
+    def _construct_payload(query):
         """
         Construct search payload.
 
