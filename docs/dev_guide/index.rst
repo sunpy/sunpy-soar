@@ -10,3 +10,5 @@ This guide will walk you through about contributing towards sunpy-soar.
    :maxdepth: 1
 
    working
+   tables
+   query
