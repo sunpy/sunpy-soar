@@ -49,8 +49,8 @@ This will walk you through getting set up for contributing.
    :hidden:
 
    generated/gallery/index
-   dev_guide/index
    how_to/index
+   dev_guide/index
    api
    changelog
    coc

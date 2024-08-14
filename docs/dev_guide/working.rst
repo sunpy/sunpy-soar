@@ -8,14 +8,13 @@ Newcomer's Guide
 hosted by ESA (European Space Agency). It provides tools and utilities to access, search, download and
 analyze data collected by the Solar Orbiter mission.
 
-How data is retrieved from SOAR
-===============================
+How data is retrieved from the SOAR
+===================================
 
-To retrieve data from SOAR, you first use the ``Fido`` object from SunPy
-and specify the desired attributes using `sunpy.net.attrs`. These
-attributes define the criteria for the data you want to retrieve, such as the
-time range, instrument, or wavelength. Here is an example of how to specify
-the time range for the data you want to retrieve:
+To retrieve data from SOAR, you first use the `sunpy.net.Fido` object from `sunpy` and specify the desired attributes using `sunpy.net.attrs`.
+These attributes define the criteria for the data you want to retrieve, such as the time range, instrument, or wavelength.
+
+Here is an example of how to specify the time range for the data you want to retrieve:
 
 .. code-block:: python
 
@@ -39,9 +38,10 @@ A generated query looks like:
 
 .. code-block:: python
 
-    without_join="SELECT+*+FROM+v_sc_data_item+WHERE+instrument='EPD'+AND+begin_time>='2021-02-01+00:00:00'+AND+begin_time<='2021-02-02+00:00:00'+AND+level='L1'+AND+descriptor='epd-epthet2-nom-close'"
-    with_join="SELECT+h1.instrument, h1.descriptor, h1.level, h1.begin_time, h1.end_time, h1.data_item_id, h1.filesize, h1.filename, h1.soop_name, h2.detector, h2.wavelength, h2.dimension_index+"
+    "SELECT+*+FROM+v_sc_data_item+WHERE+instrument='EPD'+AND+begin_time>='2021-02-01+00:00:00'+AND+begin_time<='2021-02-02+00:00:00'+AND+level='L1'+AND+descriptor='epd-epthet2-nom-close'"
+    # Or with a Join
+    "SELECT+h1.instrument, h1.descriptor, h1.level, h1.begin_time, h1.end_time, h1.data_item_id, h1.filesize, h1.filename, h1.soop_name, h2.detector, h2.wavelength, h2.dimension_index+"
     "FROM+v_sc_data_item AS h1 JOIN v_eui_sc_fits AS h2 USING (data_item_oid)+WHERE+h1.instrument='EUI'+AND+h1.begin_time>='2021-02-01+00:00:00'+AND+h1.begin_time<='2021-02-02+00:00:00'+AND+""
     "h2.dimension_index='1'+AND+h1.level='L1'+AND+h1.descriptor='eui-fsi174-image'"
 
-The url is generated with the query formed based on the parameters, Then Fido is used to print or download the data.
+The URL is generated with the query formed based on the parameters, then Fido is used to print or download the data.

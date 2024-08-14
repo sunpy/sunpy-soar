@@ -4,7 +4,7 @@
 Developer Guide
 ***************
 
-This guide will walk you through about contributing towards sunpy-soar.
+This guide will explain the internals of ``sunpy-soar`` and how it interacts with `sunpy.net.Fido`.
 
 .. toctree::
    :maxdepth: 1
