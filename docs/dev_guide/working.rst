@@ -1,12 +1,5 @@
 .. _sunpy-soar-dev-guide-working:
 
-****************
-Newcomer's Guide
-****************
-
-``sunpy-soar`` is a Python library developed to interact with the SOAR (Solar Orbiter Archive) data
-hosted by ESA (European Space Agency). It provides tools and utilities to access, search, download and
-analyze data collected by the Solar Orbiter mission.
 
 How data is retrieved from the SOAR
 ===================================
@@ -44,4 +37,4 @@ A generated query looks like:
     "FROM+v_sc_data_item AS h1 JOIN v_eui_sc_fits AS h2 USING (data_item_oid)+WHERE+h1.instrument='EUI'+AND+h1.begin_time>='2021-02-01+00:00:00'+AND+h1.begin_time<='2021-02-02+00:00:00'+AND+""
     "h2.dimension_index='1'+AND+h1.level='L1'+AND+h1.descriptor='eui-fsi174-image'"
 
-The URL is generated with the query formed based on the parameters, then Fido is used to print or download the data.
+The URL is generated with the query formed based on the parameters, then Fido is used to search and download the data.
