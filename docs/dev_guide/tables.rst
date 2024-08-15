@@ -32,7 +32,7 @@ Once the joins are established, the necessary columns can be included in the que
 
 Depending on the use case, you might need to determine the type of join (e.g., inner join, outer join, left join) and what specific tables or columns should be displayed to the user.
 
-Finally, ensure that the ``_do_search`` method is updated to reflect these changes. 
+Finally, ensure that the ``_do_search`` method is updated to reflect these changes.
 This method should handle any additional columns or conditional logic for attribute-specific queries, ensuring that the appropriate columns is returned to the user.
 
 Allowing an attribute to work in the search query
@@ -42,13 +42,13 @@ For any attribute to work in the search query, we can divide the situation in tw
 
 case 1: It is already there in `sunpy.net.attrs`, in this situation just a walker needs to be created.
 
-Example on its implementation: 
+Example on its implementation:
 
 .. code-block:: python
 
     # Adding a walker applier for that attribute.
     @walker.add_applier(a.AttrName)
-    def _(wlk, attr, params): 
+    def _(wlk, attr, params):
         params.append(f"Detector='{attr.value}'")
 
     # Depending upon the attribute the value being added could be a range of values also.
@@ -61,10 +61,10 @@ Example on its implementation:
 
 case 2: It is not already there in `sunpy.net.attrs`, in this situation we have to introduce the attribute and a walker needs to be created.
 
-Example on its implementation:   
+Example on its implementation:
 
 .. code-block:: python
-    
+
     class Attrname("Type of attribute: SimpleAttr, Range"):
     """
     Description of attribute
@@ -75,4 +75,3 @@ Example on its implementation:
         self.value = value.lower()
 
     # After this a walker applier need to be added, which have been shown above
-

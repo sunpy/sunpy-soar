@@ -34,7 +34,7 @@ Using the example below,
     357 Results from the SOARClient:
     <BLANKLINE>
     Instrument     Data product    Level        Start time               End time        Filesize SOOP Name
-                                                                                          Mbyte    
+                                                                                          Mbyte
     ---------- ------------------- ----- ----------------------- ----------------------- -------- ---------
            RPW rpw-tds-surv-tswf-b    L2 2022-10-09 00:00:00.000 2022-10-10 00:00:00.000   13.748      None
            RPW    rpw-lfr-surv-bp1    L2 2022-10-09 00:00:00.000 2022-10-10 00:00:00.000   61.818      None
