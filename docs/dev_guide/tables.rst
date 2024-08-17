@@ -6,6 +6,7 @@ Tables supported in ``sunpy-soar``
 
 The ``sunpy-soar`` library currently supports data retrieval from both science and low-latency data tables, such as ``v_sc_data_item`` and ``v_ll_data_item``.
 Additionally, it provides support for join tables associated with remote instruments, such as ``v_eui_sc_fits``.
+These tables and their columns are described in the `Tables, Views, and Columns <https://www.cosmos.esa.int/web/soar/tables-views-and-columns/>`_.
 
 In the context of ``sunpy-soar``, data tables contain columns related to scientific measurements, while instrument tables contain metadata specific to particular instruments.
 The ``sunpy-soar`` library specifically supports the wavelength and detector columns within these tables.

@@ -11,8 +11,8 @@ It performs a general query based on the provided parameters, retrieving the dat
 
 ``doQueryFilteredByDistance``: This method is employed when a distance parameter is included in the search query.
 Unlike ``doQuery``, this method filters the entire query based on the specified distance value.
-The time attribute is not required when using ``doQueryFilteredByDistance``, as the time is internally calculated based on the provided distance.
-The distance value is appended to the end of the query using ``&DISTANCE(dmin, dmax)``, where ``dmin`` and ``dmax`` are Astropy units of distance.
+The time attribute is not necessarily required when using ``doQueryFilteredByDistance``.
+The distance range of values is appended to the end of the query using ``&DISTANCE(dmin, dmax)``, where ``dmin`` and ``dmax`` are Astropy quantities representing distances.
 These values must fall within the range of 0.28 AU to 1.0 AU; otherwise, the query will not return any results.
 
 Using the example below,
@@ -51,8 +51,7 @@ Using the example below,
     <BLANKLINE>
     <BLANKLINE>
 
-Here the query's "REQUEST" type to "doQueryFilteredByDistance", which is a special method that filters the entire query based on the specified distance value.
-This method is used when a distance parameter is included in the search query, and the time attribute is not required.
+Here the query's "REQUEST" type to "doQueryFilteredByDistance", which is a special method that filters the entire database based on the specified distance value.
 
 The actual query this example produces is,
 
