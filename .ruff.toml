@@ -19,6 +19,7 @@ lint.extend-ignore = [
     "ANN205", # Missing return type annotation for staticmethod
     "ANN206", # Missing return type annotation for classmethod
     "COM812", # May cause conflicts when used with the formatter
+    "C901", # Function exceeds acceptable complexity limits
     "D200", # One-line docstring should fit on one line
     "D205", # 1 blank line required between summary line and description
     "D400", # First line should end with a period
