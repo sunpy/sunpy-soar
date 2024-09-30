@@ -33,21 +33,13 @@ tests = [
   "sunpy[map,net]>=6.0.0",
 ]
 docs = [
-<<<<<<<
-  "matplotlib",
-  "sphinx-automodapi",
-=======
   "sphinx",
   "sphinx-automodapi",
   "packaging",
-]
-[project.urls]
-repository = "https://sunpy.org"
->>>>>>>
+  "matplotlib",
   "sphinx-changelog",
   "sphinx-copybutton",
   "sphinx-gallery",
-  "sphinx",
   "sphinxext-opengraph",
   "sunpy-sphinx-theme",
 ]
