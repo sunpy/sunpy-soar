@@ -8,9 +8,30 @@
 import datetime
 from pathlib import Path
 
+<<<<<<<
 from sunpy_sphinx_theme import PNG_ICON
+=======
+from packaging.version import Version
 
+# -- Project information -----------------------------------------------------
+
+# The full version, including alpha/beta/rc tags
 from sunpy_soar import __version__
+>>>>>>>
+
+<<<<<<<
+from sunpy_soar import __version__
+=======
+_version = Version(__version__)
+version = release = str(_version)
+# Avoid "post" appearing in version string in rendered docs
+if _version.is_postrelease:
+    version = release = _version.base_version
+# Avoid long githashes in rendered Sphinx docs
+elif _version.is_devrelease:
+    version = release = f'{_version.base_version}.dev{_version.dev}'
+is_development = _version.is_devrelease
+>>>>>>>
 
 project = "sunpy-soar"
 copyright = f"{datetime.datetime.now().year}, The SunPy Community"  # NOQA: A001, DTZ005
