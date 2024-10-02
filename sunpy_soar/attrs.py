@@ -10,7 +10,7 @@ from astropy.units import quantity_input
 from sunpy.net.attr import AttrAnd, AttrOr, AttrWalker, DataAttr, Range, SimpleAttr
 from sunpy.util.exceptions import SunpyUserWarning
 
-__all__ = ["Product", "SOOP"]
+__all__ = ["Product", "SOOP", "Distance"]
 
 
 class Product(SimpleAttr):
