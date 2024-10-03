@@ -2,8 +2,10 @@ Reference/API
 =============
 
 .. automodapi:: sunpy_soar
+   :no-inheritance-diagram:
 
 .. automodapi:: sunpy_soar.attrs
+   :no-inheritance-diagram:
 
 
 .. note::
