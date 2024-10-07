@@ -54,13 +54,6 @@ master_doc = "index"
 default_role = "obj"
 napoleon_use_rtype = False
 napoleon_google_docstring = False
-<<<<<<<
-=======
-master_doc = "index"
-
-# Treat everything in single ` as a Python reference.
-default_role = "py:obj"
->>>>>>>
 
 # -- Options for intersphinx extension ---------------------------------------
 intersphinx_mapping = {
