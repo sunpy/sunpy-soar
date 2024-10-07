@@ -24,7 +24,7 @@ if _version.is_postrelease:
 elif _version.is_devrelease:
     version = release = f"{_version.base_version}.dev{_version.dev}"
 is_development = _version.is_devrelease
-is_release = not(_version.is_prerelease or _version.is_devrelease)
+is_release = not (_version.is_prerelease or _version.is_devrelease)
 
 project = "sunpy-soar"
 copyright = f"{datetime.datetime.now().year}, The SunPy Community"  # NOQA: A001, DTZ005
