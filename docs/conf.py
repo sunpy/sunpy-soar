@@ -51,16 +51,12 @@ extensions = [
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 source_suffix = ".rst"
 master_doc = "index"
-default_role = "obj"
 napoleon_use_rtype = False
 napoleon_google_docstring = False
 
-<<<<<<<
-=======
 # Treat everything in single ` as a Python reference.
 default_role = "py:obj"
 
->>>>>>>
 # -- Options for intersphinx extension ---------------------------------------
 intersphinx_mapping = {
     "python": (
