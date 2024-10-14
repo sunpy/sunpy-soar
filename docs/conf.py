@@ -24,7 +24,7 @@ if _version.is_postrelease:
 elif _version.is_devrelease:
     version = release = f"{_version.base_version}.dev{_version.dev}"
 is_development = _version.is_devrelease
-is_release = not (_version.is_prerelease or _version.is_devrelease)
+is_release = not(_version.is_prerelease or _version.is_devrelease)
 
 project = "sunpy-soar"
 copyright = f"{datetime.datetime.now().year}, The SunPy Community"  # NOQA: A001, DTZ005
@@ -51,9 +51,11 @@ extensions = [
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 source_suffix = ".rst"
 master_doc = "index"
-default_role = "obj"
 napoleon_use_rtype = False
 napoleon_google_docstring = False
+
+# Treat everything in single ` as a Python reference.
+default_role = "py:obj"
 
 # -- Options for intersphinx extension ---------------------------------------
 intersphinx_mapping = {
