@@ -42,7 +42,7 @@ extend-ignore = [
 "setup.py" = ["INP001", "D100"]
 "conftest.py" = ["INP001"]
 "docs/conf.py" = [
-  "E402"  # Module imports not at top of file
+  "E402", # Module imports not at top of file
   "D100", # Missing docstring in public module
   "INP001", # conf.py is part of an implicit namespace package
 ]
