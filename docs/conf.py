@@ -80,6 +80,24 @@ intersphinx_mapping = {
     "parfive": ("https://parfive.readthedocs.io/en/stable/", None),
 }
 
+<<<<<<<
+=======
+# Render inheritance diagrams in SVG
+graphviz_output_format = "svg"
+
+graphviz_dot_args = [
+    "-Nfontsize=10",
+    "-Nfontname=Helvetica Neue, Helvetica, Arial, sans-serif",
+    "-Efontsize=10",
+    "-Efontname=Helvetica Neue, Helvetica, Arial, sans-serif",
+    "-Gfontsize=10",
+    "-Gfontname=Helvetica Neue, Helvetica, Arial, sans-serif",
+]
+
+# Add any paths that contain custom static files (such as style sheets) here,
+# relative to this directory. They are copied after the builtin static files,
+# so a file named "default.css" will overwrite the builtin "default.css".
+>>>>>>>
 # -- Options for HTML output -------------------------------------------------
 html_theme = "sunpy"
 graphviz_output_format = "svg"
