@@ -8,11 +8,9 @@ import datetime
 from pathlib import Path
 
 from packaging.version import Version
-
 from sunpy_sphinx_theme import PNG_ICON
 
 # -- Project information -----------------------------------------------------
-
 # The full version, including alpha/beta/rc tags
 from sunpy_soar import __version__
 
@@ -142,7 +140,7 @@ with Path("nitpick-exceptions").open() as f:
         dtype, target = line.split(None, 1)
         target = target.strip()
         nitpick_ignore.append((dtype, target))
-        
+
 # -- Options for sphinx-copybutton ---------------------------------------------
 
 # Python Repl + continuation, Bash, ipython and qtconsole + continuation, jupyter-console + continuation
