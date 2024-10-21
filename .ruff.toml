@@ -9,7 +9,7 @@ exclude = [
 ]
 
 [lint]
-select = ["ALL"]
+select = ["E", "F", "W", "UP", "PT"]
 extend-ignore = [
   # pycodestyle (E, W)
   "E501", # LineTooLong                             # TODO! fix
@@ -19,45 +19,20 @@ extend-ignore = [
   "PT007", # Parametrize should be lists of tuples  # TODO! fix
   "PT011", # Too broad exception assert             # TODO! fix
   "PT023", # Always use () on pytest decorators
-  "ANN001", # Missing type annotation for function argument
-  "ANN002", # Missing type annotation for variable
-  "ANN003", # Missing type annotation for keyword
-  "ANN201", # Missing return type annotation for public function
-  "ANN202", # Missing return type annotation for private function
-  "ANN205", # Missing return type annotation for staticmethod
-  "ANN206", # Missing return type annotation for classmethod
-  "COM812", # May cause conflicts when used with the formatter
-  "C901", # Function exceeds acceptable complexity limits
-  "D200", # One-line docstring should fit on one line
-  "D205", # 1 blank line required between summary line and description
-  "D400", # First line should end with a period
-  "D401", # First line should be in imperative mood
-  "D404", # First word of the docstring should not be "This"
-  "ISC001", # May cause conflicts when used with the formatter
-  "I", # Still using isort
 ]
 
 [lint.per-file-ignores]
 # Part of configuration, not a package.
-"setup.py" = ["INP001", "D100"]
+"setup.py" = ["INP001"]
 "conftest.py" = ["INP001"]
 "docs/conf.py" = [
-  "E402", # Module imports not at top of file
-  "D100", # Missing docstring in public module
-  "INP001", # conf.py is part of an implicit namespace package
+  "E402"  # Module imports not at top of file
 ]
 "docs/*.py" = [
-    "INP001",  # Implicit-namespace-package. The examples are not a package.
+  "INP001",  # Implicit-namespace-package. The examples are not a package.
 ]
 "__init__.py" = ["E402", "F401", "F403"]
 "test_*.py" = ["B011", "D", "E402", "PGH001", "S101"]
-"examples/*.py" = [
-  "B018", # Not print but display
-  "D400", # First line should end with a period, question mark, or exclamation point
-  "ERA001", # Commented out code
-  "INP001", # Implicit namespace package
-  "T201", # Use print
-]
 
 [lint.pydocstyle]
 convention = "numpy"
