@@ -12,13 +12,13 @@ Currently it can be installed from PyPI using:
 
 .. code-block:: bash
 
-   pip install sunpy_soar
+   pip install sunpy-soar
 
 or conda using
 
 .. code-block:: bash
 
-   conda install -c conda-forge sunpy_soar
+   conda install -c conda-forge sunpy-soar
 
 ``sunpy-soar`` and the VSO
 ==========================
@@ -32,7 +32,7 @@ Getting Help
 
 For more information or to ask questions about ``sunpy-soar`` or any other SunPy Project library, check out:
 
--  `sunpy-soar documentation <https://docs.sunpy.org/en/stable/>`__
+-  `sunpy-soar documentation <https://docs.sunpy.org/projects/soar/>`__
 -  `SunPy chat`_
 -  `SunPy mailing list <https://groups.google.com/forum/#!forum/sunpy>`__
 -  `SunPy community forum <https://community.openastronomy.org/c/sunpy/5>`__
@@ -49,6 +49,7 @@ This will walk you through getting set up for contributing.
    :hidden:
 
    generated/gallery/index
+   how_to/index
    api
    changelog
    coc

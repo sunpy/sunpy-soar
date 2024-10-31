@@ -1,10 +1,17 @@
+"""
+This file defines the net attributes that can be used to search the SOAR.
+"""
+
 import warnings
 
+import astropy.units as u
 import sunpy.net.attrs as a
-from sunpy.net.attr import AttrAnd, AttrOr, AttrWalker, DataAttr, SimpleAttr
+from astropy.units import quantity_input
+from sunpy.net.attr import (AttrAnd, AttrOr, AttrWalker, DataAttr, Range,
+                            SimpleAttr)
 from sunpy.util.exceptions import SunpyUserWarning
 
-__all__ = ["Product", "SOOP"]
+__all__ = ["Product", "SOOP", "Distance"]
 
 
 class Product(SimpleAttr):
@@ -15,7 +22,7 @@ class Product(SimpleAttr):
     descriptors on the SOAR are now lowercase.
     """
 
-    def __init__(self, value):
+    def __init__(self, value) -> None:
         self.value = value.lower()
 
 
@@ -23,6 +30,45 @@ class SOOP(SimpleAttr):
     """
     The SOOP name to search for.
     """
+
+
+class Distance(Range):
+    """
+    Specifies the distance range.
+
+    Parameters
+    ----------
+    dist_min : `~astropy.units.Quantity`
+        The lower bound of the range.
+    dist_max : `~astropy.units.Quantity`
+        The upper bound of the range.
+
+    Notes
+    -----
+    The valid units for distance are AU, km, and mm. Any unit directly
+    convertible to these units is valid input. This class filters the query
+    by solar distance without relying on a specific distance column.
+    """
+
+    @quantity_input(dist_min=u.m, dist_max=u.m)
+    def __init__(self, dist_min: u.Quantity, dist_max: u.Quantity):  # NOQA: ANN204
+        # Ensure both dist_min and dist_max are scalar values
+        if not all([dist_min.isscalar, dist_max.isscalar]):
+            msg = "Both dist_min and dist_max must be scalar values."
+            raise ValueError(msg)
+
+        target_unit = u.AU
+        # Convert both dist_min and dist_max to the target unit
+        dist_min = dist_min.to(target_unit)
+        dist_max = dist_max.to(target_unit)
+
+        super().__init__(dist_min, dist_max)
+
+    def collides(self, other):
+        """
+        Check if the other attribute collides with this attribute.
+        """
+        return isinstance(other, self.__class__)
 
 
 walker = AttrWalker()
@@ -52,7 +98,7 @@ def create_and(wlk, tree):
 
 
 @walker.add_applier(AttrAnd)
-def apply_and(wlk, and_attr, params):
+def apply_and(wlk, and_attr, params) -> None:
     """
     Applier for And.
 
@@ -87,14 +133,14 @@ params : list[str]
 
 
 @walker.add_applier(a.Time)
-def _(wlk, attr, params):  # NOQA: ARG001
-    start = attr.start.strftime("%Y-%m-%d+%H:%M:%S")
-    end = attr.end.strftime("%Y-%m-%d+%H:%M:%S")
-    params.append(f"begin_time>='{start}'+AND+begin_time<='{end}'")
+def _(wlk, attr, params) -> None:  # NOQA: ARG001
+    start = attr.start.strftime("%Y-%m-%d %H:%M:%S")
+    end = attr.end.strftime("%Y-%m-%d %H:%M:%S")
+    params.append(f"begin_time>='{start}' AND begin_time<='{end}'")
 
 
 @walker.add_applier(a.Level)
-def _(wlk, attr, params):  # NOQA: ARG001
+def _(wlk, attr, params) -> None:  # NOQA: ARG001
     level = attr.value
     if isinstance(level, int):
         level = f"L{level}"
@@ -112,20 +158,51 @@ def _(wlk, attr, params):  # NOQA: ARG001
 
 
 @walker.add_applier(a.Instrument)
-def _(wlk, attr, params):  # NOQA: ARG001
+def _(wlk, attr, params) -> None:  # NOQA: ARG001
     params.append(f"instrument='{attr.value}'")
 
 
 @walker.add_applier(Product)
-def _(wlk, attr, params):  # NOQA: ARG001
+def _(wlk, attr, params) -> None:  # NOQA: ARG001
     params.append(f"descriptor='{attr.value}'")
 
 
 @walker.add_applier(a.Provider)
-def _(wlk, attr, params):  # NOQA: ARG001
+def _(wlk, attr, params) -> None:  # NOQA: ARG001
     params.append(f"provider='{attr.value}'")
 
 
 @walker.add_applier(SOOP)
-def _(wlk, attr, params):  # NOQA: ARG001
+def _(wlk, attr, params) -> None:  # NOQA: ARG001
     params.append(f"soop_name='{attr.value}'")
+
+
+@walker.add_applier(a.Detector)
+def _(wlk, attr, params) -> None:  # NOQA: ARG001
+    params.append(f"Detector='{attr.value}'")
+
+
+@walker.add_applier(a.Wavelength)
+def _(wlk, attr, params) -> None:  # NOQA: ARG001
+    wavemin = attr.min.value
+    wavemax = attr.max.value
+    params.append(f"Wavemin='{wavemin}' AND Wavemax='{wavemax}'")
+
+
+@walker.add_applier(Distance)
+def _(wlk, attr, params):  # NOQA: ARG001
+    # The `Distance` attribute is used to filter the query by solar distance
+    # without relying on a specific distance column. It is commonly used
+    # to filter the query without time consideration.
+    dmin = attr.min.value
+    dmax = attr.max.value
+    min_possible = 0.28
+    max_possible = 1.0
+
+    if not (min_possible <= dmin <= max_possible) or not (min_possible <= dmax <= max_possible):
+        warnings.warn(
+            "Distance values must be within the range 0.28 AU to 1.0 AU.",
+            SunpyUserWarning,
+            stacklevel=2,
+        )
+    params.append(f"DISTANCE({dmin},{dmax})")
