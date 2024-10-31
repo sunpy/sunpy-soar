@@ -29,18 +29,15 @@ tests = [
   "pytest",
   "sunpy[map,net]>=5.0",
 ]
+
 docs = [
-  "matplotlib",
+  "sphinx",
   "sphinx-automodapi",
-  "sunpy-sphinx-theme",
   "packaging",
-]
-repository = [
-  "https://sunpy.org",
+  "matplotlib",
   "sphinx-changelog",
   "sphinx-copybutton",
   "sphinx-gallery",
-  "sphinx",
   "sphinxext-opengraph",
   "sunpy-sphinx-theme",
 ]
