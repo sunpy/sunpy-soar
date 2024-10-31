@@ -8,63 +8,33 @@ exclude=[
     "build",
     "tools/**",
 ]
-lint.select = [
-    "A",
-    "ARG",
-    "ASYNC",
-    "B",
-    "BLE",
-    "C4",
-#    "C90",
-    "COM",
-#    "D",
-    "DTZ",
-    "E",
-    "EM",
-    "ERA",
-    "EXE",
-    "F",
-    "FBT",
-    "FLY",
-#    "FURB",
-    "G",
-    "I",
-    "ICN",
-    "INP",
-    "INT",
-    "ISC",
-    "LOG",
-#    "N",
-    "NPY",
-    "PERF",
-    "PGH",
-    "PIE",
-#    "PL",
-    "PLE",
-    "PT",
-    "PTH",
-    "PYI",
-    "Q",
-    "RET",
-    "RSE",
-    "RUF",
-#    "S",
-    "SIM",
-    "SLF",
-    "SLOT",
-    "T10",
-    "T20",
-    "TCH",
-    "TID",
-    "TRIO",
-    "TRY",
-    "UP",
-    "W",
-    "YTT",
+
+[lint]
+select = [
+  "E",
+  "F",
+  "W",
+  "UP",
+  "PT",
 ]
-lint.extend-ignore = [
-    "COM812", # May cause conflicts when used with the formatter
-    "ISC001",  # May cause conflicts when used with the formatter
+extend-ignore = [
+  # pycodestyle (E, W)
+  "E501", # ignore line length will use a formatter instead
+  # pyupgrade (UP)
+  "UP038", # Use | in isinstance - not compatible with models and is slower
+  # pytest (PT)
+  "PT001", # Always use pytest.fixture()
+  "PT004", # Fixtures which don't return anything should have leading _
+  "PT023", # Always use () on pytest decorators
+  # flake8-pie (PIE)
+  "PIE808", # Disallow passing 0 as the first argument to range
+  # flake8-use-pathlib (PTH)
+  "PTH123", # open() should be replaced by Path.open()
+  # Ruff (RUF)
+  "RUF003", # Ignore ambiguous quote marks, doesn't allow ' in comments
+  "RUF012", # Mutable class attributes should be annotated with `typing.ClassVar`
+  "RUF013", # PEP 484 prohibits implicit `Optional`
+  "RUF015", # Prefer `next(iter(...))` over single element slice
 ]
 
 [lint.per-file-ignores]
@@ -74,8 +44,33 @@ lint.extend-ignore = [
     "B018", # Not print but display
     "ERA001", # Commented out code
 ]
+"setup.py" = [
+  "INP001", # File is part of an implicit namespace package.
+]
+"conftest.py" = [
+  "INP001", # File is part of an implicit namespace package.
+]
+"docs/conf.py" = [
+  "E402" # Module imports not at top of file
+]
 "docs/conf.py" = [
     "INP001", # conf.py is part of an implicit namespace package
+]
+"docs/*.py" = [
+  "INP001", # File is part of an implicit namespace package.
+]
+"examples/**.py" = [
+  "T201", # allow use of print in examples
+  "INP001", # File is part of an implicit namespace package.
+]
+"__init__.py" = [
+  "E402", # Module level import not at top of cell
+  "F401", # Unused import
+  "F403", # from {name} import * used; unable to detect undefined names
+  "F405", # {name} may be undefined, or defined from star imports
+]
+"test_*.py" = [
+  "E402", # Module level import not at top of cell
 ]
 
 [lint.pydocstyle]

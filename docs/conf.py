@@ -9,8 +9,22 @@ import datetime
 from pathlib import Path
 
 from sunpy_sphinx_theme import PNG_ICON
+from packaging.version import Version
+
+# -- Project information -----------------------------------------------------
 
 from sunpy_soar import __version__
+
+_version = Version(__version__)
+version = release = str(_version)
+# Avoid "post" appearing in version string in rendered docs
+if _version.is_postrelease:
+    version = release = _version.base_version
+# Avoid long githashes in rendered Sphinx docs
+elif _version.is_devrelease:
+    version = release = f"{_version.base_version}.dev{_version.dev}"
+is_development = _version.is_devrelease
+is_release = not(_version.is_prerelease or _version.is_devrelease)
 
 project = "sunpy-soar"
 copyright = f"{datetime.datetime.now().year}, The SunPy Community"  # NOQA: A001, DTZ005
@@ -43,6 +57,9 @@ default_role = "obj"
 napoleon_use_rtype = False
 napoleon_google_docstring = False
 
+# Treat everything in single ` as a Python reference.
+default_role = "py:obj"
+
 # -- Options for intersphinx extension ---------------------------------------
 intersphinx_mapping = {
     "python": (
@@ -65,6 +82,22 @@ intersphinx_mapping = {
     "sunpy": ("https://docs.sunpy.org/en/stable/", None),
     "parfive": ("https://parfive.readthedocs.io/en/stable/", None),
 }
+
+# The theme to use for HTML and HTML Help pages.  See the documentation for
+# a list of builtin themes.
+html_theme = "sunpy"
+
+# Render inheritance diagrams in SVG
+graphviz_output_format = "svg"
+
+graphviz_dot_args = [
+    "-Nfontsize=10",
+    "-Nfontname=Helvetica Neue, Helvetica, Arial, sans-serif",
+    "-Efontsize=10",
+    "-Efontname=Helvetica Neue, Helvetica, Arial, sans-serif",
+    "-Gfontsize=10",
+    "-Gfontname=Helvetica Neue, Helvetica, Arial, sans-serif",
+]
 
 # -- Options for HTML output -------------------------------------------------
 html_theme = "sunpy"

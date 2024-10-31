@@ -32,6 +32,11 @@ tests = [
 docs = [
   "matplotlib",
   "sphinx-automodapi",
+  "sunpy-sphinx-theme",
+  "packaging",
+]
+repository = [
+  "https://sunpy.org",
   "sphinx-changelog",
   "sphinx-copybutton",
   "sphinx-gallery",
@@ -53,6 +58,8 @@ zip-safe = false
 include-package-data = true
 
 [tool.setuptools.packages.find]
+include = ["sunpy_soar*"]
+exclude = ["sunpy_soar._dev*"]
 
 [tool.setuptools_scm]
 write_to = "sunpy_soar/_version.py"
