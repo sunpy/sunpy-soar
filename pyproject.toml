@@ -35,6 +35,14 @@ tests = [
 docs = [
   "matplotlib",
   "sphinx-automodapi",
+<<<<<<<
+=======
+  "sunpy-sphinx-theme",
+  "packaging",
+]
+[project.urls]
+repository = "https://sunpy.org"
+>>>>>>>
   "sphinx-changelog",
   "sphinx-copybutton",
   "sphinx-gallery",
