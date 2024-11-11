@@ -14,6 +14,9 @@ from sunpy_sphinx_theme import PNG_ICON
 # The full version, including alpha/beta/rc tags
 from sunpy_soar import __version__
 
+# -- Project information -----------------------------------------------------
+
+
 _version = Version(__version__)
 version = release = str(_version)
 # Avoid "post" appearing in version string in rendered docs
@@ -26,7 +29,7 @@ is_development = _version.is_devrelease
 is_release = not(_version.is_prerelease or _version.is_devrelease)
 
 project = "sunpy-soar"
-copyright = f"{datetime.datetime.now().year}, The SunPy Community"  # NOQA: A001, DTZ005
+copyright = f"{datetime.datetime.now().year}, The SunPy Community"  # noqa: A001
 author = "The SunPy Community"
 
 # -- General configuration ---------------------------------------------------
@@ -50,7 +53,7 @@ extensions = [
 ]
 
 # Add any paths that contain templates here, relative to this directory.
-# templates_path = ["_templates"]  # NOQA: ERA001
+# templates_path = ["_templates"]
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -63,6 +66,9 @@ source_suffix = ".rst"
 
 # The master toctree document.
 master_doc = "index"
+
+# Treat everything in single ` as a Python reference.
+default_role = "py:obj"
 
 # Treat everything in single ` as a Python reference.
 default_role = "py:obj"
@@ -91,6 +97,22 @@ intersphinx_mapping = {
     "parfive": ("https://parfive.readthedocs.io/en/stable/", None),
 }
 
+# The theme to use for HTML and HTML Help pages.  See the documentation for
+# a list of builtin themes.
+html_theme = "sunpy"
+
+# Render inheritance diagrams in SVG
+graphviz_output_format = "svg"
+
+graphviz_dot_args = [
+    "-Nfontsize=10",
+    "-Nfontname=Helvetica Neue, Helvetica, Arial, sans-serif",
+    "-Efontsize=10",
+    "-Efontname=Helvetica Neue, Helvetica, Arial, sans-serif",
+    "-Gfontsize=10",
+    "-Gfontname=Helvetica Neue, Helvetica, Arial, sans-serif",
+]
+
 # -- Options for HTML output -------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
@@ -112,7 +134,7 @@ graphviz_dot_args = [
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-# html_static_path = ["_static"]  # NOQA: ERA001
+# html_static_path = ["_static"]
 
 # By default, when rendering docstrings for classes, sphinx.ext.autodoc will
 # make docs with the class-level docstring and the class-method docstrings,

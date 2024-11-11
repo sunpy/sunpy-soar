@@ -32,6 +32,7 @@ tests = [
   "responses>=0.20.0",
   "sunpy[map,net]>=6.0.0",
 ]
+
 docs = [
   "sphinx",
   "sphinx-automodapi",
