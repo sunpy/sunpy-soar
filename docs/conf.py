@@ -48,8 +48,15 @@ extensions = [
     "sphinx.ext.mathjax",
     "sphinx.ext.napoleon",
     "sphinx.ext.todo",
+<<<<<<<
     "sphinx.ext.viewcode",
     "sphinx_copybutton",
+=======
+    "sphinx.ext.mathjax",
+    "sphinx_automodapi.automodapi",
+    "sphinx_automodapi.smart_resolver",
+    "sphinx_changelog",
+>>>>>>>
 ]
 
 # Add any paths that contain templates here, relative to this directory.

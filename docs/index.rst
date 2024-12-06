@@ -10,7 +10,14 @@ Installation
 ``sunpy-soar`` requires ``python >= 3.10`` and ``sunpy >= 5.0``.
 Currently it can be installed from PyPI using:
 
+<<<<<<<
 .. code-block:: bash
+=======
+   whatsnew/index
+
+Indices and tables
+==================
+>>>>>>>
 
    pip install sunpy-soar
 
