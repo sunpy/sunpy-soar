@@ -34,6 +34,8 @@ tests = [
 ]
 
 docs = [
+  "sphinx",
+  "sphinx-automodapi",
   "matplotlib",
   "sphinx-changelog",
   "sphinx-copybutton",
