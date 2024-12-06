@@ -23,6 +23,14 @@ dependencies = [
 ]
 dynamic = ["version"]
 
+[project.urls]
+Homepage = "https://sunpy.org"
+Download = "https://pypi.org/project/sunpy-soar/"
+"Source Code" = "https://github.com/sunpy/sunpy-soar/"
+Documentation = "https://docs.sunpy.org/projects/soar/"
+Changelog = "https://docs.sunpy.org/projects/soar/changelog.html"
+"Issue Tracker" = "https://github.com/sunpy/sunpy-soar/issues"
+
 [project.optional-dependencies]
 tests = [
   "pytest-cov",
@@ -43,21 +51,6 @@ docs = [
   "sphinxext-opengraph",
   "sunpy-sphinx-theme",
 ]
-
-[project.urls]
-Homepage = "https://sunpy.org"
-Download = "https://pypi.org/project/sunpy-soar"
-
-[tool.setuptools]
-zip-safe = false
-
-[project.urls]
-Homepage = "https://sunpy.org"
-Download = "https://pypi.org/project/sunpy-soar/"
-"Source Code" = "https://github.com/sunpy/sunpy-soar/"
-Documentation = "https://docs.sunpy.org/projects/soar/"
-Changelog = "https://docs.sunpy.org/projects/soar/changelog.html"
-"Issue Tracker" = "https://github.com/sunpy/sunpy-soar/issues"
 
 [tool.setuptools]
 zip-safe = false
