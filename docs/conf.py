@@ -37,19 +37,19 @@ author = "The SunPy Community"
 extensions = [
     "sphinx_gallery.gen_gallery",
     "matplotlib.sphinxext.plot_directive",
-    "sphinx_automodapi.automodapi",
-    "sphinx_automodapi.smart_resolver",
-    "sphinx_changelog",
     "sphinx.ext.autodoc",
     "sphinx.ext.coverage",
     "sphinx.ext.doctest",
     "sphinx.ext.inheritance_diagram",
     "sphinx.ext.intersphinx",
-    "sphinx.ext.mathjax",
     "sphinx.ext.napoleon",
     "sphinx.ext.todo",
     "sphinx.ext.viewcode",
     "sphinx_copybutton",
+    "sphinx.ext.mathjax",
+    "sphinx_automodapi.automodapi",
+    "sphinx_automodapi.smart_resolver",
+    "sphinx_changelog",
 ]
 
 # Add any paths that contain templates here, relative to this directory.

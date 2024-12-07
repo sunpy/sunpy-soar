@@ -51,5 +51,5 @@ This will walk you through getting set up for contributing.
    generated/gallery/index
    how_to/index
    api
-   changelog
+   whatsnew/index
    coc
