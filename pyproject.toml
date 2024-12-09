@@ -23,25 +23,6 @@ dependencies = [
 ]
 dynamic = ["version"]
 
-[project.urls]
-Homepage = "https://sunpy.org"
-<<<<<<<
-=======
-"Source Code" = "https://github.com/sunpy/sunpy-soar"
-Download = "https://pypi.org/project/sunpy-soar"
-Documentation = "https://docs.sunpy.org/projects/sunpy-soar"
-Changelog = "https://docs.sunpy.org/projects/sunpy-soar/en/stable/whatsnew/changelog.html"
-"Issue Tracker" = "https://github.com/sunpy/sunpy-soar/issues"
-
-[tool.setuptools]
-zip-safe = false
->>>>>>>
-Download = "https://pypi.org/project/sunpy-soar/"
-"Source Code" = "https://github.com/sunpy/sunpy-soar/"
-Documentation = "https://docs.sunpy.org/projects/soar/"
-Changelog = "https://docs.sunpy.org/projects/soar/changelog.html"
-"Issue Tracker" = "https://github.com/sunpy/sunpy-soar/issues"
-
 [project.optional-dependencies]
 tests = [
   "pytest-cov",
@@ -63,6 +44,14 @@ docs = [
   "sunpy-sphinx-theme",
 ]
 
+[project.urls]
+Homepage = "https://sunpy.org"
+"Source Code" = "https://github.com/sunpy/sunpy-soar"
+Download = "https://pypi.org/project/sunpy-soar"
+Documentation = "https://docs.sunpy.org/projects/soar"
+Changelog = "https://docs.sunpy.org/projects/soar/en/stable/whatsnew/changelog.html"
+"Issue Tracker" = "https://github.com/sunpy/sunpy-soar/issues"
+
 [tool.setuptools]
 zip-safe = false
 include-package-data = true
@@ -83,16 +72,11 @@ write_to = "sunpy_soar/_version.py"
   verify_pr_number = true
   changelog_skip_label = "No Changelog Entry Needed"
   help_url = "https://github.com/sunpy/sunpy-soar/blob/main/changelog/README.rst"
-<<<<<<<
-  changelog_missing_long = "There isn't a changelog file in this pull request. Please add a changelog file to the `changelog/` directory following the instructions in the changelog [README](https://github.com//blob/main/changelog/README.rst)."
-  type_incorrect_long = "The changelog file you added is not one of the allowed types. Please use one of the types described in the changelog [README](https://github.com//blob/main/changelog/README.rst)"
-=======
 
   changelog_missing_long = "There isn't a changelog file in this pull request. Please add a changelog file to the `changelog/` directory following the instructions in the changelog [README](https://github.com/sunpy/sunpy-soar/blob/main/changelog/README.rst)."
 
   type_incorrect_long = "The changelog file you added is not one of the allowed types. Please use one of the types described in the changelog [README](https://github.com/sunpy/sunpy-soar/blob/main/changelog/README.rst)"
 
->>>>>>>
   number_incorrect_long = "The number in the changelog file you added does not match the number of this pull request. Please rename the file."
 
 # TODO: This should be in towncrier.toml but Giles currently only works looks in
