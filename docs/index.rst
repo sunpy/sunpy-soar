@@ -52,5 +52,5 @@ This will walk you through getting set up for contributing.
    how_to/index
    dev_guide/index
    api
-   changelog
+   whatsnew/index
    coc
