@@ -13,7 +13,7 @@ It performs a general query based on the provided parameters, retrieving the dat
 Unlike ``doQuery``, this method filters the entire query based on the specified distance value.
 The time attribute is not necessarily required when using ``doQueryFilteredByDistance``.
 The distance range of values is appended to the end of the query using ``&DISTANCE(dmin, dmax)``, where ``dmin`` and ``dmax`` are Astropy quantities representing distances.
-These values must fall within the range of 0.28 AU to 1.0 AU; otherwise, the query will not return any results.
+These values must fall within the range of 0.28 AU to 1.02 AU; otherwise, the query will not return any results.
 
 Using the example below,
 
