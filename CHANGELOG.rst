@@ -1,3 +1,25 @@
+1.11.0 (2024-12-27)
+===================
+
+Breaking Changes
+----------------
+
+- Increased the minimum required version of ``sunpy``  to v6.0.0. (`#139 <https://github.com/sunpy/sunpy-soar/pull/139>`__)
+
+
+New Features
+------------
+
+- Added support for ``detector`` and ``wavelength`` search attributes and the ability to filter with them. (`#118 <https://github.com/sunpy/sunpy-soar/pull/118>`__)
+
+
+Documentation
+-------------
+
+- Created a how-to guide with a guide on how to build a query using the wavelength attribute.(:ref:`sunpy-soar-how-to-query-wavelength`)
+  Added a short gallery example on how to query using ``wavelength`` and ``detector`` attributes.(:ref:`sphx_glr_generated_gallery_detector_wavelength.py`) (`#121 <https://github.com/sunpy/sunpy-soar/pull/121>`__)
+
+
 1.1.0 (2023-11-16)
 ==================
 
