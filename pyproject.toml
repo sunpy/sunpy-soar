@@ -17,6 +17,7 @@ authors = [
   { name = "David Stansby"},
 ]
 dependencies = [
+  "matplotlib>=3.6.0",
   "astropy>=5.3.0",
   "sunpy[net]>=6.0.0",
   "requests>=2.28.0",
@@ -32,7 +33,6 @@ tests = [
   "responses>=0.20.0",
   "sunpy[map,net]>=6.0.0",
 ]
-
 docs = [
   "sphinx",
   "sphinx-automodapi",
