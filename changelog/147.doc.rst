@@ -1,1 +1,1 @@
-Added developer guide for further development.
+Added developer guide with information about the internal logic of sunpy-soar.
