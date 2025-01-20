@@ -41,7 +41,7 @@ Allowing an attribute to work in the search query
 
 For any attribute to work in the search query, we can divide the situation in two cases:
 
-case 1: It is already there in `sunpy.net.attrs`, in this situation just a walker needs to be created.
+Case 1 - It is already there in `sunpy.net.attrs`, in this situation just a walker needs to be created.
 
 Example on its implementation:
 
@@ -60,7 +60,7 @@ Example on its implementation:
         # appending the attribute depending upon how it should be used in the query
         params.append(f"Attrmin='{attrmin}'+AND+Attrmax='{attrmax}'")
 
-case 2: It is not already there in `sunpy.net.attrs`, in this situation we have to introduce the attribute and a walker needs to be created.
+Case 2 - It is not already there in `sunpy.net.attrs`, in this situation we have to introduce the attribute and a walker needs to be created.
 
 Example on its implementation:
 
