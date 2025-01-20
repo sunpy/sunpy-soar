@@ -50,6 +50,7 @@ This will walk you through getting set up for contributing.
 
    generated/gallery/index
    how_to/index
+   dev_guide/index
    api
    whatsnew/index
    coc
