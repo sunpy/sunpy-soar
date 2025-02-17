@@ -34,15 +34,12 @@ author = "The SunPy Community"
 
 # -- General configuration ---------------------------------------------------
 
-<<<<<<<
-=======
 # Wrap large function/method signatures
 maximum_signature_line_length = 80
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named "sphinx.ext.*") or your custom
 # ones.
->>>>>>>
 extensions = [
     "sphinx_gallery.gen_gallery",
     "matplotlib.sphinxext.plot_directive",
