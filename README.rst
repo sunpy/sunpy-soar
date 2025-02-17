@@ -3,6 +3,7 @@
 **************
 
 |ci-status| |coverage|
+
 .. |ci-status| image:: https://github.com/sunpy/sunpy-soar/actions/workflows/ci.yml/badge.svg
     :alt: CI status
 
