@@ -1,3 +1,12 @@
+1.11 (2025-03-12)
+=================
+
+Documentation
+-------------
+
+- Added developer guide with information about the internal logic of sunpy-soar. (`#147 <https://github.com/sunpy/sunpy-soar/pull/147>`__)
+
+
 1.11.0 (2024-12-27)
 ===================
 
