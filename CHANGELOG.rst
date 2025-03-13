@@ -1,5 +1,5 @@
-1.11 (2025-03-12)
-=================
+1.11.1 (2025-03-12)
+===================
 
 Documentation
 -------------
@@ -29,8 +29,8 @@ Documentation
   Added a short gallery example on how to query using ``wavelength`` and ``detector`` attributes.(:ref:`sphx_glr_generated_gallery_detector_wavelength.py`) (`#121 <https://github.com/sunpy/sunpy-soar/pull/121>`__)
 
 
-1.1.0 (2023-11-16)
-==================
+1.10.0 (2023-11-16)
+===================
 
 Also includes changes from v1.9
 
