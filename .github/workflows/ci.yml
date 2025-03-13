@@ -29,7 +29,7 @@ jobs:
       toxdeps: tox-pypi-filter
       posargs: -n auto
       envs: |
-        - linux: py312
+        - linux: py313
     secrets:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
@@ -39,7 +39,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: '3.13'
       - run: python -m pip install -U --user build
       - run: python -m build . --sdist
       - run: python -m pip install -U --user twine
@@ -55,7 +55,7 @@ jobs:
       posargs: -n auto
       envs: |
         - windows: py311
-        - macos: py310
+        - macos: py312
         - linux: py310-oldestdeps
     secrets:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
@@ -64,7 +64,7 @@ jobs:
     needs: [core]
     uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@v1
     with:
-      default_python: '3.12'
+      default_python: '3.13'
       submodules: false
       pytest: false
       toxdeps: tox-pypi-filter
@@ -87,12 +87,12 @@ jobs:
       )
     uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@v1
     with:
-      default_python: '3.12'
+      default_python: '3.13'
       submodules: false
       coverage: codecov
       toxdeps: tox-pypi-filter
       envs: |
-        - linux: py312-devdeps
+        - linux: py313-devdeps
     secrets:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
@@ -108,7 +108,7 @@ jobs:
     needs: [test, docs]
     uses: OpenAstronomy/github-actions-workflows/.github/workflows/publish_pure_python.yml@v1
     with:
-      python-version: '3.12'
+      python-version: '3.13'
       test_extras: 'tests'
       test_command: 'pytest -p no:warnings --doctest-rst --pyargs sunpy_soar'
       submodules: false
