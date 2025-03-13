@@ -2,12 +2,12 @@
 ``sunpy-soar`` Documentation
 ****************************
 
-A sunpy Fido plugin for accessing data in the Solar Orbiter Archive (SOAR).
+A sunpy Fido plugin for accessing data in the `Solar Orbiter Archive (SOAR) <https://soar.esac.esa.int/soar/>`__.
 
 Installation
 ============
 
-``sunpy-soar`` requires ``python >= 3.10`` and ``sunpy >= 5.0``.
+``sunpy-soar`` requires ``python >= 3.10`` and ``sunpy >= 6.0``.
 Currently it can be installed from PyPI using:
 
 .. code-block:: bash
