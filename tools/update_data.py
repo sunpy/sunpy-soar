@@ -3,7 +3,7 @@ import pathlib
 
 from astroquery.utils.tap.core import TapPlus
 
-soar = TapPlus("http://soar.esac.esa.int/soar-sl-tap/tap")
+soar = TapPlus(url="http://soar.esac.esa.int/soar-sl-tap/tap")
 
 
 def get_cdf_descriptors():
@@ -21,7 +21,7 @@ def get_cdf_descriptors():
 def get_fits_descriptors():
     # Get data descriptors for FITS files
     print("Updating FITS descriptors...")
-    soar = TapPlus("http://soar.esac.esa.int/soar-sl-tap/tap")
+    soar = TapPlus(url="http://soar.esac.esa.int/soar-sl-tap/tap")
     job = soar.launch_job("select * from soar.fits_dataset")
     res = job.get_results()
     descriptors = {}

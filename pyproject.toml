@@ -43,6 +43,7 @@ docs = [
   "sphinxext-opengraph",
   "sunpy-sphinx-theme",
 ]
+dev = ["sunpy-soar[docs,tests]"]
 
 [project.urls]
 Homepage = "https://sunpy.org"
