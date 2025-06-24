@@ -1,0 +1,1 @@
+Cleaned up the namespace of ``a.soar`` to ensure only the real attrs are listed.
