@@ -372,6 +372,6 @@ def test_soar_server_down() -> None:
 
     with pytest.raises(
         RuntimeError,
-        match=("The SOAR server returned an invalid JSON response. It may be down or not functioning correctly."),
+        match=r"The SOAR server returned an invalid JSON response. It may be down or not functioning correctly.",
     ):
         Fido.search(time, level, product)

@@ -17,9 +17,9 @@ authors = [
   { name = "David Stansby"},
 ]
 dependencies = [
-  "matplotlib>=3.6.0",
-  "astropy>=5.3.0",
-  "sunpy[net]>=6.0.0",
+  "matplotlib>=3.8.0",
+  "astropy>=6.1.0",
+  "sunpy[net]>=7.0.0",
   "requests>=2.28.0",
 ]
 dynamic = ["version"]
@@ -31,7 +31,7 @@ tests = [
   "pytest-xdist",
   "pytest",
   "responses>=0.20.0",
-  "sunpy[map,net]>=6.0.0",
+  "sunpy[map,net]>=7.0.0",
 ]
 docs = [
   "sphinx",
