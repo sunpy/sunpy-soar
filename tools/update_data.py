@@ -79,7 +79,7 @@ def get_all_soops():
     return soop_names
 
 
-def main():
+if __name__ == "__main__":
     attr_file = (
         pathlib.Path(__file__).parent.parent / "sunpy_soar" / "data" / "attrs.json"
     )
