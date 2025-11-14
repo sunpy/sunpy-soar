@@ -11,7 +11,7 @@ name = "sunpy_soar"
 description = "A sunpy FIDO plugin for accessing data in the Solar Orbiter Archive (SOAR)."
 requires-python = ">=3.12"
 readme = { file = "README.rst", content-type = "text/x-rst" }
-license = { file = "licenses/LICENSE.rst" }
+license-files = ["licenses/LICENSE.rst"]
 authors = [
   { name = "The SunPy Community", email = "sunpy@googlegroups.com" },
   { name = "David Stansby"},
