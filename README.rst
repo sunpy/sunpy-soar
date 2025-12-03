@@ -8,7 +8,7 @@
     :alt: CI status
 
 .. |coverage| image:: https://codecov.io/gh/sunpy/sunpy-soar/branch/main/graph/badge.svg?token=5NKZHBX3AW
-   :target: https://codecov.io/gh/dstansby/sunpy-soar
+   :target: https://codecov.io/gh/sunpy/sunpy-soar
    :alt: Code coverage
 
 
