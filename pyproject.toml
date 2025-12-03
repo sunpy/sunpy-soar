@@ -19,7 +19,7 @@ authors = [
 dependencies = [
   "matplotlib>=3.8.0",
   "astropy>=6.1.0",
-  "sunpy[net,map]>=7.0.0",
+  "sunpy[net]>=7.0.0",
   "requests>=2.32.0",
 ]
 dynamic = ["version"]
