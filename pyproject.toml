@@ -17,7 +17,6 @@ authors = [
   { name = "David Stansby"},
 ]
 dependencies = [
-  "matplotlib>=3.8.0",
   "astropy>=6.1.0",
   "sunpy[net]>=7.0.0",
   "requests>=2.32.0",
@@ -42,6 +41,7 @@ docs = [
   "sphinx-gallery",
   "sphinxext-opengraph",
   "sunpy-sphinx-theme",
+  "matplotlib>=3.8.0",
 ]
 dev = ["sunpy-soar[docs,tests]"]
 
