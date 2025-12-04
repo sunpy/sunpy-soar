@@ -24,13 +24,18 @@ dependencies = [
 dynamic = ["version"]
 
 [project.optional-dependencies]
-tests = [
-  "pytest-cov",
-  "pytest-doctestplus",
-  "pytest-xdist",
-  "pytest",
+tests-deps = [
   "responses>=0.20.0",
   "sunpy[map,net]>=7.0.0",
+  "matplotlib>=3.8.0",
+]
+tests-only = [
+  "pytest-cov",
+  "pytest-doctestplus",
+  "pytest",
+]
+tests = [
+  "sunpy_soar[tests-deps,tests-only]",
 ]
 docs = [
   "sphinx",
@@ -41,7 +46,6 @@ docs = [
   "sphinx-gallery",
   "sphinxext-opengraph",
   "sunpy-sphinx-theme",
-  "matplotlib>=3.8.0",
 ]
 dev = ["sunpy-soar[docs,tests]"]
 
