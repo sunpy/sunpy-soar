@@ -1,1 +1,0 @@
-Fix test due to update in sunpy ``Fido.search`` where error are no longer raised but stored in ``.errors`` attribute.

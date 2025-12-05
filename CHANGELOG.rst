@@ -1,3 +1,26 @@
+v1.12.0 (2025-12-05)
+====================
+
+Breaking Changes
+----------------
+
+- Increased minimum version of Python to 3.12.
+  Increased minimum version of Astropy to 6.1.0.
+  Increased minimum version of sunpy to 7.0.0. (`#190 <https://github.com/sunpy/sunpy-soar/pull/190>`__)
+
+
+New Features
+------------
+
+- Cleaned up the namespace of ``a.soar`` to ensure only the real attrs are listed. (`#184 <https://github.com/sunpy/sunpy-soar/pull/184>`__)
+
+
+Bug Fixes
+---------
+
+- Fix test due to update in sunpy ``Fido.search`` where error are no longer raised but stored in ``.errors`` attribute. (`#192 <https://github.com/sunpy/sunpy-soar/pull/192>`__)
+
+
 1.11.1 (2025-03-12)
 ===================
 
