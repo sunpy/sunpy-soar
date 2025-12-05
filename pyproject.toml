@@ -17,7 +17,6 @@ authors = [
   { name = "David Stansby"},
 ]
 dependencies = [
-  "matplotlib>=3.8.0",
   "astropy>=6.1.0",
   "sunpy[net]>=7.0.0",
   "requests>=2.32.0",
@@ -25,13 +24,18 @@ dependencies = [
 dynamic = ["version"]
 
 [project.optional-dependencies]
-tests = [
-  "pytest-cov",
-  "pytest-doctestplus",
-  "pytest-xdist",
-  "pytest",
+tests-deps = [
   "responses>=0.20.0",
   "sunpy[map,net]>=7.0.0",
+  "matplotlib>=3.8.0",
+]
+tests-only = [
+  "pytest-cov",
+  "pytest-doctestplus",
+  "pytest",
+]
+tests = [
+  "sunpy_soar[tests-deps,tests-only]",
 ]
 docs = [
   "sphinx",

@@ -1,4 +1,3 @@
 Increased minimum version of Python to 3.12.
-Increased minimum version of Matplotlib to 3.8.0.
 Increased minimum version of Astropy to 6.1.0.
 Increased minimum version of sunpy to 7.0.0.
