@@ -1,21 +1,23 @@
-<<<<<<<
-**************
-=======
 A sunpy FIDO plugin for accessing data in the Solar Orbiter Archive (SOAR).
 ===========================================================================
-
-Usage of Generative AI
-----------------------
->>>>>>>
-``sunpy-soar``
-**************
 
 |ci-status| |coverage|
 
 .. |ci-status| image:: https://github.com/sunpy/sunpy-soar/actions/workflows/ci.yml/badge.svg
     :alt: CI status
-<<<<<<<
-=======
+.. |coverage| image:: https://codecov.io/gh/sunpy/sunpy-soar/branch/main/graph/badge.svg?token=5NKZHBX3AW
+   :target: https://codecov.io/gh/sunpy/sunpy-soar
+   :alt: Code coverage
+
+
+A sunpy Fido plugin for accessing data in the Solar Orbiter Archive (SOAR).
+
+See the `documentation <https://docs.sunpy.org/projects/soar/>`_ for installation instructions, examples, how to get help and how to contribute.
+
+Usage of Generative AI
+----------------------
+We expect authentic engagement in our community.
+**Do not post the output from Large Language Models or similar generative AI as code, issues or comments on GitHub or any other platform.**
 If you use generative AI tools as an aid in developing code or documentation changes, ensure that you fully understand the proposed changes and can explain why they are the correct approach and an improvement to the current state.
 For more information see our documentation on fair and appropriate `AI usage <https://docs.sunpy.org/en/latest/dev_guide/contents/ai_usage.html>`__.
 
@@ -37,20 +39,3 @@ For more information on contributing to SunPy, please read our `Newcomers' guide
 .. _Newcomers' guide: https://docs.sunpy.org/en/latest/dev_guide/contents/newcomers.html
 
 When you are interacting with the SunPy community you are asked at to follow our `code of conduct <https://sunpy.org/coc>`__.
->>>>>>>
-
-.. |coverage| image:: https://codecov.io/gh/sunpy/sunpy-soar/branch/main/graph/badge.svg?token=5NKZHBX3AW
-   :target: https://codecov.io/gh/sunpy/sunpy-soar
-   :alt: Code coverage
-
-
-A sunpy Fido plugin for accessing data in the Solar Orbiter Archive (SOAR).
-
-See the `documentation <https://docs.sunpy.org/projects/soar/>`_ for installation instructions, examples, how to get help and how to contribute.
-
-Usage of Generative AI
-----------------------
-We expect authentic engagement in our community.
-**Do not post the output from Large Language Models or similar generative AI as code, issues or comments on GitHub or any other platform.**
-If you use generative AI tools as an aid in developing code or documentation changes, ensure that you fully understand the proposed changes and can explain why they are the correct approach and an improvement to the current state.
-For more information see our documentation on fair and appropriate `AI usage <https://docs.sunpy.org/en/latest/dev_guide/contents/ai_usage.html>`__.
