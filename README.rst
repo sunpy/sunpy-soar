@@ -1,5 +1,7 @@
+``sunpy-soar``
+==============
+
 A sunpy FIDO plugin for accessing data in the Solar Orbiter Archive (SOAR).
-===========================================================================
 
 |ci-status| |coverage|
 
