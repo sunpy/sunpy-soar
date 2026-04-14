@@ -248,6 +248,8 @@ class SOARClient(BaseClient):
         )
         if "detector" in info:
             result_table["Detector"] = info["detector"]
+        if "sensor" in info:
+            result_table["Sensor"] = info["sensor"]
         if "wavelength" in info:
             result_table["Wavelength"] = info["wavelength"]
         result_table.sort("Start time")
