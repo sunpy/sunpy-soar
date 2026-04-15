@@ -298,10 +298,22 @@ class SOARClient(BaseClient):
         bool
             True if this client can handle the given query.
         """
-        from sunpy_soar.attrs import SOOP, Distance, Product  # NOQA: PLC0415
+        from sunpy_soar.attrs import (SOOP, Distance, Product,  # NOQA: PLC0415
+                                      Sensor)
 
         required = {Distance} if any(isinstance(q, Distance) for q in query) else {a.Time}
-        optional = {a.Instrument, a.Detector, a.Wavelength, a.Level, a.Provider, Product, SOOP, Distance, a.Time}
+        optional = {
+            a.Instrument,
+            a.Detector,
+            Sensor,
+            a.Wavelength,
+            a.Level,
+            a.Provider,
+            Product,
+            SOOP,
+            Distance,
+            a.Time,
+        }
         if not cls.check_attr_types_in_query(query, required, optional):
             return False
         # check to make sure the instrument attr passed is one provided by the SOAR.
