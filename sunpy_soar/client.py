@@ -353,7 +353,7 @@ class SOARClient(BaseClient):
         dict
             The dictionary containing the values formed into attributes.
         """
-        from sunpy_soar.attrs import SOOP, Product  # NOQA: PLC0415
+        from sunpy_soar.attrs import SOOP, Product, Sensor  # NOQA: PLC0415
 
         # Instrument attrs
         attrs_path = pathlib.Path(__file__).parent / "data" / "attrs.json"
@@ -368,6 +368,12 @@ class SOARClient(BaseClient):
             all_instr = json.load(instr_attrs_file)
         all_instr = list(all_instr.items())
 
+        # Sensor attrs
+        sensor_path = pathlib.Path(__file__).parent / "data" / "sensor_attrs.json"
+        with sensor_path.open() as sensor_attrs_file:
+            all_sensors = json.load(sensor_attrs_file)
+        all_sensors = list(all_sensors.items())
+
         soop_path = pathlib.Path(__file__).parent / "data" / "soop_attrs.json"
         with soop_path.open() as soop_path_file:
             all_soops = json.load(soop_path_file)
@@ -377,6 +383,7 @@ class SOARClient(BaseClient):
         return {
             Product: all_datasets,
             a.Instrument: all_instr,
+            Sensor: all_sensors,
             SOOP: all_soops,
             a.Provider: [("SOAR", "Solar Orbiter Archive.")],
         }
