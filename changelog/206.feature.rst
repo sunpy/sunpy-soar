@@ -1,0 +1,3 @@
+Added ``a.soar.Sensor`` to attrs, enabling users to query with a specific instrument sensor, e.g. the EPT sensor on the EPD instrument.
+This was required as ``a.Detector`` does not provide a comprenhensive listing of all available sensors on Solar Orbiter.
+Added a gallery example showing a simple ``Fido.search`` query using ``a.soar.Sensor``.
