@@ -1,7 +1,7 @@
 """
-===========================================================
-Searching for Solar Orbiter data using the Sensor attribute
-===========================================================
+=============================================================
+Searching for EPD/EPT data with the `a.soar.Sensor` attribute
+=============================================================
 
 This example demonstrates how to search and download Solar Orbiter data for a specific instrument sensor.
 Here, we will build a query for EPD data, specifically from the EPT sensor using ``a.soar.Sensor``.
@@ -31,4 +31,4 @@ result = Fido.search(
 result
 
 ###############################################################################
-# To then download the data, you would then use Fido.fetch(result), which will download the data locally.
+# To then download the data, you would then use ``Fido.fetch(result)``, which will download the data locally.

@@ -40,13 +40,9 @@ import sunpy_soar  # NOQA: F401 isort:skip
 # For level the following are supported:
 # L0, L1, L2, L3, LL01, LL02, LL03
 #
-# For specific instrument detectors or sensors, see ``a.Detector``. However, some SOAR products require the use of ``a.soar.Sensor`` attribute instead.
-#####################################################
-
-a.soar.Sensor
-
-#####################################################
-#
 # For product:
-
 a.soar.Product
+#####################################################
+# For specific instrument detectors or sensors, see ``a.Detector``.
+# However, some SOAR products require the use of ``a.soar.Sensor`` attribute instead:
+a.soar.Sensor
