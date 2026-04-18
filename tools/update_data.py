@@ -65,6 +65,30 @@ def get_all_instruments():
     return instr_desc
 
 
+def get_all_sensors():
+    """
+    Get a dict of unique sensor names and descriptions from SOAR. Parse to json
+    with something similar to:
+
+        sensors = get_all_sensors()
+        json.dumps(get_all_sensors(), indent=2)
+
+    The contents of this output should be placed in
+    ./sunpy_soar/data/sensor_attrs.json
+
+    Returns
+    -------
+    sensor_names: Dict[str, str]
+    """
+    print("Retrieving sensor descriptors...")
+    job = soar.launch_job("SELECT * FROM soar.sensor")
+    res = job.get_results()
+    sensor_names = {}
+    for row in res:
+        sensor_names[row["name"]] = str(row.get("long_name", ""))
+    return sensor_names
+
+
 def get_all_soops():
     # Get the unique soop names
     print("Updating SOOP descriptors...")
@@ -96,6 +120,16 @@ if __name__ == "__main__":
     instr_descriptors = get_all_instruments()
     with instr_file.open("w") as instrs_file:
         json.dump(dict(sorted(instr_descriptors.items())), instrs_file, indent=2)
+
+    sensor_file = (
+        pathlib.Path(__file__).parent.parent
+        / "sunpy_soar"
+        / "data"
+        / "sensor_attrs.json"
+    )
+    sensor_descriptors = get_all_sensors()
+    with sensor_file.open("w") as sensors_file:
+        json.dump(dict(sorted(sensor_descriptors.items())), sensors_file, indent=2)
 
     soop_file = (
         pathlib.Path(__file__).parent.parent / "sunpy_soar" / "data" / "soop_attrs.json"

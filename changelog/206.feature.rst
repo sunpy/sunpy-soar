@@ -1,0 +1,2 @@
+Added ``a.soar.Sensor`` to attrs, enabling users to query with a specific instrument sensor, e.g. the EPT sensor on the EPD instrument.
+Added a gallery example showing a simple ``Fido.search`` query using ``a.soar.Sensor``.
