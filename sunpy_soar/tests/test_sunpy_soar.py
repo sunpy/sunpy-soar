@@ -524,3 +524,50 @@ def test_soar_server_down_post71() -> None:
     assert isinstance(query['soar'].errors, RuntimeError)
     assert ("The SOAR server returned an invalid JSON response. It may be down or not functioning correctly."
             == str(query['soar'].errors))
+
+
+def test_can_handle_with_time_and_instrument():
+    """Time + a known SOAR instrument should be handleable."""
+    assert SOARClient._can_handle_query(a.Time("2023-01-01", "2023-01-02"), a.Instrument("EUI")) is True
+
+
+def test_can_handle_with_distance_no_time():
+    """Distance alone (no Time) should be handleable since Distance replaces Time as required."""
+    assert SOARClient._can_handle_query(a.soar.Distance(0.3 * u.AU, 0.5 * u.AU)) is True
+
+
+def test_can_handle_with_distance_and_time():
+    """Distance + Time together should be handleable."""
+    assert SOARClient._can_handle_query(
+        a.soar.Distance(0.3 * u.AU, 0.5 * u.AU),
+        a.Time("2023-01-01", "2023-01-02"),
+    ) is True
+
+
+def test_can_handle_wrong_provider():
+    """A non-SOAR provider should be rejected."""
+    assert SOARClient._can_handle_query(
+        a.Time("2023-01-01", "2023-01-02"),
+        a.Provider("SDAC"),
+    ) is False
+
+
+def test_can_handle_unknown_instrument():
+    """An instrument not in the SOAR registry should be rejected."""
+    assert SOARClient._can_handle_query(
+        a.Time("2023-01-01", "2023-01-02"),
+        a.Instrument("AIA"),
+    ) is False
+
+
+def test_can_handle_unsupported_attr():
+    """An attr type not in the required/optional sets should be rejected."""
+    assert SOARClient._can_handle_query(
+        a.Time("2023-01-01", "2023-01-02"),
+        a.Physobs("intensity"),
+    ) is False
+
+
+def test_can_handle_time_only():
+    """Time with no instrument should be handleable (the no-instrument search path)."""
+    assert SOARClient._can_handle_query(a.Time("2023-01-01", "2023-01-02")) is True
