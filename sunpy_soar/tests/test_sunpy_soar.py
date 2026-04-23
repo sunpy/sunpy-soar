@@ -7,6 +7,7 @@ import sunpy.map
 from requests.exceptions import HTTPError
 from sunpy.net import Fido
 from sunpy.net import attrs as a
+from sunpy.net.base_client import QueryResponseTable
 from sunpy.util.exceptions import SunpyUserWarning
 
 from sunpy_soar.client import SOARClient
@@ -112,6 +113,7 @@ def test_registered_instr_attrs() -> None:
     instr_attr = a.Instrument
     assert "SOAR" in instr_attr._attr_registry[instr_attr].client
     assert "stix" in instr_attr._attr_registry[instr_attr].name
+
 
 def test_registered_sensor_attrs() -> None:
     # Check if SolO sensors are registered in a.soar.Sensor
@@ -468,7 +470,7 @@ def test_distance_out_of_bounds_warning_post71(recwarn):
     # Run the search and ensure it raises an HTTPError
     query = Fido.search(distance & instrument & product & level & time)
     # Check if the warning was raised
-    assert query['soar'].errors
+    assert query["soar"].errors
     # Check if the warning was raised
     warnings_list = recwarn.list
     assert any(
@@ -520,10 +522,11 @@ def test_soar_server_down_post71() -> None:
     level = a.Level("LL02")
     product = a.soar.Product("mag")
 
-    query =  Fido.search(time, level, product)
-    assert isinstance(query['soar'].errors, RuntimeError)
-    assert ("The SOAR server returned an invalid JSON response. It may be down or not functioning correctly."
-            == str(query['soar'].errors))
+    query = Fido.search(time, level, product)
+    assert isinstance(query["soar"].errors, RuntimeError)
+    assert "The SOAR server returned an invalid JSON response. It may be down or not functioning correctly." == str(
+        query["soar"].errors
+    )
 
 
 def test_can_handle_with_time_and_instrument():
@@ -538,36 +541,134 @@ def test_can_handle_with_distance_no_time():
 
 def test_can_handle_with_distance_and_time():
     """Distance + Time together should be handleable."""
-    assert SOARClient._can_handle_query(
-        a.soar.Distance(0.3 * u.AU, 0.5 * u.AU),
-        a.Time("2023-01-01", "2023-01-02"),
-    ) is True
+    assert (
+        SOARClient._can_handle_query(
+            a.soar.Distance(0.3 * u.AU, 0.5 * u.AU),
+            a.Time("2023-01-01", "2023-01-02"),
+        )
+        is True
+    )
 
 
 def test_can_handle_wrong_provider():
     """A non-SOAR provider should be rejected."""
-    assert SOARClient._can_handle_query(
-        a.Time("2023-01-01", "2023-01-02"),
-        a.Provider("SDAC"),
-    ) is False
+    assert (
+        SOARClient._can_handle_query(
+            a.Time("2023-01-01", "2023-01-02"),
+            a.Provider("SDAC"),
+        )
+        is False
+    )
 
 
 def test_can_handle_unknown_instrument():
     """An instrument not in the SOAR registry should be rejected."""
-    assert SOARClient._can_handle_query(
-        a.Time("2023-01-01", "2023-01-02"),
-        a.Instrument("AIA"),
-    ) is False
+    assert (
+        SOARClient._can_handle_query(
+            a.Time("2023-01-01", "2023-01-02"),
+            a.Instrument("AIA"),
+        )
+        is False
+    )
 
 
 def test_can_handle_unsupported_attr():
     """An attr type not in the required/optional sets should be rejected."""
-    assert SOARClient._can_handle_query(
-        a.Time("2023-01-01", "2023-01-02"),
-        a.Physobs("intensity"),
-    ) is False
+    assert (
+        SOARClient._can_handle_query(
+            a.Time("2023-01-01", "2023-01-02"),
+            a.Physobs("intensity"),
+        )
+        is False
+    )
 
 
 def test_can_handle_time_only():
     """Time with no instrument should be handleable (the no-instrument search path)."""
     assert SOARClient._can_handle_query(a.Time("2023-01-01", "2023-01-02")) is True
+
+
+def _make_query_results(rows):
+    """Build a minimal QueryResponseTable from a list of row dicts for testing fetch."""
+    return QueryResponseTable(
+        {
+            "Instrument": [r["Instrument"] for r in rows],
+            "Data product": [r["Data product"] for r in rows],
+            "Level": [r["Level"] for r in rows],
+            "Start time": [r["Start time"] for r in rows],
+            "End time": [r["End time"] for r in rows],
+            "Data item ID": [r["Data item ID"] for r in rows],
+            "Filename": [r["Filename"] for r in rows],
+            "Filesize": [r["Filesize"] for r in rows],
+            "SOOP Name": [r["SOOP Name"] for r in rows],
+        },
+        client=SOARClient(),
+    )
+
+
+def test_fetch_science_url(tmp_path):
+    """Science-level rows should produce URLs with product_type=SCIENCE."""
+    qrt = _make_query_results(
+        [
+            {
+                "Instrument": "EUI",
+                "Data product": "eui-fsi174-image",
+                "Level": "L1",
+                "Start time": "2021-02-01",
+                "End time": "2021-02-02",
+                "Data item ID": "solo_L1_eui-fsi174-image_20210201",
+                "Filename": "solo_L1_eui-fsi174-image_20210201.fits",
+                "Filesize": 1000000,
+                "SOOP Name": "none",
+            },
+        ]
+    )
+
+    queued = []
+
+    class FakeDownloader:
+        def enqueue_file(self, url, filename):
+            queued.append((url, filename))
+
+    SOARClient().fetch(qrt, path=str(tmp_path / "{file}"), downloader=FakeDownloader())
+
+    assert len(queued) == 1
+    url, filepath = queued[0]
+    assert "product_type=SCIENCE" in url
+    assert "product_type=LOW_LATENCY" not in url
+    assert "data_item_id=solo_L1_eui-fsi174-image_20210201" in url
+    assert filepath.endswith("solo_L1_eui-fsi174-image_20210201.fits")
+
+
+def test_fetch_low_latency_url(tmp_path):
+    """Low-latency rows should produce URLs with product_type=LOW_LATENCY."""
+    qrt = _make_query_results(
+        [
+            {
+                "Instrument": "EPD",
+                "Data product": "epd-het-asun-rates",
+                "Level": "LL02",
+                "Start time": "2020-11-13",
+                "End time": "2020-11-14",
+                "Data item ID": "solo_LL02_epd-het-asun-rates_20201113",
+                "Filename": "solo_LL02_epd-het-asun-rates_20201113.fits",
+                "Filesize": 500000,
+                "SOOP Name": "none",
+            },
+        ]
+    )
+
+    queued = []
+
+    class FakeDownloader:
+        def enqueue_file(self, url, filename):
+            queued.append((url, filename))
+
+    SOARClient().fetch(qrt, path=str(tmp_path / "{file}"), downloader=FakeDownloader())
+
+    assert len(queued) == 1
+    url, filepath = queued[0]
+    assert "product_type=LOW_LATENCY" in url
+    assert "product_type=SCIENCE" not in url
+    assert "data_item_id=solo_LL02_epd-het-asun-rates_20201113" in url
+    assert filepath.endswith("solo_LL02_epd-het-asun-rates_20201113.fits")
