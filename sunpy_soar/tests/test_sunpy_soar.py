@@ -329,6 +329,79 @@ def test_distance_join_query():
     )
 
 
+def test_construct_payload_insitu_no_join():
+    """In-situ instruments (e.g. MAG) should produce SELECT * with no JOIN."""
+    result = SOARClient._construct_payload(
+        [
+            "instrument='MAG'",
+            "begin_time>='2020-04-16 00:00:00' AND begin_time<='2020-04-17 00:00:00'",
+            "descriptor='mag-rtn-normal-1-minute'",
+        ]
+    )
+    assert result["REQUEST"] == "doQuery"
+    assert "SELECT *" in result["QUERY"]
+    assert "JOIN" not in result["QUERY"]
+    assert "FROM v_sc_data_item" in result["QUERY"]
+
+
+def test_construct_payload_descriptor_infers_instrument():
+    """When no instrument= is given, instrument should be inferred from the descriptor."""
+    result = SOARClient._construct_payload(
+        [
+            "begin_time>='2021-02-01 00:00:00' AND begin_time<='2021-02-02 00:00:00'",
+            "level='L1'",
+            "descriptor='eui-fsi174-image'",
+        ]
+    )
+    # EUI is inferred from 'eui-fsi174-image' and should trigger the join path
+    assert "JOIN v_eui_sc_fits" in result["QUERY"]
+    assert "h1.descriptor='eui-fsi174-image'" in result["QUERY"]
+
+
+def test_construct_payload_solohi_mapping():
+    """SOLOHI should be mapped to SHI for the instrument table."""
+    result = SOARClient._construct_payload(
+        [
+            "instrument='SOLOHI'",
+            "begin_time>='2021-02-01 00:00:00' AND begin_time<='2021-02-02 00:00:00'",
+            "level='L1'",
+        ]
+    )
+    assert "JOIN v_shi_sc_fits" in result["QUERY"]
+
+
+def test_construct_payload_stix_mapping():
+    """STIX should be mapped to STX but should not trigger a join (not a remote sensing join instrument)."""
+    result = SOARClient._construct_payload(
+        [
+            "instrument='STIX'",
+            "begin_time>='2021-02-01 00:00:00' AND begin_time<='2021-02-02 00:00:00'",
+            "level='L1'",
+        ]
+    )
+    # STIX (STX) is not in the remote sensing join list
+    assert "SELECT *" in result["QUERY"]
+    assert "JOIN" not in result["QUERY"]
+
+
+def test_construct_payload_distance_with_time():
+    """When both distance and time are present, the query method should be doQueryFilteredByDistance
+    and the DISTANCE parameter should be appended with '&' rather than ' AND '."""
+    result = SOARClient._construct_payload(
+        [
+            "instrument='RPW'",
+            "begin_time>='2023-04-27 00:00:00' AND begin_time<='2023-04-28 00:00:00'",
+            "level='L2'",
+            "DISTANCE(0.45,0.46)",
+        ]
+    )
+    assert result["REQUEST"] == "doQueryFilteredByDistance"
+    assert "begin_time>='2023-04-27 00:00:00'" in result["QUERY"]
+    assert "&DISTANCE(0.45,0.46)" in result["QUERY"]
+    # DISTANCE should not appear with ' AND ' prefix
+    assert " AND DISTANCE" not in result["QUERY"]
+
+
 @pytest.mark.remote_data
 def test_distance_search_remote_sensing():
     instrument = a.Instrument("RPW")
