@@ -672,3 +672,79 @@ def test_fetch_low_latency_url(tmp_path):
     assert "product_type=SCIENCE" not in url
     assert "data_item_id=solo_LL02_epd-het-asun-rates_20201113" in url
     assert filepath.endswith("solo_LL02_epd-het-asun-rates_20201113.fits")
+
+
+def test_add_join_single_wavelength():
+    """When wavemin == wavemax, the parameter should be rewritten to Wavelength='value'."""
+    query = [
+        "instrument='EUI'",
+        "begin_time>='2023-01-01 00:00:00' AND begin_time<='2023-01-02 00:00:00'",
+        "Wavemin='304.0' AND Wavemax='304.0'",
+    ]
+    where, _, _ = SOARClient.add_join_to_query(query, "v_sc_data_item", "v_eui_sc_fits")
+    # Single wavelength should become Wavelength='304.0' with h2. prefix
+    assert "h2.Wavelength='304.0'" in where
+    assert "Wavemin" not in where
+    assert "Wavemax" not in where
+
+
+def test_add_join_wavelength_range():
+    """When wavemin != wavemax, Wavemin and h2.Wavemax should be used."""
+    query = [
+        "instrument='EUI'",
+        "begin_time>='2023-01-01 00:00:00' AND begin_time<='2023-01-02 00:00:00'",
+        "Wavemin='171.0' AND Wavemax='304.0'",
+    ]
+    where, _, _ = SOARClient.add_join_to_query(query, "v_sc_data_item", "v_eui_sc_fits")
+    # Range should keep Wavemin with h2. prefix and explicitly prefix Wavemax with h2.
+    assert "h2.Wavemin='171.0'" in where
+    assert "h2.Wavemax='304.0'" in where
+
+
+def test_add_join_stix_no_dimension_index():
+    """STIX (stx in table name) should not add dimension_index='1' to the query."""
+    query = [
+        "instrument='STIX'",
+        "begin_time>='2023-01-01 00:00:00' AND begin_time<='2023-01-02 00:00:00'",
+        "level='L1'",
+    ]
+    where, _, _ = SOARClient.add_join_to_query(query, "v_sc_data_item", "v_stx_sc_fits")
+    assert "dimension_index" not in where
+
+
+def test_add_join_non_stix_has_dimension_index():
+    """Non-STIX instruments should include dimension_index='1' in the query."""
+    query = [
+        "instrument='EUI'",
+        "begin_time>='2023-01-01 00:00:00' AND begin_time<='2023-01-02 00:00:00'",
+        "level='L1'",
+    ]
+    where, _, _ = SOARClient.add_join_to_query(query, "v_sc_data_item", "v_eui_sc_fits")
+    assert "h2.dimension_index='1'" in where
+
+
+def test_add_join_detector_prefix():
+    """Detector parameters should get the h2. prefix, not h1."""
+    query = [
+        "instrument='EUI'",
+        "begin_time>='2023-01-01 00:00:00' AND begin_time<='2023-01-02 00:00:00'",
+        "Detector='HRI_EUV'",
+    ]
+    where, _, _ = SOARClient.add_join_to_query(query, "v_sc_data_item", "v_eui_sc_fits")
+    assert "h2.Detector='HRI_EUV'" in where
+    assert "h1.Detector" not in where
+
+
+def test_add_join_no_instrument_table():
+    """When instrument_table is empty, FROM should have no JOIN and SELECT should omit detector/wavelength columns."""
+    query = [
+        "instrument='MAG'",
+        "begin_time>='2023-01-01 00:00:00' AND begin_time<='2023-01-02 00:00:00'",
+        "level='L1'",
+    ]
+    _, from_part, select = SOARClient.add_join_to_query(query, "v_sc_data_item", "")
+    assert "JOIN" not in from_part
+    assert from_part == "v_sc_data_item AS h1"
+    assert "h2.detector" not in select
+    assert "h2.wavelength" not in select
+    assert "h2.dimension_index" not in select
