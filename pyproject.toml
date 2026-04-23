@@ -33,6 +33,7 @@ tests-only = [
   "pytest-cov",
   "pytest-doctestplus",
   "pytest",
+  "pytest-remotedata",
 ]
 tests = [
   "sunpy_soar[tests-deps,tests-only]",

@@ -4,6 +4,8 @@ omit =
   sunpy_soar/*setup_package*
   sunpy_soar/extern/*
   sunpy_soar/version*
+  sunpy_soar/_dev/*
+  */sunpy_soar/_dev/*
   */sunpy_soar/conftest.py
   */sunpy_soar/*setup_package*
   */sunpy_soar/extern/*

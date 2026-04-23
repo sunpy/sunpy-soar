@@ -13,6 +13,8 @@ from sunpy_soar.client import SOARClient
 
 SUNPY_VERSION = (sunpy.version.major, sunpy.version.minor)
 
+
+@pytest.mark.remote_data
 def test_search() -> None:
     instrument = a.Instrument("EUI")
     time = a.Time("2022-02-11", "2022-02-12")
@@ -39,6 +41,7 @@ def test_search() -> None:
     sunpy.map.Map(fname)
 
 
+@pytest.mark.remote_data
 def test_search_low_latency() -> None:
     time = a.Time("2020-11-13", "2020-11-14")
     level = a.Level("LL02")
@@ -52,6 +55,7 @@ def test_search_low_latency() -> None:
     assert len(files) == 1
 
 
+@pytest.mark.remote_data
 def test_insitu_search() -> None:
     instrument = a.Instrument("MAG")
     time = a.Time("2020-04-16", "2020-04-17")
@@ -65,6 +69,7 @@ def test_insitu_search() -> None:
     assert len(files) == 1
 
 
+@pytest.mark.remote_data
 def test_no_results() -> None:
     instrument = a.Instrument("EUI")
     time = a.Time("2019-02-01", "2019-02-02")
@@ -74,6 +79,7 @@ def test_no_results() -> None:
     assert len(res) == 0
 
 
+@pytest.mark.remote_data
 def test_no_instrument() -> None:
     # Check that a time only search returns results
     time = a.Time("2020-04-16", "2020-04-17")
@@ -81,6 +87,7 @@ def test_no_instrument() -> None:
     assert len(res) == 63
 
 
+@pytest.mark.remote_data
 def test_download_path(tmp_path) -> None:
     # Check that we can download things to a custom path using
     # the search parameters
@@ -119,6 +126,7 @@ def test_registered_soop_names() -> None:
     assert "\nr_small_mres_mcad_ar_long_term" in soop_attr
 
 
+@pytest.mark.remote_data
 def test_search_soop() -> None:
     instrument = a.Instrument("EUI")
     time = a.Time("2022-04-01 01:00", "2022-04-01 02:00")
@@ -132,6 +140,7 @@ def test_search_soop() -> None:
     assert res.file_num == 0
 
 
+@pytest.mark.remote_data
 def test_when_soar_provider_passed() -> None:
     # Tests when a.Provider.soar is passed that only SOARClient results are returned
     instrument = a.Instrument("EUI")
@@ -153,6 +162,7 @@ def test_when_sdac_provider_passed() -> None:
     assert res["vso"]
 
 
+@pytest.mark.remote_data
 def test_when_wrong_provider_passed() -> None:
     # Tests that no results are returned when a provider is passed which does not provide EUI data.
     # This is different from the above test because the SDAC and the SOAR both provide EUI data while
@@ -164,6 +174,7 @@ def test_when_wrong_provider_passed() -> None:
     assert len(res) == 0
 
 
+@pytest.mark.remote_data
 def test_search_wavelength_detector_column() -> None:
     instrument = a.Instrument("EUI")
     time = a.Time("2021-02-01", "2021-02-02")
@@ -174,6 +185,7 @@ def test_search_wavelength_detector_column() -> None:
     assert "Detector" in res[0].columns
 
 
+@pytest.mark.remote_data
 def test_search_detector_instrument_dimension_2() -> None:
     # Instruments "EUI", "METIS", "PHI" and "SOLOHI" have two dimensions in the SOAR data.
     # Selecting no dimension index in the query results in two identical output rows.
@@ -187,6 +199,7 @@ def test_search_detector_instrument_dimension_2() -> None:
     assert res.file_num == 266
 
 
+@pytest.mark.remote_data
 def test_search_detector_instrument_dimension_4() -> None:
     # The "SPICE" instrument has four dimensions in the SOAR data. As a result,
     # selecting no dimension index in the query results in four identical output rows.
@@ -200,6 +213,7 @@ def test_search_detector_instrument_dimension_4() -> None:
     assert res.file_num == 11
 
 
+@pytest.mark.remote_data
 def test_invalid_detector() -> None:
     instrument = a.Instrument("SPICE")
     time = a.Time("2023-03-03 15:00", "2023-03-03 16:00")
@@ -210,6 +224,7 @@ def test_invalid_detector() -> None:
     assert res.file_num == 0
 
 
+@pytest.mark.remote_data
 def test_wavelength_column_wavelength_exists() -> None:
     # For instruments EUI, METIS and SOLOHI "wavelength" column is available.
     # Test to check if the "Wavelength" column exists in the search results.
@@ -222,6 +237,7 @@ def test_wavelength_column_wavelength_exists() -> None:
     assert res.file_num == 12
 
 
+@pytest.mark.remote_data
 def test_wavelength_single() -> None:
     # Test to check if the wavelength value is filtered for a single value provided.
     instrument = a.Instrument("EUI")
@@ -233,6 +249,7 @@ def test_wavelength_single() -> None:
         assert all(table["Wavelength"] == 304)
 
 
+@pytest.mark.remote_data
 def test_wavelength_range() -> None:
     # Test to check if the wavelength value is filtered for wavemin and wavemax provided.
     instrument = a.Instrument("EUI")
@@ -312,6 +329,7 @@ def test_distance_join_query():
     )
 
 
+@pytest.mark.remote_data
 def test_distance_search_remote_sensing():
     instrument = a.Instrument("RPW")
     product = a.soar.Product("rpw-tnr-surv")
@@ -321,6 +339,7 @@ def test_distance_search_remote_sensing():
     assert res.file_num > 40
 
 
+@pytest.mark.remote_data
 def test_distance_search_insitu():
     instrument = a.Instrument("METIS")
     level = a.Level(2)
@@ -330,6 +349,7 @@ def test_distance_search_insitu():
     assert res.file_num == 310
 
 
+@pytest.mark.remote_data
 def test_distance_time_search():
     instrument = a.Instrument("EUI")
     time = a.Time("2023-04-27", "2023-04-28")
@@ -345,6 +365,7 @@ def test_distance_time_search():
 
 # Remove this test and the mark from below once min sunpy dep >=7.1
 @pytest.mark.skipif(SUNPY_VERSION >= (7, 1), reason="Skip post sunpy 7.1")
+@pytest.mark.remote_data
 def test_distance_out_of_bounds_warning(recwarn):
     instrument = a.Instrument("EUI")
     time = a.Time("2023-04-27", "2023-04-28")
@@ -364,6 +385,7 @@ def test_distance_out_of_bounds_warning(recwarn):
 
 
 @pytest.mark.skipif(SUNPY_VERSION < (7, 1), reason="Skip pre sunpy 7.1")
+@pytest.mark.remote_data
 def test_distance_out_of_bounds_warning_post71(recwarn):
     instrument = a.Instrument("EUI")
     time = a.Time("2023-04-27", "2023-04-28")
