@@ -65,11 +65,11 @@ jobs:
       toxdeps: tox-pypi-filter
       posargs: -n auto
       envs: |
-        - linux: py314
-        - windows: py312
-        - macos: py312
-        - linux: py312-oldestdeps
-        - linux: py314-devdeps
+        - linux: py314-online
+        - windows: py312-online
+        - macos: py312-online
+        - linux: py312-oldestdeps-online
+        - linux: py314-devdeps-online
     secrets:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
