@@ -17,34 +17,18 @@ authors = [
   { name = "David Stansby"},
 ]
 dependencies = [
-  "astropy>=6.1.0",
-  "sunpy[net]>=7.0.0",
-  "requests>=2.32.0",
+  "sunpy[net]>=8.0.dev357",
 ]
 dynamic = ["version"]
 
 [project.optional-dependencies]
-tests-deps = [
-  "responses>=0.20.0",
-  "sunpy[map,net]>=7.0.0",
-  "matplotlib>=3.8.0",
-]
-tests-only = [
-  "pytest-cov",
-  "pytest-doctestplus",
-  "pytest",
-  "pytest-remotedata",
-]
 tests = [
-  "sunpy_soar[tests-deps,tests-only]",
+  "sunpy[tests]",
 ]
 docs = [
   "sphinx",
   "sphinx-automodapi",
-  "matplotlib",
   "sphinx-changelog",
-  "sphinx-copybutton",
-  "sphinx-gallery",
   "sphinxext-opengraph",
   "sunpy-sphinx-theme",
 ]
