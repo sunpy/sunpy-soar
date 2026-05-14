@@ -1,6 +1,11 @@
 ``sunpy-soar``
 ==============
 
+.. Warning::
+
+   As of ``sunpy`` 8.0 this package was merged into the core sunpy package, so is no longer maintained.
+   The latest release of `sunpy-soar` imports the client from the ``sunpy`` package.
+
 A sunpy FIDO plugin for accessing data in the Solar Orbiter Archive (SOAR).
 
 |ci-status| |coverage|
