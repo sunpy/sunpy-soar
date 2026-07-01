@@ -31,7 +31,7 @@ permissions: {}
 
 jobs:
   core:
-    uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@v2  # zizmor: ignore[unpinned-uses]
+    uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@v3  # zizmor: ignore[unpinned-uses]
     with:
       submodules: false
       coverage: codecov
@@ -58,7 +58,7 @@ jobs:
 
   test:
     needs: [core, sdist_verify]
-    uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@v2  # zizmor: ignore[unpinned-uses]
+    uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@v3  # zizmor: ignore[unpinned-uses]
     with:
       submodules: false
       coverage: codecov
@@ -75,7 +75,7 @@ jobs:
 
   docs:
     needs: [core]
-    uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@v2  # zizmor: ignore[unpinned-uses]
+    uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@v3  # zizmor: ignore[unpinned-uses]
     with:
       default_python: '3.13'
       submodules: false
