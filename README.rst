@@ -1,3 +1,12 @@
+----
+
+**NOTE:** ``sunpy-soar`` was merged into ``sunpy`` as of v8.0.0. For future development, feature requests, or issues please instead work from `sunpy`_.
+
+.. _sunpy: https://github.com/sunpy/sunpy
+
+----
+
+
 ``sunpy-soar``
 ==============
 
